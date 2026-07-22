@@ -27,6 +27,11 @@
  * @subpackage Spartan_Gallery/includes
  * @author     Freelancer Martin <developerforwebsites@gmail.com>
  */
+
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
 class Spartan_Gallery {
 
 	/**
@@ -136,6 +141,12 @@ class Spartan_Gallery {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-metaboxes.php';
 
 		/**
+		 * The class responsible for the Spartan Gallery options metabox (native
+		 * WordPress replacement for the previous Redux Framework panel).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-options.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-welcome-dashboard.php';
@@ -233,7 +244,7 @@ class Spartan_Gallery {
 
 		$plugin_i18n = new Spartan_Gallery_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->add_action( 'init', $plugin_i18n, 'load_plugin_textdomain' );
 
 	}
 

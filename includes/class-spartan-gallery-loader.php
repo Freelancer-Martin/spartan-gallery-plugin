@@ -21,6 +21,11 @@
  * @subpackage Spartan_Gallery/includes
  * @author     Freelancer Martin <developerforwebsites@gmail.com>
  */
+
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
 class Spartan_Gallery_Loader {
 
 	/**

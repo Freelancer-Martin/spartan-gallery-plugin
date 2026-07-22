@@ -1,0 +1,313 @@
+.sg-options-wrap {
+	display: flex;
+	align-items: flex-start;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+	overflow: hidden;
+	min-height: 420px;
+}
+
+.sg-options-nav {
+	flex: 0 0 190px;
+	display: flex;
+	flex-direction: column;
+	background: #f6f7f7;
+	border-right: 1px solid #dcdcde;
+	padding: 8px 0;
+}
+
+.sg-options-nav-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 10px 14px;
+	background: none;
+	border: 0;
+	border-left: 3px solid transparent;
+	text-align: left;
+	cursor: pointer;
+	font-size: 13px;
+	color: #3c434a;
+}
+
+.sg-options-nav-item:hover {
+	background: #eef1f3;
+}
+
+.sg-options-nav-item.active {
+	background: #fff;
+	border-left-color: #2271b1;
+	color: #2271b1;
+	font-weight: 600;
+}
+
+.sg-options-nav-item .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+}
+
+.sg-nav-label {
+	line-height: 1.3;
+}
+
+.sg-options-content {
+	flex: 1 1 auto;
+	padding: 16px 20px;
+	min-width: 0;
+}
+
+.sg-options-panel {
+	display: none;
+}
+
+.sg-options-panel.active {
+	display: block;
+}
+
+.sg-options-section-title {
+	margin: 0 0 4px;
+	font-size: 15px;
+}
+
+.sg-options-section-desc {
+	margin: 0 0 12px;
+	color: #646970;
+	font-size: 13px;
+}
+
+.sg-options-table {
+	margin: 0;
+}
+
+@media (max-width: 782px) {
+	.sg-options-wrap {
+		flex-direction: column;
+	}
+
+	.sg-options-nav {
+		flex-direction: row;
+		flex-wrap: wrap;
+		flex: 0 0 auto;
+		border-right: 0;
+		border-bottom: 1px solid #dcdcde;
+	}
+
+	.sg-options-nav-item {
+		width: auto;
+		border-left: 0;
+		border-bottom: 3px solid transparent;
+	}
+
+	.sg-options-nav-item.active {
+		border-left-color: transparent;
+		border-bottom-color: #2271b1;
+	}
+}
+
+.sg-options-table th {
+	width: 220px;
+}
+
+.sg-image-select {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-top: 10px;
+}
+
+.sg-image-select-option {
+	display: block;
+	width: 160px;
+	border: 2px solid #dcdcde;
+	border-radius: 4px;
+	padding: 8px;
+	text-align: center;
+	cursor: pointer;
+	position: relative;
+}
+
+.sg-image-select-option input[type="radio"] {
+	position: absolute;
+	top: 8px;
+	left: 8px;
+}
+
+.sg-image-select-option img {
+	max-width: 100%;
+	height: 90px;
+	object-fit: cover;
+	border-radius: 2px;
+}
+
+.sg-image-select-option span {
+	display: block;
+	margin-top: 6px;
+	font-size: 12px;
+}
+
+.sg-image-select-option.selected {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.sg-slider {
+	max-width: 320px;
+	margin: 16px 0 14px;
+}
+
+/* jQuery UI slider ships with no CSS of its own in wp-admin, so without
+   these rules the track/handle have no size and can't be dragged. */
+.sg-slider.ui-slider {
+	position: relative;
+	height: 6px;
+	background: #dcdcde;
+	border: 0;
+	border-radius: 3px;
+}
+
+.sg-slider .ui-slider-handle {
+	position: absolute;
+	top: 50%;
+	width: 18px;
+	height: 18px;
+	margin-left: -9px;
+	margin-top: -9px;
+	background: #2271b1;
+	border: 2px solid #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.3 );
+	cursor: pointer;
+	outline: none;
+	touch-action: none;
+	z-index: 2;
+}
+
+.sg-slider .ui-slider-handle:hover,
+.sg-slider .ui-slider-handle:focus {
+	background: #135e96;
+}
+
+.sg-slider .ui-slider-range {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	background: #2271b1;
+	border-radius: 3px;
+}
+
+.sg-slider-value {
+	width: 90px;
+}
+
+.ui-spinner {
+	display: inline-flex;
+	align-items: stretch;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.ui-spinner input.sg-spinner {
+	width: 60px;
+	border: 0;
+	border-radius: 0;
+}
+
+.ui-spinner-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	border: 0;
+	border-left: 1px solid #8c8f94;
+	background: #f6f7f7;
+	cursor: pointer;
+	font-size: 9px;
+	line-height: 1;
+}
+
+.ui-spinner-up::before {
+	content: "\25B2";
+}
+
+.ui-spinner-down::before {
+	content: "\25BC";
+}
+
+.sg-switch input {
+	margin-right: 6px;
+}
+
+.sg-gallery-preview {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 10px 0;
+}
+
+.sg-gallery-thumb {
+	position: relative;
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	overflow: hidden;
+}
+
+.sg-gallery-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.sg-gallery-remove {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	background: rgba(0, 0, 0, 0.65);
+	color: #fff;
+	width: 18px;
+	height: 18px;
+	line-height: 18px;
+	text-align: center;
+	border-radius: 50%;
+	text-decoration: none;
+	font-size: 12px;
+}
+
+.sg-dimensions,
+.sg-border {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	align-items: center;
+}
+
+.sg-dimensions label,
+.sg-border label {
+	font-size: 12px;
+	color: #646970;
+	margin-right: 4px;
+}
+
+.sg-border-widths {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	width: 100%;
+	margin-top: 8px;
+}
+
+#add_extra_css {
+	width: 100%;
+}
+
+.CodeMirror {
+	border: 1px solid #dcdcde;
+	height: 220px;
+}

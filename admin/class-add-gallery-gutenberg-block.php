@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
 // Register the block and its settings
 class Gallery_Block {
     // Constructor to hook the necessary actions
@@ -44,20 +48,25 @@ class Gallery_Block {
 
 			$my_meta_options = get_post_meta( $gallery_id , 'image_layout_select', true ); // array
 
-			$get_all_post_attachements = get_post_meta( $gallery_id , 'spartan_gallery_uploaded_images', true ); 
-            
-			
+			$get_all_post_attachements = get_post_meta( $gallery_id , 'spartan_gallery_uploaded_images', true );
 
 			// Loop through each post ID
-			foreach (explode(',',$get_all_post_attachements) as $post_id) {
-				// Retrieve the post object by ID
-				$post = get_post($post_id);
+			$post_guids = array();
+			if ( ! empty( $get_all_post_attachements ) ) {
+				foreach ( explode( ',', $get_all_post_attachements ) as $post_id ) {
+					// Retrieve the post object by ID
+					$post = get_post( absint( $post_id ) );
 
-				// Check if the post exists
-				if ($post) {
-					// Get the GUID of the post and push it into the array
-					$post_guids[] = $post;
+					// Check if the post exists
+					if ( $post ) {
+						// Get the GUID of the post and push it into the array
+						$post_guids[] = $post;
+					}
 				}
+			}
+
+			if ( empty( $post_guids ) ) {
+				return '<p>No images found in this gallery.</p>';
 			}
 
 			$attachments = $post_guids;

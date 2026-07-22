@@ -59,11 +59,6 @@ class Spartan_Gallery_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		// Hook into plugin activation
-		add_action( 'admin_init', array($this,'spartan_gallery_check_and_install_redux' ));
-
-		add_action( 'plugins_loaded', array($this,'spartan_gallery_load_redux' ));
-		
 
 	}
 
@@ -119,70 +114,5 @@ class Spartan_Gallery_Admin {
 
 	}
 
-
-	public function spartan_gallery_check_and_install_redux() 
-	{
-		// Ensure WordPress is loaded
-		if ( ! function_exists( 'wp_generate_password' ) ) {
-			error_log( 'WordPress not fully loaded. Aborting Redux installation.' );
-			return;
-		}
-	
-		if ( ! class_exists( 'ReduxFramework' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			require_once ABSPATH . 'wp-admin/includes/misc.php';
-			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-	
-			// Get plugin information for Redux Framework
-			$plugin_slug = 'redux-framework';
-			$plugin_info = plugins_api( 'plugin_information', array( 'slug' => $plugin_slug ) );
-	
-			if ( is_wp_error( $plugin_info ) ) {
-				error_log( 'Error fetching Redux Framework plugin info: ' . $plugin_info->get_error_message() );
-				return;
-			}
-	
-			$download_link = $plugin_info->download_link;
-	
-			$upgrader = new Plugin_Upgrader();
-			$installed = $upgrader->install( $download_link );
-	
-			if ( $installed ) {
-				$plugin_file = WP_PLUGIN_DIR . "/$plugin_slug/$plugin_slug.php";
-				if ( file_exists( $plugin_file ) ) {
-					activate_plugin( $plugin_file );
-				} else {
-					error_log( 'Redux Framework installation failed: Plugin file not found.' );
-				}
-			} else {
-				error_log( 'Redux Framework installation failed: Unable to download or install the plugin.' );
-			}
-		}
-	}
-
-	// Load Redux Framework after all plugins are loaded
-	public function spartan_gallery_load_redux() {
-		// Check if Redux Framework is installed and active
-		if ( class_exists( 'ReduxFramework' ) ) 
-		{
-			
-			// Path to Redux plugin's main file
-			$redux_plugin_file = WP_PLUGIN_DIR . '/redux-framework/redux-framework.php';
-			
-			if ( file_exists( $redux_plugin_file ) ) {
-				include_once $redux_plugin_file;
-	
-				// Now include your Redux configuration file
-				//require_once plugin_dir_path( __FILE__ ) . 'redux-config.php';
-				require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-options.php';
-			} else {
-				error_log( 'Redux Framework plugin is not installed or not found in the plugins directory.' );
-			}
-		}
-	}
-	
-	
-	
 
 }

@@ -1,449 +1,446 @@
 <?php
-if ( ! class_exists( 'Redux' ) ) {
-    return;
+/**
+ * Spartan Gallery Options metabox.
+ *
+ * Native WordPress replacement for the previous Redux Framework options panel.
+ * Renders the same sections/fields and writes to the exact same post_meta keys
+ * the rest of the plugin (public/html-cointainer-outputs/*, spartan-gallery-styles.php)
+ * already reads, so no other file needed to change.
+ *
+ * @package Spartan_Gallery
+ * @subpackage Spartan_Gallery/admin
+ */
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
-$opt_name = 'spartan_gallery_options';
-/*
-$args = array(
-    'opt_name'             => $opt_name,
-    'display_name'         => 'My Plugin Options',
-    'menu_title'           => 'My Plugin Settings',
-    'page_title'           => 'My Plugin Options',
-    'admin_bar'            => true,
-    'menu_type'            => 'menu',
-    'allow_sub_menu'       => true,
-    'page_parent_post_type' => 'spartan_gallery_type',
-    'customizer'           => true,
-);
-*/
-Redux::setArgs( $opt_name/*, $args*/ );
+class Spartan_Gallery_Options {
 
+	const POST_TYPE = 'spartan_gallery_type';
+	const NONCE_ACTION = 'spartan_gallery_options_save';
+	const NONCE_NAME   = 'spartan_gallery_options_nonce';
 
+	public static function init() {
+		add_action( 'add_meta_boxes', array( __CLASS__, 'add_meta_box' ) );
+		add_action( 'save_post', array( __CLASS__, 'save' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+	}
 
-// Example Section
-Redux::setSection( $opt_name, array(
-    'title'  => 'General Settings',
-    //'id'     => 'general',
-    'desc'   => 'Basic settings for your plugin.',
-    
-) );
+	public static function add_meta_box() {
+		add_meta_box(
+			'spartan-gallery-options',
+			esc_html__( 'Spartan Gallery Options', 'spartan-gallery' ),
+			array( __CLASS__, 'render' ),
+			self::POST_TYPE,
+			'normal',
+			'high'
+		);
+	}
 
-// Change this variable to the opt_name of YOUR project.
-//$opt_name = 'your_opt_name';
-/*
-// Standard metabox.
-Redux_Metaboxes::set_box(
-	$opt_name,
-	array(
-		'id'         => 'opt-metaboxes',
-		'title'      => esc_html__( 'Metabox Options', 'your-textdomain-here' ),
-		'post_types' => array( 'spartan_gallery_type' ),
-		'position'   => 'normal', // normal, advanced, side.
-		'priority'   => 'high',   // high, core, default, low.
-		'sections'   => array(
+	public static function enqueue_assets( $hook ) {
+		if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+		if ( ! $screen || self::POST_TYPE !== $screen->post_type ) {
+			return;
+		}
+
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_style(
+			'spartan-gallery-options',
+			plugin_dir_url( __FILE__ ) . 'css/spartan-gallery-options.css',
+			array( 'wp-color-picker' ),
+			PLUGIN_NAME_VERSION
+		);
+
+		wp_enqueue_media();
+		wp_enqueue_script( 'jquery-ui-slider' );
+		wp_enqueue_script( 'jquery-ui-spinner' );
+		wp_enqueue_script( 'wp-color-picker' );
+
+		$cm_settings = wp_enqueue_code_editor( array( 'type' => 'text/css' ) );
+
+		wp_enqueue_script(
+			'spartan-gallery-options',
+			plugin_dir_url( __FILE__ ) . 'js/spartan-gallery-options.js',
+			array( 'jquery', 'jquery-ui-slider', 'jquery-ui-spinner', 'wp-color-picker', 'media-editor' ),
+			PLUGIN_NAME_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'spartan-gallery-options',
+			'sgOptionsData',
 			array(
-				'title'  => esc_html__( 'Basic Field', 'your-textdomain-here' ),
-				'id'     => 'opt-basic-fields',
-				'desc'   => esc_html__( 'Redux Framework was created with the developer in mind. It allows for any theme developer to have an advanced theme panel with most of the features a developer would need. For more information check out the Github repo at:', 'your-textdomain-here' ) . '  <a href="https://github.com/ReduxFramework/Redux-Framework">https://github.com/ReduxFramework/Redux-Framework</a>',
-				'icon'   => 'el-icon-cogs',
-				'fields' => array(
-					array(
-						'id'       => 'opt-checkbox',
-						'type'     => 'checkbox',
-						'title'    => esc_html__( 'Checkbox', 'your-textdomain-here' ),
-						'subtitle' => esc_html__( 'Basic Checkbox field.', 'your-textdomain-here' ),
-						'default'  => true,
-					),
-					array(
-						'id'       => 'switch-on',
-						'type'     => 'switch',
-						'title'    => esc_html__( 'Switch On', 'your-textdomain-here' ),
-						'subtitle' => esc_html__( 'Look, it\'s on!', 'your-textdomain-here' ),
-						'default'  => 1,
-					),
-				),
-			),
+				'codeEditor' => $cm_settings,
+				'mediaTitle' => esc_html__( 'Select gallery images', 'spartan-gallery' ),
+				'mediaButton' => esc_html__( 'Use selected images', 'spartan-gallery' ),
+			)
+		);
+	}
+
+	private static function meta( $post_id, $key, $default = '' ) {
+		// metadata_exists(), not an emptiness check: update_post_meta() legitimately
+		// stores '' when a checkbox is unchecked, and that must NOT be treated the
+		// same as "never saved, show the default" or unchecked switches could never
+		// actually be turned off.
+		if ( ! metadata_exists( 'post', $post_id, $key ) ) {
+			return $default;
+		}
+		return get_post_meta( $post_id, $key, true );
+	}
+
+	private static function tabs() {
+		return array(
+			'layout'    => array( esc_html__( 'Gallery Layout Options', 'spartan-gallery' ), 'dashicons-layout' ),
+			'upload'    => array( esc_html__( 'Upload Images', 'spartan-gallery' ), 'dashicons-format-gallery' ),
+			'image'     => array( esc_html__( 'Image Options', 'spartan-gallery' ), 'dashicons-admin-generic' ),
+			'container' => array( esc_html__( 'Gallery Container Settings', 'spartan-gallery' ), 'dashicons-admin-appearance' ),
+			'css'       => array( esc_html__( 'Insert Custom CSS', 'spartan-gallery' ), 'dashicons-editor-code' ),
+		);
+	}
+
+	private static function render_nav( $active ) {
+		echo '<div class="sg-options-nav">';
+		foreach ( self::tabs() as $id => $tab ) {
+			list( $label, $icon ) = $tab;
+			$class = 'sg-options-nav-item' . ( $id === $active ? ' active' : '' );
+			echo '<button type="button" class="' . esc_attr( $class ) . '" data-panel="' . esc_attr( $id ) . '">';
+			echo '<span class="dashicons ' . esc_attr( $icon ) . '"></span>';
+			echo '<span class="sg-nav-label">' . esc_html( $label ) . '</span>';
+			echo '</button>';
+		}
+		echo '</div>';
+	}
+
+	private static function section_open( $id, $title, $desc = '' ) {
+		$active = ( 'layout' === $id );
+		echo '<div class="sg-options-panel' . ( $active ? ' active' : '' ) . '" data-panel="' . esc_attr( $id ) . '">';
+		echo '<h3 class="sg-options-section-title">' . esc_html( $title ) . '</h3>';
+		if ( $desc ) {
+			echo '<p class="sg-options-section-desc">' . wp_kses_post( $desc ) . '</p>';
+		}
+		echo '<table class="form-table sg-options-table"><tbody>';
+	}
+
+	private static function section_close() {
+		echo '</tbody></table></div>';
+	}
+
+	private static function row_open( $label, $for = '' ) {
+		echo '<tr><th scope="row">';
+		if ( $for ) {
+			echo '<label for="' . esc_attr( $for ) . '">' . esc_html( $label ) . '</label>';
+		} else {
+			echo esc_html( $label );
+		}
+		echo '</th><td>';
+	}
+
+	private static function row_close( $desc = '' ) {
+		if ( $desc ) {
+			echo '<p class="description">' . wp_kses_post( $desc ) . '</p>';
+		}
+		echo '</td></tr>';
+	}
+
+	public static function render( $post ) {
+		wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME );
+
+		$gallery_id = $post->ID;
+
+		echo '<div class="sg-options-wrap">';
+		self::render_nav( 'layout' );
+		echo '<div class="sg-options-content">';
+
+		// Section 1: Gallery Layout Options.
+		self::section_open( 'layout', esc_html__( 'Gallery Layout Options', 'spartan-gallery' ) );
+		$layout = self::meta( $gallery_id, 'image_layout_select', 'value-1' );
+		$layouts = array(
+			'value-1' => array( esc_html__( 'Freewall Chaotic', 'spartan-gallery' ), 'FlexFreewallTable.png' ),
+			'value-2' => array( esc_html__( 'Random', 'spartan-gallery' ), 'ImageFreewallGrid.png' ),
+			'value-3' => array( esc_html__( 'Fixed', 'spartan-gallery' ), 'NestedFreewallGrid.png' ),
+			'value-4' => array( esc_html__( 'Pinterest', 'spartan-gallery' ), 'PinterestFreewallGrid.png' ),
+			'value-5' => array( esc_html__( 'Hexagon', 'spartan-gallery' ), 'hexagon_layout.jpg' ),
+			'value-6' => array( esc_html__( '3D Slider', 'spartan-gallery' ), 'spartan_3D_layout.png' ),
+		);
+		echo '<tr><td colspan="2">';
+		echo '<p class="description">' . esc_html__( 'Gallery layout looks exactly like the preview image. To change the aspect ratio, select the third layout, turn "Display Adjustable Image" ON under Image Options, and turn "Display thumbnail size" OFF. Width/height only apply to the third and sixth layouts; other layouts size images randomly for the grid.', 'spartan-gallery' ) . '</p>';
+		echo '<div class="sg-image-select">';
+		foreach ( $layouts as $value => $data ) {
+			list( $label, $file ) = $data;
+			$img_url = plugins_url( 'img/' . $file, __FILE__ );
+			$checked = checked( $layout, $value, false );
+			echo '<label class="sg-image-select-option' . ( $layout === $value ? ' selected' : '' ) . '">';
+			echo '<input type="radio" name="image_layout_select" value="' . esc_attr( $value ) . '" ' . $checked . ' />';
+			echo '<img src="' . esc_url( $img_url ) . '" alt="' . esc_attr( $label ) . '" />';
+			echo '<span>' . esc_html( $label ) . '</span>';
+			echo '</label>';
+		}
+		echo '</div>';
+		echo '</td></tr>';
+		self::section_close();
+
+		// Section 2: Upload Images.
+		self::section_open( 'upload', esc_html__( 'Upload Images', 'spartan-gallery' ) );
+		$uploaded_ids = self::meta( $gallery_id, 'spartan_gallery_uploaded_images', '' );
+		self::row_open( esc_html__( 'Upload', 'spartan-gallery' ) );
+		echo '<input type="hidden" id="spartan_gallery_uploaded_images" name="spartan_gallery_uploaded_images" value="' . esc_attr( $uploaded_ids ) . '" />';
+		echo '<div id="sg-gallery-preview" class="sg-gallery-preview">';
+		if ( ! empty( $uploaded_ids ) ) {
+			foreach ( explode( ',', $uploaded_ids ) as $att_id ) {
+				$att_id = absint( $att_id );
+				if ( ! $att_id ) {
+					continue;
+				}
+				$thumb = wp_get_attachment_image_src( $att_id, 'thumbnail' );
+				if ( $thumb ) {
+					echo '<span class="sg-gallery-thumb" data-id="' . esc_attr( $att_id ) . '"><img src="' . esc_url( $thumb[0] ) . '" /><a href="#" class="sg-gallery-remove" title="' . esc_attr__( 'Remove', 'spartan-gallery' ) . '">&times;</a></span>';
+				}
+			}
+		}
+		echo '</div>';
+		echo '<p><button type="button" class="button" id="sg-gallery-select">' . esc_html__( 'Select / Manage Images', 'spartan-gallery' ) . '</button></p>';
+		self::row_close();
+		self::section_close();
+
+		// Section 3: Image Options.
+		self::section_open( 'image', esc_html__( 'Image Options', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Display Adjustable Image', 'spartan-gallery' ), 'display_original' );
+		$display_original = self::meta( $gallery_id, 'display_original', '' );
+		echo '<label class="sg-switch"><input type="checkbox" id="display_original" name="display_original" value="1" ' . checked( $display_original, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
+		self::row_close( esc_html__( '"Display thumbnail size" can\'t be turned on when this setting is turned on.', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Image width (PX)', 'spartan-gallery' ), 'image_width' );
+		$image_width = self::meta( $gallery_id, 'image_width', 150 );
+		echo '<div class="sg-slider" id="image_width_slider" data-target="image_width" data-min="0" data-max="2000" data-step="1"></div>';
+		echo '<input type="text" class="sg-slider-value" id="image_width" name="image_width" value="' . esc_attr( $image_width ) . '" readonly="readonly" />';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Image height (PX)', 'spartan-gallery' ), 'image_height' );
+		$image_height = self::meta( $gallery_id, 'image_height', 150 );
+		echo '<div class="sg-slider" id="image_height_slider" data-target="image_height" data-min="0" data-max="2000" data-step="1"></div>';
+		echo '<input type="text" class="sg-slider-value" id="image_height" name="image_height" value="' . esc_attr( $image_height ) . '" readonly="readonly" />';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Img measure value', 'spartan-gallery' ), 'image_measure_value' );
+		$measure = self::meta( $gallery_id, 'image_measure_value', 'px' );
+		echo '<select id="image_measure_value" name="image_measure_value">';
+		foreach ( array( 'px' => 'px', '%' => '%', 'vh' => 'vh/vw', 'rem' => 'rem' ) as $val => $label ) {
+			echo '<option value="' . esc_attr( $val ) . '" ' . selected( $measure, $val, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select>';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Display thumbnail size', 'spartan-gallery' ), 'thumbnail_options' );
+		$thumb_opt = self::meta( $gallery_id, 'thumbnail_options', '1' );
+		echo '<label class="sg-switch"><input type="checkbox" id="thumbnail_options" name="thumbnail_options" value="1" ' . checked( $thumb_opt, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
+		self::row_close( esc_html__( '"Display Adjustable Image" can\'t be turned on when this setting is turned on.', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Select Thumbnail Size', 'spartan-gallery' ), 'thumbnail_size' );
+		$thumb_size = self::meta( $gallery_id, 'thumbnail_size', 'medium_large' );
+		$thumb_sizes = array(
+			'thumbnail'    => esc_html__( 'Thumbnail (default 150px x 150px max)', 'spartan-gallery' ),
+			'medium'       => esc_html__( 'Medium resolution (default 300px x 300px max)', 'spartan-gallery' ),
+			'medium_large' => esc_html__( 'Medium Large resolution (default 768px x 0px max)', 'spartan-gallery' ),
+			'large'        => esc_html__( 'Large resolution (default 1024px x 1024px max)', 'spartan-gallery' ),
+			'original'     => esc_html__( 'Original image resolution (unmodified)', 'spartan-gallery' ),
+		);
+		echo '<select id="thumbnail_size" name="thumbnail_size">';
+		foreach ( $thumb_sizes as $val => $label ) {
+			echo '<option value="' . esc_attr( $val ) . '" ' . selected( $thumb_size, $val, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select>';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Image Margin (PX)', 'spartan-gallery' ), 'img_margin' );
+		$img_margin = self::meta( $gallery_id, 'img_margin', 20 );
+		echo '<input type="text" class="sg-spinner" id="img_margin" name="img_margin" value="' . esc_attr( $img_margin ) . '" data-min="0" data-max="100" data-step="1" />';
+		self::row_close();
+
+		self::section_close();
+
+		// Section 5: Gallery Container Settings.
+		self::section_open( 'container', esc_html__( 'Gallery Container Settings', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Turn settings On/Off', 'spartan-gallery' ), 'container_settings_on_off' );
+		$container_on = self::meta( $gallery_id, 'container_settings_on_off', '' );
+		echo '<label class="sg-switch"><input type="checkbox" id="container_settings_on_off" name="container_settings_on_off" value="1" ' . checked( $container_on, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Container dimensions (Width/Height)', 'spartan-gallery' ) );
+		$dims = self::meta( $gallery_id, 'container_height_width_range', array() );
+		$dims = wp_parse_args(
+			is_array( $dims ) ? $dims : array(),
+			array( 'width' => '200px', 'height' => '' )
+		);
+		list( $w_num, $w_unit ) = self::split_length( $dims['width'], '200', 'px' );
+		list( $h_num, $h_unit ) = self::split_length( $dims['height'], '', 'px' );
+		echo '<div class="sg-dimensions">';
+		echo '<span><label>' . esc_html__( 'Width', 'spartan-gallery' ) . '</label> <input type="text" name="container_width_num" value="' . esc_attr( $w_num ) . '" size="6" /> ';
+		echo self::unit_select( 'container_width_unit', $w_unit );
+		echo '</span> <span><label>' . esc_html__( 'Height', 'spartan-gallery' ) . '</label> <input type="text" name="container_height_num" value="' . esc_attr( $h_num ) . '" size="6" /> ';
+		echo self::unit_select( 'container_height_unit', $h_unit );
+		echo '</span>';
+		echo '</div>';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Background Color', 'spartan-gallery' ), 'container_background_color' );
+		$container_bg = self::meta( $gallery_id, 'container_background_color', '#FFFFFF' );
+		echo '<input type="text" class="sg-color-field" id="container_background_color" name="container_background_color" value="' . esc_attr( $container_bg ) . '" data-default-color="#FFFFFF" />';
+		self::row_close();
+
+		self::row_open( esc_html__( 'Border Option', 'spartan-gallery' ) );
+		$border = self::meta( $gallery_id, 'container_border', array() );
+		$border = wp_parse_args(
+			is_array( $border ) ? $border : array(),
 			array(
-				'title'      => esc_html__( 'Text Field', 'your-textdomain-here' ),
-				'desc'       => esc_html__( 'Redux Framework was created with the developer in mind. It allows for any theme developer to have an advanced theme panel with most of the features a developer would need. For more information check out the Github repo at:', 'your-textdomain-here' ) . '  <a href="https://github.com/ReduxFramework/Redux-Framework">https://github.com/ReduxFramework/Redux-Framework</a>',
-				'icon'       => 'el-icon-cog',
-				'id'         => 'opt-text-fields',
-				'subsection' => true,
-				'fields'     => array(
-					array(
-						'title' => esc_html__( 'Text Field', 'your-textdomain-here' ),
-						'id'    => 'opt-text',
-						'type'  => 'text',
-					),
-				),
-			),
+				'border-color'  => '#000000',
+				'border-style'  => 'none',
+				'border-top'    => '',
+				'border-right'  => '',
+				'border-bottom' => '',
+				'border-left'   => '',
+			)
+		);
+		echo '<div class="sg-border">';
+		echo '<span><label>' . esc_html__( 'Style', 'spartan-gallery' ) . '</label> <select name="container_border[border-style]">';
+		foreach ( array( 'none', 'solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset' ) as $style ) {
+			echo '<option value="' . esc_attr( $style ) . '" ' . selected( $border['border-style'], $style, false ) . '>' . esc_html( $style ) . '</option>';
+		}
+		echo '</select></span> ';
+		echo '<span><label>' . esc_html__( 'Color', 'spartan-gallery' ) . '</label> <input type="text" class="sg-color-field" name="container_border[border-color]" value="' . esc_attr( $border['border-color'] ) . '" data-default-color="#000000" /></span>';
+		echo '<div class="sg-border-widths">';
+		$border_sides = array(
+			'border-top'    => __( 'Top', 'spartan-gallery' ),
+			'border-right'  => __( 'Right', 'spartan-gallery' ),
+			'border-bottom' => __( 'Bottom', 'spartan-gallery' ),
+			'border-left'   => __( 'Left', 'spartan-gallery' ),
+		);
+		foreach ( $border_sides as $side => $side_label ) {
+			echo '<span><label>' . esc_html( $side_label ) . '</label> <input type="text" name="container_border[' . esc_attr( $side ) . ']" value="' . esc_attr( $border[ $side ] ) . '" size="6" placeholder="e.g. 1px" /></span>';
+		}
+		echo '</div>';
+		echo '</div>';
+		self::row_close( esc_html__( 'Only applies when "Turn settings On/Off" above is enabled.', 'spartan-gallery' ) );
+
+		self::section_close();
+
+		// Section 6: Insert Custom CSS.
+		self::section_open( 'css', esc_html__( 'Insert Custom CSS', 'spartan-gallery' ) );
+		self::row_open( esc_html__( 'CSS Code', 'spartan-gallery' ), 'add_extra_css' );
+		$extra_css = self::meta( $gallery_id, 'add_extra_css', '' );
+		echo '<textarea id="add_extra_css" name="add_extra_css" rows="10" class="large-text code">' . esc_textarea( $extra_css ) . '</textarea>';
+		self::row_close( esc_html__( 'Paste your CSS code here. The gallery container HTML class is .spartan-gallery-wrapper', 'spartan-gallery' ) );
+		self::section_close();
+
+		echo '</div>'; // .sg-options-content
+		echo '</div>'; // .sg-options-wrap
+	}
+
+	private static function split_length( $value, $default_num, $default_unit ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return array( $default_num, $default_unit );
+		}
+		if ( preg_match( '/^(-?[0-9.]+)(px|em|rem|%|vh|vw)?$/', $value, $m ) ) {
+			return array( $m[1], isset( $m[2] ) ? $m[2] : $default_unit );
+		}
+		return array( $default_num, $default_unit );
+	}
+
+	private static function unit_select( $name, $selected_unit ) {
+		$out = '<select name="' . esc_attr( $name ) . '">';
+		foreach ( array( 'px', 'em', 'rem', '%' ) as $unit ) {
+			$out .= '<option value="' . esc_attr( $unit ) . '" ' . selected( $selected_unit, $unit, false ) . '>' . esc_html( $unit ) . '</option>';
+		}
+		$out .= '</select>';
+		return $out;
+	}
+
+	public static function save( $post_id ) {
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+
+		if ( ! isset( $_POST[ self::NONCE_NAME ] ) || ! wp_verify_nonce( wp_unslash( $_POST[ self::NONCE_NAME ] ), self::NONCE_ACTION ) ) {
+			return;
+		}
+
+		if ( get_post_type( $post_id ) !== self::POST_TYPE ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$layout = isset( $_POST['image_layout_select'] ) ? sanitize_text_field( wp_unslash( $_POST['image_layout_select'] ) ) : 'value-1';
+		if ( ! in_array( $layout, array( 'value-1', 'value-2', 'value-3', 'value-4', 'value-5', 'value-6' ), true ) ) {
+			$layout = 'value-1';
+		}
+		update_post_meta( $post_id, 'image_layout_select', $layout );
+
+		if ( isset( $_POST['spartan_gallery_uploaded_images'] ) ) {
+			$ids = array_filter( array_map( 'absint', explode( ',', wp_unslash( $_POST['spartan_gallery_uploaded_images'] ) ) ) );
+			update_post_meta( $post_id, 'spartan_gallery_uploaded_images', implode( ',', $ids ) );
+		}
+
+		update_post_meta( $post_id, 'display_original', isset( $_POST['display_original'] ) ? '1' : '' );
+		update_post_meta( $post_id, 'thumbnail_options', isset( $_POST['thumbnail_options'] ) ? '1' : '' );
+		update_post_meta( $post_id, 'container_settings_on_off', isset( $_POST['container_settings_on_off'] ) ? '1' : '' );
+
+		update_post_meta( $post_id, 'image_width', isset( $_POST['image_width'] ) ? min( 2000, absint( $_POST['image_width'] ) ) : 150 );
+		update_post_meta( $post_id, 'image_height', isset( $_POST['image_height'] ) ? min( 2000, absint( $_POST['image_height'] ) ) : 150 );
+		update_post_meta( $post_id, 'img_margin', isset( $_POST['img_margin'] ) ? min( 100, absint( $_POST['img_margin'] ) ) : 20 );
+
+		$measure = isset( $_POST['image_measure_value'] ) ? sanitize_text_field( wp_unslash( $_POST['image_measure_value'] ) ) : 'px';
+		update_post_meta( $post_id, 'image_measure_value', in_array( $measure, array( 'px', '%', 'vh', 'rem' ), true ) ? $measure : 'px' );
+
+		$thumb_size = isset( $_POST['thumbnail_size'] ) ? sanitize_text_field( wp_unslash( $_POST['thumbnail_size'] ) ) : 'medium_large';
+		update_post_meta( $post_id, 'thumbnail_size', in_array( $thumb_size, array( 'thumbnail', 'medium', 'medium_large', 'large', 'original' ), true ) ? $thumb_size : 'medium_large' );
+
+		$container_bg = isset( $_POST['container_background_color'] ) ? sanitize_hex_color( wp_unslash( $_POST['container_background_color'] ) ) : '';
+		update_post_meta( $post_id, 'container_background_color', $container_bg ? $container_bg : '#FFFFFF' );
+
+		$w_num  = isset( $_POST['container_width_num'] ) ? sanitize_text_field( wp_unslash( $_POST['container_width_num'] ) ) : '';
+		$w_unit = isset( $_POST['container_width_unit'] ) ? sanitize_text_field( wp_unslash( $_POST['container_width_unit'] ) ) : 'px';
+		$h_num  = isset( $_POST['container_height_num'] ) ? sanitize_text_field( wp_unslash( $_POST['container_height_num'] ) ) : '';
+		$h_unit = isset( $_POST['container_height_unit'] ) ? sanitize_text_field( wp_unslash( $_POST['container_height_unit'] ) ) : 'px';
+		update_post_meta(
+			$post_id,
+			'container_height_width_range',
 			array(
-				'title'  => esc_html__( 'Color Field', 'your-textdomain-here' ),
-				'desc'   => esc_html__( 'Redux Framework was created with the developer in mind. It allows for any theme developer to have an advanced theme panel with most of the features a developer would need. For more information check out the Github repo at:', 'your-textdomain-here' ) . '  <a href="https://github.com/ReduxFramework/Redux-Framework">https://github.com/ReduxFramework/Redux-Framework</a>',
-				'icon'   => 'el-icon-pencil',
-				'id'     => 'color-section',
-				'fields' => array(
-					array(
-						'id'       => 'opt-color',
-						'type'     => 'color',
-						'title'    => esc_html__( 'Color Field', 'your-textdomain-here' ),
-						'default'  => '#333333',
-						'required' => array( 'opt-layout', '=', 'on' ),
-					),
-				),
-			),
-		),
-	)
-);
+				'width'  => ( '' !== $w_num && is_numeric( $w_num ) ) ? $w_num . $w_unit : '',
+				'height' => ( '' !== $h_num && is_numeric( $h_num ) ) ? $h_num . $h_unit : '',
+			)
+		);
 
-// Metabox sidebar.
-Redux_Metaboxes::set_box(
-	$opt_name,
-	array(
-		'id'         => 'opt-metaboxes-3',
-		'post_types' => array( 'spartan_gallery_type' ),
-		'position'   => 'side', // normal, advanced, side.
-		'priority'   => 'high', // high, core, default, low.
-		'sections'   => array(
-			array(
-				'id'         => 'test-sidebar',
-				'icon_class' => 'icon-large',
-				'icon'       => 'el-icon-home',
-				'fields'     => array(
-					array(
-						'id'      => 'sidebar',
-						'title'   => esc_html__( 'Sidebar', 'your-textdomain-here' ),
-						'desc'    => esc_html__( 'Please select the sidebar you would like to display on this page. Note: You must first create the sidebar under Appearance > Widgets.', 'your-textdomain-here' ),
-						'type'    => 'select',
-						'data'    => 'sidebars',
-						'default' => 'None',
-					),
-				),
-			),
-		),
-	)
-);
-*/
-// Standard metabox.
-Redux_Metaboxes::set_box(
-	$opt_name,
-	array(
-		'id'         => 'opt-metaboxes-4',
-		'title'      => esc_html__( 'Spartan Gallery Options', 'your-textdomain-here' ),
-		'post_types' => array( 'spartan_gallery_type' ), // Define post types where this metabox will appear
-		'position'   => 'normal', // normal, advanced, side.
-		'priority'   => 'high',   // high, core, default, low.
-		'sections'   => array(
-			// Spartan Gallery First Section
-			array(
-				'title'  => esc_html__( 'Gallery Layout Options', 'your-textdomain-here' ),
-				'id'     => 'spartan_gallery_first_section',
-				'icon'   => 'fa-solid fa-bars',
-				'fields' => array(
-					array(
-						'id'       => 'image_layout_select',
-						'type'     => 'image_select',
-						'title'    => esc_html__( 'Select Gallery Layout', 'your-textdomain-here' ),
-						'subtitle'      => esc_html__( 'Here you select layout of the gallery. 
-							Gallery layout looks exactly like on the image. If you wish to change the apect radio of gallery, select the 
-							third image and click "Display Adjustable Image" ON under "Image options" and switch "Display thumbnail size" OFF. From there you could change image width and height. This settings works 
-							only with third and sixth layout. In other layouts image size are generated randomly for the grid.', 'your-textdomain-here' ),
-						'options'  => array(
-							'value-1' => plugins_url( '/img/FlexFreewallTable.png',  __FILE__ ),
-							'value-2' => plugins_url( '/img/ImageFreewallGrid.png',  __FILE__ ),
-							'value-3' => plugins_url( 'img/NestedFreewallGrid.png',  __FILE__ ),
-							'value-4' => plugins_url( '/img/PinterestFreewallGrid.png',  __FILE__ ),
-							'value-5' => plugins_url( '/img/hexagon_layout.jpg',  __FILE__ ),
-							'value-6' => plugins_url( '/img/spartan_3D_layout.png',  __FILE__ ),
-						),
-						'radio'    => true,
-						'default'  => 'value-1',
-					),
-				),
-			),
+		if ( isset( $_POST['container_border'] ) && is_array( $_POST['container_border'] ) ) {
+			$raw = wp_unslash( $_POST['container_border'] );
+			$style_allowed = array( 'none', 'solid', 'dashed', 'dotted', 'double', 'groove', 'ridge', 'inset', 'outset' );
+			$border_color  = isset( $raw['border-color'] ) ? sanitize_hex_color( $raw['border-color'] ) : '';
+			update_post_meta(
+				$post_id,
+				'container_border',
+				array(
+					'border-color'  => $border_color ? $border_color : '#000000',
+					'border-style'  => isset( $raw['border-style'] ) && in_array( $raw['border-style'], $style_allowed, true ) ? $raw['border-style'] : 'none',
+					'border-top'    => isset( $raw['border-top'] ) ? sanitize_text_field( $raw['border-top'] ) : '',
+					'border-right'  => isset( $raw['border-right'] ) ? sanitize_text_field( $raw['border-right'] ) : '',
+					'border-bottom' => isset( $raw['border-bottom'] ) ? sanitize_text_field( $raw['border-bottom'] ) : '',
+					'border-left'   => isset( $raw['border-left'] ) ? sanitize_text_field( $raw['border-left'] ) : '',
+				)
+			);
+		}
 
-			// Spartan Gallery Second Section
-			array(
-				'title'  => esc_html__( 'Upload Images', 'your-textdomain-here' ),
-				'id'     => 'spartan_gallery_second_section',
-				'icon'   => 'fa-regular fa-image',
-				'fields' => array(
-					array(
-						'id'      => 'spartan_gallery_uploaded_images',
-						'type'    => 'gallery',
-						'title'   => esc_html__( 'Upload', 'your-textdomain-here' ),
-						'options' => array(
-							'attach'      => true,
-							'filecount'   => '101',
-							'auto-upload' => true,
-						),
-					),
-					
-				),
-			),
+		if ( isset( $_POST['add_extra_css'] ) ) {
+			update_post_meta( $post_id, 'add_extra_css', wp_strip_all_tags( wp_unslash( $_POST['add_extra_css'] ) ) );
+		}
+	}
+}
 
-			// Image Options
-			array(
-				'title'  => esc_html__( 'Image Options', 'your-textdomain-here' ),
-				'id'     => 'image_options',
-				'icon'   => 'fa-solid fa-sliders',
-				'fields' => array(
-					array(
-						'id'      => 'display_original',
-						'type'    => 'switch',
-						'title'   => esc_html__( 'Display Adjustable Image', 'your-textdomain-here' ),
-						'subtitle'      => esc_html__( '"Display thumbnail size" setting cant be turned on when when this setting is turned on', 'your-textdomain-here' ),
-						'default' => false,
-					),
-					array(
-						'id'      => 'image_width',
-						'type'          => 'slider',
-						'title'         => esc_html__( 'Image width Steps (1) PX', 'your-textdomain-here' ),
-						//'subtitle'      => esc_html__( 'px', 'your-textdomain-here' ),
-						//'desc'          => esc_html__( 'Slider description. Min: 0, max: 800, step: 5, default value: 75', 'your-textdomain-here' ),
-						'default'       => 150,
-						'min'           => 0,
-						'step'          => 1,
-						'max'           => 2000,
-						'display_value' => 'text',
-						'output'        => array( '.site-content' => 'max-width' ),
-					),
-					array(
-						'id'      => 'image_height',
-						'type'          => 'slider',
-						'title'         => esc_html__( 'Image height Steps (1) PX', 'your-textdomain-here' ),
-						//'subtitle'      => esc_html__( 'px', 'your-textdomain-here' ),
-						//'desc'          => esc_html__( 'Slider description. Min: 0, max: 800, step: 5, default value: 75', 'your-textdomain-here' ),
-						'default'       => 150,
-						'min'           => 0,
-						'step'          => 1,
-						'max'           => 2000,
-						'display_value' => 'text',
-						'output'        => array( '.site-content' => 'max-width' ),
-					),
-					array(
-						'id'             => 'image_measure_value',
-						'type'           => 'select',
-						'title'          => esc_html__( 'Img measure value', 'your-textdomain-here' ),
-						'options'        => array(
-							'px'   => 'px',
-							'%'    => '%',
-							'vh'   => 'vh/vw',
-							'rem'  => 'rem',
-						),
-						'default_option' => esc_html__( 'Select image measure value', 'your-textdomain-here' ),
-						'default'        => 'px',
-					),
-					array(
-						'id'      => 'thumbnail_options',
-						'type'    => 'switch',
-						'title'   => esc_html__( 'Display thumbnail size', 'your-textdomain-here' ),
-						'subtitle'      => esc_html__( '"Display Adjustable Image " setting cant be turned on when when this setting is turned on', 'your-textdomain-here' ),
-						'default' => true,
-					),
-					array(
-						'id'             => 'thumbnail_size',
-						'type'           => 'select',
-						'title'          => esc_html__( 'Select Thumbnail Size', 'your-textdomain-here' ),
-						'options'        => array(
-							'thumbnail'      => 'Thumbnail (default 150px x 150px max)',
-							'medium'         => 'Medium resolution (default 300px x 300px max)',
-							'medium_large'   => 'Medium Large resolution (default 768px x 0px max)',
-							'large'          => 'Large resolution (default 1024px x 1024px max)',
-							'original'       => 'Original image resolution (unmodified)',
-						),
-						'default_option' => esc_html__( 'Select Image Thumbnail Size', 'your-textdomain-here' ),
-						'default'        => 'medium_large',
-					),
-					array(
-						'id'      => 'img_margin',
-						'type'     => 'spinner', 
-						'title'    => esc_html__('Image Margin (PX)', 'your-textdomain-here'),
-						//'subtitle' => esc_html__('No validation can be done on this field type','your-textdomain-here'),
-						//'desc'     => esc_html__('JQuery UI spinner description. Min:20, max: 100, step:20, default value: 40', 'your-textdomain-here'),
-						'default'  => '20',
-						'min'      => '0',
-						'step'     => '1',
-						'max'      => '100',
-						//'output'   => array( '.content-area' => 'max-width' ),
-					),
-					/*
-					array(
-						'id'      => 'img_border',
-						'type'     => 'border',
-						'title'    => esc_html__('Image Style Settings', 'your-project-name'),
-						//'subtitle' => esc_html__('Only color validation can be done on this field type', 'your-project-name'),
-						//'output'   => array('.site-header'),
-						'desc'     => esc_html__('This is the description field, again good for additional info.', 'your-project-name'),
-						'default'  => array(
-							'border-color'  => ' ', 
-							'border-style'  => ' ', 
-							'border-top'    => ' ', 
-							'border-right'  => ' ', 
-							'border-bottom' => ' ', 
-							'border-left'   => ' '
-    )
-					),
-					*/
-				),
-			),
-
-			// Button Style Options
-			array(
-				'title'  => esc_html__( 'Text Style Options', 'your-textdomain-here' ),
-				'id'     => 'button_style_options',
-				'icon'   => 'fa-solid fa-gears',
-				'fields' => array(
-					array(
-						'id'      => 'display_text',
-						'type'    => 'switch',
-						'title'   => esc_html__( 'Display text under image', 'your-textdomain-here' ),
-						'default' => false,
-					),
-					array(
-						'id'      => 'textbox_height_range',
-						'type'          => 'slider',
-						'title'         => esc_html__( 'Text conteiner height, value is in %', 'your-textdomain-here' ),
-						//'subtitle'      => esc_html__( 'px', 'your-textdomain-here' ),
-						//'desc'          => esc_html__( 'Slider description. Min: 0, max: 800, step: 5, default value: 75', 'your-textdomain-here' ),
-						'default'       => 50,
-						'min'           => 0,
-						'step'          => 1,
-						'max'           => 100,
-						'display_value' => 'text',
-						//'output'        => array( '.site-content' => 'max-width' ),
-					),
-			
-					array(
-						'id'     => 'info_background_color',
-						'type'     => 'color',
-						'title'    => esc_html__('Text box Background Color', 'your-textdomain-here'), 
-						//'subtitle' => esc_html__('Pick a background color for the theme (default: #fff).', 'your-textdomain-here'),
-						'default'  => '#FFFFFF',
-						'validate' => 'color',
-					),
-					
-					array(
-						 'id'      => 'font_family',
-						'type'        => 'typography', 
-						'title'       => esc_html__('Typography', 'your-textdomain-here'),
-						'google'      => true, 
-						'font-backup' => false,
-						'font-subsets' => false,
-						//'output'      => array('h2.site-description'),
-						'units'       =>'px',
-						'subtitle'    => esc_html__('Text box typography.', 'your-textdomain-here'),
-						'default'     => array(
-							'color'       => '#333', 
-							'font-style'  => '200', 
-							'font-family' => 'Abel', 
-							'google'      => true,
-							'font-size'   => '9px', 
-							'line-height' => '0'
-						),
-					),	
-				),
-			),
-
-			array(
-				'title'  => esc_html__( 'Gallery Container Settings', 'your-textdomain-here' ),
-				'id'     => 'gallery_container_first_section',
-				'icon'   => 'fa-solid fa-screwdriver-wrench',
-				'fields' => array(
-					
-					array(
-						'id'      => 'container_settings_on_off',
-						'type'    => 'switch',
-						'title'   => esc_html__( 'Turn settings On/Off', 'your-textdomain-here' ),
-						'default' => false,
-					),
-					array(
-						'id'      => 'container_height_width_range',
-						'type'     => 'dimensions',
-							'units'    => array('em','px','%'),
-							'title'    => esc_html__('Container dimensions (Width/Height) Option', 'your-textdomain-here'),
-							//'subtitle' => esc_html__('Allow your users to choose width, height, and/or unit.', 'your-textdomain-here'),
-							//'desc'     => esc_html__('Enable or disable any piece of this field. Width, Height, or Units.', 'your-textdomain-here'),
-							'output'   => array('.spartan-gallery-wrapper'),
-							'default'  => array(
-								'Width'   => '200', 
-								'Height'  => ''
-							),
-					),
-					array(
-						'id'     => 'container_background_color',
-						'type'     => 'color',
-						'title'    => esc_html__('Background Color', 'your-textdomain-here'), 
-						//'subtitle' => esc_html__('Pick a background color for the theme (default: #fff).', 'your-textdomain-here'),
-						//'output'   => array('.spartan-gallery-wrapper'),	
-						
-						'default'  => '#FFFFFF',
-						'validate' => 'color',
-					),
-					array(
-						'id'     => 'container_border',
-						'type'     => 'border',
-						'title'    => esc_html__('Border Option', 'your-project-name'),
-						//'subtitle' => esc_html__('Only color validation can be done on this field type', 'your-project-name'),
-						//'output'   => array('.spartan-gallery-wrapper'),
-						//'desc'     => esc_html__('.spartan-gallery-wrapper'.', 'your-project-name'),
-						'default'  => array(
-							'border-color'  => ' ', 
-							'border-style'  => 'none', 
-							'border-top'    => ' ', 
-							'border-right'  => ' ', 
-							'border-bottom' => ' ', 
-							'border-left'   => ' '
-						),
-					),
-				),
-			),
-
-			
-			array(
-				'title'  => esc_html__( 'Insert Custom CSS', 'your-textdomain-here' ),
-				'id'     => 'insert_extra_css_section',
-				'icon'   => 'fa-solid fa-bars-progress',
-				'fields' => array(
-					array(
-						'id'      => 'add_extra_css',
-						'type'     => 'ace_editor',
-						'title'    => esc_html__('CSS Code', 'your-project-name'),
-						'subtitle' => esc_html__('Paste your CSS code here. Image container HTML class is .spartan-gallery-wrapper', 'your-project-name'),
-						'desc'     => esc_html__('Image container HTML class is .spartan-gallery-wrapper', 'your-project-name'),
-						'mode'     => 'css',
-						'theme'    => 'monokai',
-						'desc'     => 'Possible modes can be found at https://ace.c9.io/.',
-						//'default'  => "#header{\nmargin: 0 auto;\n}"
-					),
-					
-				),
-			),
-
-			array(
-				'title'  => esc_html__( 'Import/Export Options', 'your-textdomain-here' ),
-				//'id'     => 'insert_extra_css_section',
-				'icon'   => 'fa-solid fa-bars-progress',
-				'fields' => array(
-					
-					array(
-						'id'            => 'opt-import-export',
-						'type'          => 'import_export',
-						'title'         => 'Import Export',
-						'subtitle'      => 'Save and restore your Redux options',
-						'full_width'    => false,
-					),
-				),
-			),
-
-
-		
-
-
-
-		),
-	)
-);
-
-
+Spartan_Gallery_Options::init();
