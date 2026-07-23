@@ -14,11 +14,10 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Spartan Gallery
- * Plugin URI:        spartan-gallery.developerforwebsites.com
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Description:       A responsive, multipurpose gallery plugin with six layout styles (Freewall Chaotic, Random, Fixed, Pinterest, Hexagon, and 3D Slider), a Gutenberg block, and per-gallery image/container styling options.
+ * Version:           1.4.0
  * Author:            Freelancer Martin
- * Author URI:        developerforwebsites@gmail.com
+ * Author URI:        https://freelancermartin.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       spartan-gallery
@@ -35,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.2.1' );
+define( 'PLUGIN_NAME_VERSION', '1.4.0' );
 
 
 // Add the transient on plugin activation.
@@ -79,8 +78,6 @@ function activate_spartan_gallery() {
 	Spartan_Gallery_Activator::activate();
 }
 
-
-//require_once plugin_dir_path( __FILE__ ) . 'admin/exopite-simple-options/exopite-simple-options-framework-class.php';
 
 /**
  * The code that runs during plugin deactivation.
