@@ -18,6 +18,16 @@ Class ThreeD_Image_Slider
         $image_options_image_measure_value   = get_post_meta( $gallery_id, 'image_measure_value', true );
         $safe_extra_css                      = wp_strip_all_tags( $image_options_add_extra_css );
 
+        // A gallery whose Image Options were never saved (or saved before the
+        // options-panel slider bug was fixed) can have these stored as 0, which
+        // renders every slide at 0px and makes the whole slider look empty.
+        if ( ! $image_options_image_width ) {
+            $image_options_image_width = 150;
+        }
+        if ( ! $image_options_image_height ) {
+            $image_options_image_height = 150;
+        }
+
         $allowed_measure_values = array( 'px', '%', 'em', 'rem', 'vw', 'vh' );
         $image_measure_value    = in_array( $image_options_image_measure_value, $allowed_measure_values, true )
             ? $image_options_image_measure_value

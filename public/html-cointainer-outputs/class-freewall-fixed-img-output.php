@@ -18,6 +18,16 @@ Class Freewall_Fixed_Img_Container
         $image_options_image_height          = absint( get_post_meta( $gallery_id, 'image_height', true ) );
         $safe_extra_css                      = wp_strip_all_tags( $image_options_add_extra_css );
 
+        // A gallery whose Image Options were never saved (or saved before the
+        // options-panel slider bug was fixed) can have these stored as 0, which
+        // renders zero-size bricks and makes the whole gallery look empty.
+        if ( ! $image_options_image_width ) {
+            $image_options_image_width = 150;
+        }
+        if ( ! $image_options_image_height ) {
+            $image_options_image_height = 150;
+        }
+
         $html = '';
         $html .= '<style>' . $safe_extra_css . '</style>';
         $html .= '<div style="' . $CSSClass->output_php_Css( $gallery_id ) . '" class="spartan-gallery-wrapper">';
