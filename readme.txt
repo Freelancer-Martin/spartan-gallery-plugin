@@ -146,17 +146,26 @@ An Estonian translation is included and all text is translatable at translate.wo
 == Screenshots ==
 
 1. Grid layout with filter buttons (Gallery Tags) and the title-on-hover effect.
-2. Masonry layout: uncropped photos packed into columns.
+2. Masonry layout with a "Load more" button for big galleries.
 3. Justified layout: equal-height rows that always fill the width.
 4. Mosaic layout: a mix of large and small tiles.
-5. 3D Slider: a touch-friendly coverflow carousel.
-6. Slideshow with a thumbnail strip and optional autoplay.
-7. Before / After layout: drag the handle to compare image pairs.
-8. Album: gallery covers that open each gallery in the lightbox.
-9. Lightbox with caption, thumbnail strip, download and slideshow buttons.
-10. Gallery editor: ten layouts, one-click presets and a copy-the-shortcode bar.
-11. Drag-and-drop image ordering with the live preview below.
-12. The Getting Started page.
+5. Metro layout: magazine-style big, wide and tall tiles.
+6. Polaroid layout: tilted instant-photo cards that straighten on hover.
+7. Hexagon layout: a honeycomb grid.
+8. Film strip: one row that scrolls sideways. The play icon marks an image that opens a video in the lightbox.
+9. Spotlight: one large image beside a grid of thumbnails, here with a text watermark.
+10. 3D Slider: a touch-friendly coverflow carousel.
+11. Carousel: several images side by side, swipeable, with optional autoplay.
+12. Slideshow with a thumbnail strip and optional autoplay.
+13. Cards: a stack of photos to swipe through.
+14. 3D Cube: images on the faces of a rotating cube.
+15. Fullscreen Hero: big fading slides with a slow zoom and the image's title and caption.
+16. Before / After layout: drag the handle to compare image pairs.
+17. Album: gallery covers that open each gallery in the lightbox.
+18. Lightbox with caption, thumbnail strip and download, slideshow and share buttons.
+19. Gallery editor: 16 layouts, one-click presets, copy-the-shortcode bar and the live preview.
+20. Images tab: choose images by hand or by Gallery Tag, reorder by dragging, and edit titles, captions, alt text, tags and video links in one table.
+21. The Getting Started page.
 
 == Changelog ==
 
