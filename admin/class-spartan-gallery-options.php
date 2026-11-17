@@ -168,8 +168,8 @@ class Spartan_Gallery_Options {
 			'grid'      => array( esc_html__( 'Grid', 'spartan-gallery' ), 'layout-grid.svg' ),
 			'masonry'   => array( esc_html__( 'Masonry', 'spartan-gallery' ), 'layout-masonry.svg' ),
 			'justified' => array( esc_html__( 'Justified', 'spartan-gallery' ), 'layout-justified.svg' ),
-			'hexagon'   => array( esc_html__( 'Hexagon', 'spartan-gallery' ), 'hexagon_layout.jpg' ),
-			'slider'    => array( esc_html__( '3D Slider', 'spartan-gallery' ), 'spartan_3D_layout.png' ),
+			'hexagon'   => array( esc_html__( 'Hexagon', 'spartan-gallery' ), 'layout-hexagon.svg' ),
+			'slider'    => array( esc_html__( '3D Slider', 'spartan-gallery' ), 'layout-slider.svg' ),
 		);
 		echo '<tr><td colspan="2">';
 		echo '<div class="sg-image-select">';
