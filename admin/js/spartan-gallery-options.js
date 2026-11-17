@@ -57,7 +57,18 @@
 		$( '.sg-image-select-option input[type="radio"]' ).on( 'change', function () {
 			$( '.sg-image-select-option' ).removeClass( 'selected' );
 			$( this ).closest( '.sg-image-select-option' ).addClass( 'selected' );
+			toggleLayoutRows();
 		} );
+
+		// Only show settings that apply to the selected layout.
+		function toggleLayoutRows() {
+			var layout = $( 'input[name="image_layout_select"]:checked' ).val();
+			$( '[data-sg-layouts]' ).each( function () {
+				var layouts = String( $( this ).data( 'sg-layouts' ) ).split( ' ' );
+				$( this ).toggle( layouts.indexOf( layout ) !== -1 );
+			} );
+		}
+		toggleLayoutRows();
 
 		// CSS code editor.
 		if ( window.wp && wp.codeEditor && window.sgOptionsData && sgOptionsData.codeEditor ) {

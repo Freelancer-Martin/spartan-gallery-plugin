@@ -97,6 +97,7 @@ class Spartan_Gallery_Options {
 			'layout'    => array( esc_html__( 'Gallery Layout Options', 'spartan-gallery' ), 'dashicons-layout' ),
 			'upload'    => array( esc_html__( 'Upload Images', 'spartan-gallery' ), 'dashicons-format-gallery' ),
 			'image'     => array( esc_html__( 'Image Options', 'spartan-gallery' ), 'dashicons-admin-generic' ),
+			'lightbox'  => array( esc_html__( 'Lightbox', 'spartan-gallery' ), 'dashicons-visibility' ),
 			'container' => array( esc_html__( 'Gallery Container Settings', 'spartan-gallery' ), 'dashicons-admin-appearance' ),
 			'css'       => array( esc_html__( 'Insert Custom CSS', 'spartan-gallery' ), 'dashicons-editor-code' ),
 		);
@@ -129,8 +130,13 @@ class Spartan_Gallery_Options {
 		echo '</tbody></table></div>';
 	}
 
-	private static function row_open( $label, $for = '' ) {
-		echo '<tr><th scope="row">';
+	/**
+	 * @param string   $label
+	 * @param string   $for     Input id for the <label>.
+	 * @param string[] $layouts Only show this row while one of these layouts is selected (empty = always).
+	 */
+	private static function row_open( $label, $for = '', $layouts = array() ) {
+		echo '<tr' . ( $layouts ? ' data-sg-layouts="' . esc_attr( implode( ' ', $layouts ) ) . '"' : '' ) . '><th scope="row">';
 		if ( $for ) {
 			echo '<label for="' . esc_attr( $for ) . '">' . esc_html( $label ) . '</label>';
 		} else {
@@ -157,17 +163,15 @@ class Spartan_Gallery_Options {
 
 		// Section 1: Gallery Layout Options.
 		self::section_open( 'layout', esc_html__( 'Gallery Layout Options', 'spartan-gallery' ) );
-		$layout = self::meta( $gallery_id, 'image_layout_select', 'value-1' );
+		$layout  = Spartan_Gallery_Renderer::normalize_layout( self::meta( $gallery_id, 'image_layout_select', Spartan_Gallery_Renderer::DEFAULT_LAYOUT ) );
 		$layouts = array(
-			'value-1' => array( esc_html__( 'Freewall Chaotic', 'spartan-gallery' ), 'FlexFreewallTable.png' ),
-			'value-2' => array( esc_html__( 'Random', 'spartan-gallery' ), 'ImageFreewallGrid.png' ),
-			'value-3' => array( esc_html__( 'Fixed', 'spartan-gallery' ), 'NestedFreewallGrid.png' ),
-			'value-4' => array( esc_html__( 'Pinterest', 'spartan-gallery' ), 'PinterestFreewallGrid.png' ),
-			'value-5' => array( esc_html__( 'Hexagon', 'spartan-gallery' ), 'hexagon_layout.jpg' ),
-			'value-6' => array( esc_html__( '3D Slider', 'spartan-gallery' ), 'spartan_3D_layout.png' ),
+			'grid'      => array( esc_html__( 'Grid', 'spartan-gallery' ), 'layout-grid.svg' ),
+			'masonry'   => array( esc_html__( 'Masonry', 'spartan-gallery' ), 'layout-masonry.svg' ),
+			'justified' => array( esc_html__( 'Justified', 'spartan-gallery' ), 'layout-justified.svg' ),
+			'hexagon'   => array( esc_html__( 'Hexagon', 'spartan-gallery' ), 'hexagon_layout.jpg' ),
+			'slider'    => array( esc_html__( '3D Slider', 'spartan-gallery' ), 'spartan_3D_layout.png' ),
 		);
 		echo '<tr><td colspan="2">';
-		echo '<p class="description">' . esc_html__( 'Gallery layout looks exactly like the preview image. To change the aspect ratio, select the third layout, turn "Display Adjustable Image" ON under Image Options, and turn "Display thumbnail size" OFF. Width/height only apply to the third and sixth layouts; other layouts size images randomly for the grid.', 'spartan-gallery' ) . '</p>';
 		echo '<div class="sg-image-select">';
 		foreach ( $layouts as $value => $data ) {
 			list( $label, $file ) = $data;
@@ -181,6 +185,43 @@ class Spartan_Gallery_Options {
 		}
 		echo '</div>';
 		echo '</td></tr>';
+
+		self::row_open( esc_html__( 'Columns', 'spartan-gallery' ), 'gallery_columns', array( 'grid', 'masonry' ) );
+		$columns = absint( self::meta( $gallery_id, 'gallery_columns', 3 ) );
+		echo '<select id="gallery_columns" name="gallery_columns">';
+		for ( $i = 1; $i <= 6; $i++ ) {
+			echo '<option value="' . esc_attr( $i ) . '" ' . selected( $columns, $i, false ) . '>' . esc_html( $i ) . '</option>';
+		}
+		echo '</select>';
+		self::row_close( esc_html__( 'Automatically reduced to 3 columns on tablets and 2 on phones.', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Image aspect ratio', 'spartan-gallery' ), 'grid_aspect_ratio', array( 'grid' ) );
+		$ratio  = self::meta( $gallery_id, 'grid_aspect_ratio', '1-1' );
+		$ratios = array(
+			'1-1'      => esc_html__( 'Square (1:1)', 'spartan-gallery' ),
+			'4-3'      => esc_html__( 'Landscape (4:3)', 'spartan-gallery' ),
+			'3-2'      => esc_html__( 'Landscape (3:2)', 'spartan-gallery' ),
+			'16-9'     => esc_html__( 'Widescreen (16:9)', 'spartan-gallery' ),
+			'3-4'      => esc_html__( 'Portrait (3:4)', 'spartan-gallery' ),
+			'original' => esc_html__( 'Original (no cropping)', 'spartan-gallery' ),
+		);
+		echo '<select id="grid_aspect_ratio" name="grid_aspect_ratio">';
+		foreach ( $ratios as $val => $label ) {
+			echo '<option value="' . esc_attr( $val ) . '" ' . selected( $ratio, $val, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		echo '</select>';
+		self::row_close( esc_html__( 'Images are cropped from the center to fit.', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Row height (PX)', 'spartan-gallery' ), 'justified_row_height', array( 'justified' ) );
+		$row_height = self::meta( $gallery_id, 'justified_row_height', 240 );
+		echo '<input type="text" class="sg-spinner" id="justified_row_height" name="justified_row_height" value="' . esc_attr( $row_height ) . '" data-min="80" data-max="600" data-step="10" />';
+		self::row_close( esc_html__( 'Target height of each row. Rows stretch slightly so they always fill the full width.', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Gap between images (PX)', 'spartan-gallery' ), 'img_margin', array( 'grid', 'masonry', 'justified' ) );
+		$img_margin = self::meta( $gallery_id, 'img_margin', 20 );
+		echo '<input type="text" class="sg-spinner" id="img_margin" name="img_margin" value="' . esc_attr( $img_margin ) . '" data-min="0" data-max="100" data-step="1" />';
+		self::row_close();
+
 		self::section_close();
 
 		// Section 2: Upload Images.
@@ -212,21 +253,21 @@ class Spartan_Gallery_Options {
 		self::row_open( esc_html__( 'Display Adjustable Image', 'spartan-gallery' ), 'display_original' );
 		$display_original = self::meta( $gallery_id, 'display_original', '' );
 		echo '<label class="sg-switch"><input type="checkbox" id="display_original" name="display_original" value="1" ' . checked( $display_original, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
-		self::row_close( esc_html__( '"Display thumbnail size" can\'t be turned on when this setting is turned on.', 'spartan-gallery' ) );
+		self::row_close( esc_html__( 'Use the full-size original upload. When this is on, "Display thumbnail size" is ignored.', 'spartan-gallery' ) );
 
-		self::row_open( esc_html__( 'Image width (PX)', 'spartan-gallery' ), 'image_width' );
+		self::row_open( esc_html__( 'Slide width', 'spartan-gallery' ), 'image_width', array( 'slider' ) );
 		$image_width = self::meta( $gallery_id, 'image_width', 150 );
 		echo '<div class="sg-slider" id="image_width_slider" data-target="image_width" data-min="0" data-max="2000" data-step="1"></div>';
 		echo '<input type="text" class="sg-slider-value" id="image_width" name="image_width" value="' . esc_attr( $image_width ) . '" readonly="readonly" />';
 		self::row_close();
 
-		self::row_open( esc_html__( 'Image height (PX)', 'spartan-gallery' ), 'image_height' );
+		self::row_open( esc_html__( 'Slide height', 'spartan-gallery' ), 'image_height', array( 'slider' ) );
 		$image_height = self::meta( $gallery_id, 'image_height', 150 );
 		echo '<div class="sg-slider" id="image_height_slider" data-target="image_height" data-min="0" data-max="2000" data-step="1"></div>';
 		echo '<input type="text" class="sg-slider-value" id="image_height" name="image_height" value="' . esc_attr( $image_height ) . '" readonly="readonly" />';
 		self::row_close();
 
-		self::row_open( esc_html__( 'Img measure value', 'spartan-gallery' ), 'image_measure_value' );
+		self::row_open( esc_html__( 'Slide size unit', 'spartan-gallery' ), 'image_measure_value', array( 'slider' ) );
 		$measure = self::meta( $gallery_id, 'image_measure_value', 'px' );
 		echo '<select id="image_measure_value" name="image_measure_value">';
 		foreach ( array( 'px' => 'px', '%' => '%', 'vh' => 'vh/vw', 'rem' => 'rem' ) as $val => $label ) {
@@ -238,7 +279,7 @@ class Spartan_Gallery_Options {
 		self::row_open( esc_html__( 'Display thumbnail size', 'spartan-gallery' ), 'thumbnail_options' );
 		$thumb_opt = self::meta( $gallery_id, 'thumbnail_options', '1' );
 		echo '<label class="sg-switch"><input type="checkbox" id="thumbnail_options" name="thumbnail_options" value="1" ' . checked( $thumb_opt, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
-		self::row_close( esc_html__( '"Display Adjustable Image" can\'t be turned on when this setting is turned on.', 'spartan-gallery' ) );
+		self::row_close( esc_html__( 'Use one of the resized copies WordPress generates (faster). Pick the size below.', 'spartan-gallery' ) );
 
 		self::row_open( esc_html__( 'Select Thumbnail Size', 'spartan-gallery' ), 'thumbnail_size' );
 		$thumb_size = self::meta( $gallery_id, 'thumbnail_size', 'medium_large' );
@@ -256,10 +297,21 @@ class Spartan_Gallery_Options {
 		echo '</select>';
 		self::row_close();
 
-		self::row_open( esc_html__( 'Image Margin (PX)', 'spartan-gallery' ), 'img_margin' );
-		$img_margin = self::meta( $gallery_id, 'img_margin', 20 );
-		echo '<input type="text" class="sg-spinner" id="img_margin" name="img_margin" value="' . esc_attr( $img_margin ) . '" data-min="0" data-max="100" data-step="1" />';
-		self::row_close();
+
+		self::section_close();
+
+		// Section 4: Lightbox.
+		self::section_open( 'lightbox', esc_html__( 'Lightbox', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Open images in a lightbox', 'spartan-gallery' ), 'lightbox_enabled' );
+		$lightbox_on = self::meta( $gallery_id, 'lightbox_enabled', '1' );
+		echo '<label class="sg-switch"><input type="checkbox" id="lightbox_enabled" name="lightbox_enabled" value="1" ' . checked( $lightbox_on, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
+		self::row_close( esc_html__( 'Clicking an image opens a full-screen viewer with swipe, keyboard and zoom support.', 'spartan-gallery' ) );
+
+		self::row_open( esc_html__( 'Show title and caption', 'spartan-gallery' ), 'lightbox_captions' );
+		$captions_on = self::meta( $gallery_id, 'lightbox_captions', '1' );
+		echo '<label class="sg-switch"><input type="checkbox" id="lightbox_captions" name="lightbox_captions" value="1" ' . checked( $captions_on, '1', false ) . ' /> ' . esc_html__( 'Enabled', 'spartan-gallery' ) . '</label>';
+		self::row_close( esc_html__( 'Uses each image\'s Title and Caption from the Media Library.', 'spartan-gallery' ) );
 
 		self::section_close();
 
@@ -378,11 +430,20 @@ class Spartan_Gallery_Options {
 			return;
 		}
 
-		$layout = isset( $_POST['image_layout_select'] ) ? sanitize_text_field( wp_unslash( $_POST['image_layout_select'] ) ) : 'value-1';
-		if ( ! in_array( $layout, array( 'value-1', 'value-2', 'value-3', 'value-4', 'value-5', 'value-6' ), true ) ) {
-			$layout = 'value-1';
-		}
-		update_post_meta( $post_id, 'image_layout_select', $layout );
+		$layout = isset( $_POST['image_layout_select'] ) ? sanitize_text_field( wp_unslash( $_POST['image_layout_select'] ) ) : '';
+		update_post_meta( $post_id, 'image_layout_select', Spartan_Gallery_Renderer::normalize_layout( $layout ) );
+
+		$columns = isset( $_POST['gallery_columns'] ) ? absint( $_POST['gallery_columns'] ) : 3;
+		update_post_meta( $post_id, 'gallery_columns', ( $columns >= 1 && $columns <= 6 ) ? $columns : 3 );
+
+		$ratio = isset( $_POST['grid_aspect_ratio'] ) ? sanitize_text_field( wp_unslash( $_POST['grid_aspect_ratio'] ) ) : '1-1';
+		update_post_meta( $post_id, 'grid_aspect_ratio', in_array( $ratio, Spartan_Gallery_Renderer::aspect_ratio_keys(), true ) ? $ratio : '1-1' );
+
+		$row_height = isset( $_POST['justified_row_height'] ) ? absint( $_POST['justified_row_height'] ) : 240;
+		update_post_meta( $post_id, 'justified_row_height', max( 80, min( 600, $row_height ) ) );
+
+		update_post_meta( $post_id, 'lightbox_enabled', isset( $_POST['lightbox_enabled'] ) ? '1' : '' );
+		update_post_meta( $post_id, 'lightbox_captions', isset( $_POST['lightbox_captions'] ) ? '1' : '' );
 
 		if ( isset( $_POST['spartan_gallery_uploaded_images'] ) ) {
 			$ids = array_filter( array_map( 'absint', explode( ',', wp_unslash( $_POST['spartan_gallery_uploaded_images'] ) ) ) );

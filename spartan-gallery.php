@@ -14,8 +14,8 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Spartan Gallery
- * Description:       A responsive, multipurpose gallery plugin with six layout styles (Freewall Chaotic, Random, Fixed, Pinterest, Hexagon, and 3D Slider), a Gutenberg block, and per-gallery image/container styling options.
- * Version:           1.4.0
+ * Description:       A responsive, multipurpose gallery plugin with five layouts (Grid, Masonry, Justified, Hexagon and 3D Slider), a built-in lightbox, a Gutenberg block, and per-gallery styling options. No jQuery on the front end.
+ * Version:           1.5.0
  * Author:            Freelancer Martin
  * Author URI:        https://freelancermartin.com
  * License:           GPL-2.0+
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.4.0' );
+define( 'PLUGIN_NAME_VERSION', '1.5.0' );
 
 
 // Add the transient on plugin activation.

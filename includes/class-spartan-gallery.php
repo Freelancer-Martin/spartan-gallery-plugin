@@ -159,40 +159,9 @@ class Spartan_Gallery {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-spartan-gallery-public.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
+		 * Renders galleries (all layouts) for the shortcode and the block.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/html-cointainer-outputs/class-freewall-chaotic-output.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/html-cointainer-outputs/class-freewall-fixed-img-output.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/html-cointainer-outputs/class-freewall-pinterest-output.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/html-cointainer-outputs/class-freewall-random-output.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/html-cointainer-outputs/class-hexagon-html-container.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/html-cointainer-outputs/class-3d-slider-html-container.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-spartan-gallery-renderer.php';
 
 
 		/**
