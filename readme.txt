@@ -5,7 +5,7 @@ Tags:               gallery, portfolio, photo gallery, gutenberg, responsive
 Requires at least: 4.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag:         1.7.0
+Stable tag:         1.7.1
 License:            GPLv2 or later
 License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,9 @@ coming soon
 11. Layout Example 8
 
 == Changelog ==
+
+= 1.7.1 =
+* New "Show image title" lightbox setting, off by default. WordPress uses the file name as an image's title, so file names no longer appear under images in the lightbox unless you turn this on. Captions have their own setting.
 
 = 1.7.0 =
 * Filterable galleries: new "Gallery Tags" for images (Media > Gallery Tags) and optional filter buttons above Grid, Masonry, Justified, Mosaic and Polaroid galleries.

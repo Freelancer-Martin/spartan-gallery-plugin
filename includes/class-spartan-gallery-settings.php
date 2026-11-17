@@ -71,6 +71,7 @@ class Spartan_Gallery_Settings {
 			'image_radius'         => array( 'type' => 'int', 'default' => 0, 'min' => 0, 'max' => 40 ),
 			'hover_effect'         => array( 'type' => 'enum', 'default' => 'zoom', 'choices' => array( 'none', 'zoom', 'fade', 'darken', 'title' ) ),
 			'lightbox_enabled'     => array( 'type' => 'bool', 'default' => true ),
+			'lightbox_title'       => array( 'type' => 'bool', 'default' => false ),
 			'lightbox_captions'    => array( 'type' => 'bool', 'default' => true ),
 			'lightbox_thumbnails'  => array( 'type' => 'bool', 'default' => true ),
 			'lightbox_download'    => array( 'type' => 'bool', 'default' => false ),

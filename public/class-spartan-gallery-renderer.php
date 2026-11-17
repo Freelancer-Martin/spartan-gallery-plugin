@@ -382,12 +382,16 @@ class Spartan_Gallery_Renderer {
 
 		$attrs = ' href="' . esc_url( $href ) . '" class="' . esc_attr( $class . ' sg-lightbox' ) . '" data-gallery="' . esc_attr( $uid ) . '"';
 
-		if ( $s['lightbox_captions'] ) {
+		// The title is off by default: WordPress fills it with the file name
+		// ("IMG_1234") unless someone edits it in the Media Library.
+		if ( $s['lightbox_title'] ) {
 			$title = self::lightbox_text( $attachment->post_title );
-			$desc  = self::lightbox_text( $attachment->post_excerpt );
 			if ( '' !== $title ) {
 				$attrs .= ' data-title="' . $title . '"';
 			}
+		}
+		if ( $s['lightbox_captions'] ) {
+			$desc = self::lightbox_text( $attachment->post_excerpt );
 			if ( '' !== $desc ) {
 				$attrs .= ' data-description="' . $desc . '"';
 			}

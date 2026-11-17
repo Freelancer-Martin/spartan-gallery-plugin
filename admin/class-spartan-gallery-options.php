@@ -418,9 +418,13 @@ class Spartan_Gallery_Options {
 		self::toggle( 'lightbox_enabled', $v['lightbox_enabled'] );
 		self::row_close();
 
-		self::row_open( __( 'Show title and caption', 'spartan-gallery' ), 'lightbox_captions' );
+		self::row_open( __( 'Show image title', 'spartan-gallery' ), 'lightbox_title' );
+		self::toggle( 'lightbox_title', $v['lightbox_title'] );
+		self::row_close( __( 'Shown under the image. WordPress uses the file name as the title unless you change it in the Media Library, so this is off by default.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Show caption', 'spartan-gallery' ), 'lightbox_captions' );
 		self::toggle( 'lightbox_captions', $v['lightbox_captions'] );
-		self::row_close();
+		self::row_close( __( 'The "Caption" field from the Media Library. Images without a caption show nothing.', 'spartan-gallery' ) );
 
 		self::row_open( __( 'Thumbnail strip', 'spartan-gallery' ), 'lightbox_thumbnails' );
 		self::toggle( 'lightbox_thumbnails', $v['lightbox_thumbnails'] );
