@@ -413,8 +413,18 @@
 
 /* ---------- Lightbox extras (thumbnails, download, slideshow) ---------- */
 
-.sg-lb-has-thumbs .gcontainer {
+.sg-lb-has-thumbs .glightbox-container .gcontainer {
 	height: calc(100% - 84px);
+}
+
+/*
+ * Leave room for the thumbnail strip (GLightbox sizes images against the
+ * viewport). Slides with a title/caption are sized in JS, see fitThumbSpace().
+ */
+@media (min-width: 769px) {
+	.sg-lb-has-thumbs .glightbox-container .gslide-image img {
+		max-height: calc(97vh - 84px);
+	}
 }
 
 .sg-lb-thumbs {

@@ -496,7 +496,9 @@ class Spartan_Gallery_Options {
 		echo '<button type="button" class="button" id="sg-preview-refresh"><span class="dashicons dashicons-update"></span> ' . esc_html__( 'Refresh', 'spartan-gallery' ) . '</button>';
 		echo '<span class="sg-preview-status" aria-live="polite"></span>';
 		echo '</div>';
-		echo '<div class="sg-preview-stage"><iframe id="sg-preview-frame" title="' . esc_attr__( 'Gallery preview', 'spartan-gallery' ) . '"></iframe></div>';
+		// First render happens here, so the preview is visible as soon as the
+		// page loads; later updates come from ajax_preview().
+		echo '<div class="sg-preview-stage"><iframe id="sg-preview-frame" title="' . esc_attr__( 'Gallery preview', 'spartan-gallery' ) . '" srcdoc="' . esc_attr( self::preview_html( $post->ID, Spartan_Gallery_Settings::get( $post->ID ), get_post_meta( $post->ID, 'spartan_gallery_uploaded_images', true ) ) ) . '"></iframe></div>';
 		echo '<p class="description">' . esc_html__( 'Updates as you change settings. Nothing is saved until you click Update.', 'spartan-gallery' ) . '</p>';
 	}
 
@@ -535,10 +537,26 @@ class Spartan_Gallery_Options {
 			wp_send_json_error( null, 403 );
 		}
 
-		$request     = wp_unslash( $_POST ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- each field is sanitized by Spartan_Gallery_Settings.
-		$settings    = Spartan_Gallery_Settings::from_request( $request );
-		$ids         = Spartan_Gallery_Settings::parse_image_ids( isset( $request['spartan_gallery_uploaded_images'] ) ? $request['spartan_gallery_uploaded_images'] : '' );
-		$attachments = Spartan_Gallery_Renderer::get_attachments( $ids );
+		$request = wp_unslash( $_POST ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- each field is sanitized by Spartan_Gallery_Settings.
+
+		wp_send_json_success(
+			array(
+				'html' => self::preview_html(
+					$post_id,
+					Spartan_Gallery_Settings::from_request( $request ),
+					isset( $request['spartan_gallery_uploaded_images'] ) ? $request['spartan_gallery_uploaded_images'] : ''
+				),
+			)
+		);
+	}
+
+	/**
+	 * Full HTML document for the preview iframe.
+	 *
+	 * @param string $image_ids Comma-separated attachment IDs.
+	 */
+	private static function preview_html( $post_id, array $settings, $image_ids ) {
+		$attachments = Spartan_Gallery_Renderer::get_attachments( Spartan_Gallery_Settings::parse_image_ids( $image_ids ) );
 
 		if ( empty( $attachments ) ) {
 			$markup = '<p style="color:#646970;text-align:center;padding:40px 0;">' . esc_html__( 'Add images in the "Images" tab to see a preview.', 'spartan-gallery' ) . '</p>';
@@ -546,7 +564,7 @@ class Spartan_Gallery_Options {
 			$markup = Spartan_Gallery_Renderer::render_markup( $post_id, $settings, $attachments );
 		}
 
-		wp_send_json_success( array( 'html' => Spartan_Gallery_Renderer::preview_document( $markup ) ) );
+		return Spartan_Gallery_Renderer::preview_document( $markup );
 	}
 }
 

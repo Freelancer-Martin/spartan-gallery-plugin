@@ -238,6 +238,18 @@
 			}
 		}
 
+		function watchFrame() {
+			fitFrame();
+			var doc = $frame[ 0 ].contentDocument;
+			if ( observer ) {
+				observer.disconnect();
+			}
+			if ( window.ResizeObserver && doc && doc.body ) {
+				observer = new ResizeObserver( fitFrame );
+				observer.observe( doc.body );
+			}
+		}
+
 		function loadPreview() {
 			if ( ! $frame.length ) {
 				return;
@@ -261,17 +273,7 @@
 						return;
 					}
 					$status.text( '' );
-					$frame.one( 'load', function () {
-						fitFrame();
-						var doc = $frame[ 0 ].contentDocument;
-						if ( observer ) {
-							observer.disconnect();
-						}
-						if ( window.ResizeObserver && doc && doc.body ) {
-							observer = new ResizeObserver( fitFrame );
-							observer.observe( doc.body );
-						}
-					} );
+					$frame.one( 'load', watchFrame );
 					$frame.attr( 'srcdoc', res.data.html );
 				} )
 				.fail( function ( xhr, textStatus ) {
@@ -302,7 +304,15 @@
 			setTimeout( fitFrame, 50 );
 		} );
 
-		loadPreview();
+		// The first preview is rendered by PHP into srcdoc; just size it.
+		if ( $frame.length ) {
+			var initialDoc = $frame[ 0 ].contentDocument;
+			if ( initialDoc && 'complete' === initialDoc.readyState && initialDoc.body && initialDoc.body.childNodes.length ) {
+				watchFrame();
+			} else {
+				$frame.one( 'load', watchFrame );
+			}
+		}
 	} );
 
 } )( jQuery );

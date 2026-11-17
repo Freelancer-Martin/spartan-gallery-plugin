@@ -5,7 +5,7 @@ Tags:               gallery, portfolio, photo gallery, gutenberg, responsive
 Requires at least: 4.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag:         1.7.1
+Stable tag:         1.7.2
 License:            GPLv2 or later
 License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,19 +82,25 @@ coming soon
 
 == Screenshots ==
 
-1. Banner for plugin
-2. Banner for plugin smaller
-3. Spartan Gallery logo
-4. Layout Example 1
-5. Layout Example 2
-6. Layout Example 3
-7. Layout Example 4
-8. Layout Example 5
-9. Layout Example 6
-10. Layout Example 7
-11. Layout Example 8
+1. Grid layout with filter buttons (Gallery Tags) and the title-on-hover effect.
+2. Masonry layout: uncropped photos packed into columns.
+3. Justified layout: equal-height rows that always fill the width.
+4. Mosaic layout: a mix of large and small tiles.
+5. 3D Slider: a touch-friendly coverflow carousel.
+6. Slideshow with a thumbnail strip and optional autoplay.
+7. Before / After layout: drag the handle to compare image pairs.
+8. Album: gallery covers that open each gallery in the lightbox.
+9. Lightbox with caption, thumbnail strip, download and slideshow buttons.
+10. Gallery editor: ten layouts, one-click presets and a copy-the-shortcode bar.
+11. Drag-and-drop image ordering with the live preview below.
+12. The Getting Started page.
 
 == Changelog ==
+
+= 1.7.2 =
+* Fixed: with both the lightbox thumbnail strip and a title/caption turned on, the caption was hidden behind the strip and the image was not centered.
+* The live preview in the gallery editor now appears immediately when the page opens (no extra request).
+* New plugin directory banner, icon and screenshots.
 
 = 1.7.1 =
 * New "Show image title" lightbox setting, off by default. WordPress uses the file name as an image's title, so file names no longer appear under images in the lightbox unless you turn this on. Captions have their own setting.

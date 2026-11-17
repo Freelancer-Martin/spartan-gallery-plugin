@@ -391,10 +391,42 @@
 		syncExtras( lightbox.getActiveSlideIndex() );
 	}
 
+	/**
+	 * Keep image + caption above the thumbnail strip. GLightbox writes an
+	 * inline max-height of calc(100vh - caption height) on slides with a
+	 * caption, which doesn't know about the strip, so extend it here (after
+	 * each slide loads and after GLightbox's own resize handling).
+	 */
+	var THUMB_STRIP = 84;
+
+	function fitThumbSpace() {
+		if ( ! extras || ! extras.opts.thumbs || ! lightbox.modal || window.innerWidth < 769 ) {
+			return;
+		}
+		Array.prototype.forEach.call( lightbox.modal.querySelectorAll( '.gslide' ), function ( slide ) {
+			var img  = slide.querySelector( '.gslide-image img' );
+			var desc = slide.querySelector( '.desc-bottom .gslide-description' );
+			if ( img ) {
+				img.style.setProperty( 'max-height', 'calc(97vh - ' + ( THUMB_STRIP + ( desc ? desc.offsetHeight : 0 ) ) + 'px)', 'important' );
+				// GLightbox sized the caption box to the image's earlier width.
+				if ( desc && img.offsetWidth ) {
+					desc.style.maxWidth = img.offsetWidth + 'px';
+				}
+			}
+		} );
+	}
+
+	window.addEventListener( 'resize', function () {
+		if ( extras ) {
+			window.requestAnimationFrame( fitThumbSpace );
+		}
+	} );
+
 	function syncExtras( index ) {
 		if ( ! extras ) {
 			return;
 		}
+		fitThumbSpace();
 		var items = lightbox.elements || [];
 		if ( extras.download && items[ index ] ) {
 			extras.download.href = items[ index ].href;
@@ -471,6 +503,7 @@
 		lightbox.on( 'slide_changed', function ( data ) {
 			syncExtras( data && data.current ? data.current.index : lightbox.getActiveSlideIndex() );
 		} );
+		lightbox.on( 'slide_after_load', fitThumbSpace );
 		lightbox.on( 'close', closeExtras );
 	}
 
