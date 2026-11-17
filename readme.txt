@@ -5,7 +5,7 @@ Tags:               gallery, portfolio, photo gallery, gutenberg, responsive
 Requires at least: 4.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag:         1.5.0
+Stable tag:         1.6.0
 License:            GPLv2 or later
 License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,17 +13,24 @@ License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
 Spartan Gallery is a responsive, multipurpose portfolio gallery plugin for WordPress. It works well for agencies, personal portfolios, architecture and photography studios, product showcases, artist portfolios, and blogs.
 
-Five layouts are included:
+Ten layouts are included:
 
-* **Grid** – even columns (1–6), images cropped to the aspect ratio you choose.
+* **Grid** – even columns (1–6), images cropped to the shape you choose.
 * **Masonry** – uncropped images packed into columns, Pinterest-style.
 * **Justified** – rows of equal height that always fill the full width.
+* **Mosaic** – a grid mixing large and small tiles.
+* **Polaroid** – tilted instant-photo cards that straighten on hover.
 * **Hexagon** – a honeycomb grid.
 * **3D Slider** – a touch-friendly 3D coverflow carousel.
+* **Carousel** – several images side by side, swipeable, optional autoplay.
+* **Slideshow** – one large image with a thumbnail strip, optional autoplay.
+* **Before / After** – drag a handle to compare pairs of images.
 
-Every layout can open images in a full-screen lightbox with swipe, keyboard navigation and captions taken from the Media Library. Galleries are responsive (columns reduce automatically on tablets and phones), use WordPress' responsive image sizes, and only load their scripts and styles on pages that actually contain a gallery. The front end does not require jQuery.
+Every layout (except Before / After) can open images in a full-screen lightbox with swipe, keyboard navigation, captions from the Media Library, a thumbnail strip, and optional download and slideshow buttons. Choose a hover effect (zoom, fade, darken, or title overlay), rounded corners and image quality per gallery.
 
-Each gallery has its own options panel for layout, image size, lightbox, container styling and custom CSS, plus a Gutenberg block for adding galleries anywhere in the block editor.
+Galleries are responsive (columns reduce automatically on tablets and phones), use WordPress' responsive image sizes, and only load their scripts and styles on pages that actually contain a gallery. The front end does not require jQuery.
+
+Each gallery has its own options panel with one-click presets (Portfolio, Instagram, Products, Photography, Slideshow), a live preview with desktop/tablet/phone widths, drag-and-drop image ordering, and a copy-the-shortcode button. A Gutenberg block adds galleries anywhere in the block editor.
 
 = Visit Example Site  =
 
@@ -46,7 +53,7 @@ Replace 123 with the gallery ID shown in the Spartan Gallery list. (`page_id` is
 
 Bundled in `public/vendor/`, both MIT licensed:
 
-* [Swiper](https://swiperjs.com/) 14.4.0 – 3D slider. Source: https://github.com/nolimits4web/swiper
+* [Swiper](https://swiperjs.com/) 14.4.0 – 3D slider, carousel and slideshow. Source: https://github.com/nolimits4web/swiper
 * [GLightbox](https://biati-digital.github.io/glightbox/) 3.3.1 – lightbox. Source: https://github.com/biati-digital/glightbox
 
 The Masonry layout uses the Masonry and imagesLoaded scripts that ship with WordPress core.
@@ -84,6 +91,18 @@ coming soon
 
 == Changelog ==
 
+= 1.6.0 =
+* New layouts: Mosaic, Polaroid, Carousel, Slideshow (with thumbnails) and Before / After.
+* Live preview in the gallery editor, with desktop, tablet and phone widths.
+* One-click presets: Portfolio, Instagram, Products, Photography, Slideshow.
+* Drag and drop to reorder images.
+* Copy-shortcode button on the gallery edit screen.
+* Hover effects: zoom, fade, darken, or darken with the image title.
+* Lightbox: optional thumbnail strip, download button and slideshow button.
+* Autoplay for the 3D Slider, Carousel and Slideshow.
+* Simpler settings: one "Image quality" choice replaces the old original/thumbnail switches and size list; container settings no longer need an on/off switch and default to full width; one border field instead of four.
+* Existing galleries keep their look; old settings are converted automatically.
+
 = 1.5.0 =
 * New layouts: Grid, Masonry and Justified replace the four Freewall layouts. Existing galleries are switched to the closest new layout automatically (Chaotic/Pinterest → Masonry, Random → Justified, Fixed → Grid).
 * New settings: number of columns, grid aspect ratio, justified row height, gap between images.
@@ -113,6 +132,9 @@ coming soon
 * First stable release.
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+Adds five new layouts, a live preview and presets. Existing gallery settings are converted automatically.
 
 = 1.5.0 =
 The Freewall layouts are replaced by Grid, Masonry and Justified. Existing galleries switch to the closest new layout automatically; check them and adjust columns or row height if needed.

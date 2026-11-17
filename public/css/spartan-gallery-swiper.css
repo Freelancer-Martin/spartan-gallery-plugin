@@ -1,0 +1,151 @@
+/**
+ * Spartan Gallery – Swiper layouts: 3D slider, carousel, slideshow.
+ * Swiper's own stylesheet is loaded alongside this one.
+ */
+
+/* ---------- 3D slider ---------- */
+
+.sg-slider.swiper {
+	width: 100%;
+	padding: 24px 0 48px;
+	--swiper-theme-color: #fff;
+	--swiper-navigation-color: #fff;
+	--swiper-pagination-color: #333;
+	--swiper-pagination-bullet-inactive-color: #999;
+}
+
+.sg-slider .swiper-slide {
+	overflow: hidden;
+	max-width: 90%;
+	background: #ddd;
+	border-radius: 4px;
+}
+
+.sg-slider .swiper-slide .sg-link {
+	width: 100%;
+	height: 100%;
+}
+
+.sg-slider .swiper-slide .sg-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* Side slides bring themselves forward on click instead of zooming. */
+.sg-slider .swiper-slide:not(.swiper-slide-active) .sg-link {
+	cursor: pointer;
+}
+
+.sg-slider .swiper-slide:not(.swiper-slide-active) .sg-img {
+	transform: none !important;
+}
+
+.sg-slider .swiper-button-prev,
+.sg-slider .swiper-button-next {
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.sg-slider .swiper-pagination {
+	bottom: 12px;
+}
+
+/* ---------- Carousel ---------- */
+
+.sg-carousel.swiper {
+	width: 100%;
+	padding-bottom: 36px;
+	--swiper-navigation-color: #fff;
+	--swiper-pagination-color: #333;
+	--swiper-navigation-size: 30px;
+}
+
+.sg-carousel .swiper-slide {
+	height: auto;
+}
+
+.sg-carousel .sg-link {
+	aspect-ratio: var(--sg-ratio, 4 / 3);
+}
+
+.sg-carousel .sg-img {
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.sg-carousel .swiper-pagination {
+	bottom: 4px;
+}
+
+.sg-carousel .swiper-button-prev,
+.sg-carousel .swiper-button-next,
+.sg-slideshow .swiper-button-prev,
+.sg-slideshow .swiper-button-next {
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+/* ---------- Slideshow with thumbnails ---------- */
+
+.sg-slideshow {
+	--swiper-navigation-color: #fff;
+}
+
+.sg-slideshow-main {
+	width: 100%;
+	aspect-ratio: var(--sg-ratio, 3 / 2);
+	max-height: 80vh;
+	background: #111;
+	border-radius: var(--sg-radius, 0);
+}
+
+.sg-slideshow-main .swiper-slide {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.sg-slideshow-main .sg-link {
+	width: 100%;
+	height: 100%;
+	border-radius: 0;
+}
+
+.sg-slideshow-main .sg-img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.sg-slideshow-thumbs {
+	margin-top: var(--sg-gap, 10px);
+}
+
+.sg-slideshow-thumbs .swiper-slide {
+	width: 84px;
+	height: 64px;
+	overflow: hidden;
+	border-radius: 3px;
+	opacity: 0.5;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+.sg-slideshow-thumbs .swiper-slide:hover,
+.sg-slideshow-thumbs .swiper-slide-thumb-active {
+	opacity: 1;
+}
+
+.sg-slideshow-thumbs .sg-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+@media (max-width: 600px) {
+	.sg-slideshow-thumbs .swiper-slide {
+		width: 60px;
+		height: 46px;
+	}
+}

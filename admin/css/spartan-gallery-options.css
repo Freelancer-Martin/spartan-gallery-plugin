@@ -311,3 +311,140 @@
 	border: 1px solid #dcdcde;
 	height: 220px;
 }
+
+/* ---------- 1.6: shortcode bar, presets, layout cards, preview ---------- */
+
+.sg-shortcode-bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 12px;
+	padding: 10px 12px;
+	background: #f0f6fc;
+	border: 1px solid #c5d9ed;
+	border-radius: 4px;
+}
+
+.sg-shortcode-bar label {
+	font-weight: 600;
+}
+
+.sg-shortcode-bar input.code {
+	background: #fff;
+}
+
+.sg-shortcode-hint {
+	color: #646970;
+	font-size: 12px;
+}
+
+.sg-presets {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 14px;
+}
+
+.sg-presets-label {
+	font-weight: 600;
+	margin-right: 4px;
+}
+
+.sg-image-select-option {
+	width: 150px;
+}
+
+.sg-image-select-option img {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 8 / 5;
+}
+
+.sg-image-select-option .sg-layout-name {
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.sg-image-select-option .sg-layout-desc {
+	margin-top: 2px;
+	color: #646970;
+	font-size: 11px;
+	line-height: 1.35;
+}
+
+.sg-unit {
+	color: #646970;
+}
+
+.sg-inline-fields {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.sg-gallery-thumb {
+	cursor: move;
+}
+
+.sg-gallery-preview .ui-sortable-placeholder {
+	visibility: visible !important;
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+	border: 2px dashed #8c8f94;
+	border-radius: 4px;
+	background: #f6f7f7;
+}
+
+.sg-preview-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+.sg-preview-toolbar .dashicons {
+	vertical-align: text-bottom;
+}
+
+.sg-preview-devices .button.active {
+	background: #2271b1;
+	border-color: #2271b1;
+	color: #fff;
+}
+
+.sg-preview-status {
+	color: #646970;
+}
+
+.sg-preview-stage {
+	padding: 12px;
+	background: #f0f0f1;
+	border-radius: 4px;
+	overflow: auto;
+}
+
+.sg-preview-stage iframe {
+	display: block;
+	width: 100%;
+	min-height: 160px;
+	margin: 0 auto;
+	border: 0;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+	transition: width 0.2s ease;
+}
+
+.sg-preview-stage[data-device="tablet"] iframe {
+	width: 768px;
+	max-width: 100%;
+}
+
+.sg-preview-stage[data-device="mobile"] iframe {
+	width: 375px;
+	max-width: 100%;
+}
