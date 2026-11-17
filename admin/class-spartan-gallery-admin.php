@@ -110,7 +110,6 @@ class Spartan_Gallery_Admin {
 
 		wp_enqueue_script( $this->plugin_name . 'popup.js', plugin_dir_url( __FILE__ ) . 'js/popup.js', array( 'jquery' ), $this->version, false );
 
-		wp_enqueue_script(   $this->plugin_name . 'gallery-block-js', plugin_dir_url(__FILE__) . 'js/block.js', ['wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-api-fetch'], filemtime(plugin_dir_path(__FILE__) . 'js/block.js') );
 
 	}
 

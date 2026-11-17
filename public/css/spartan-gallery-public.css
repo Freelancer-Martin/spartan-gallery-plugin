@@ -625,3 +625,304 @@
 	font-size: 13px;
 	opacity: 0.85;
 }
+
+/* ---------- Metro ---------- */
+
+/*
+ * Square cells sized from the container width (container query units), so
+ * big/wide/tall tiles line up exactly. Every 10 tiles: 1st is 2x2, 4th and
+ * 9th are wide (2x1), 6th is tall (1x2).
+ */
+.sg-metro-wrap {
+	container-type: inline-size;
+}
+
+.sg-metro {
+	--sg-cell: calc((100cqw - (var(--sg-cols, 4) - 1) * var(--sg-gap, 10px)) / var(--sg-cols, 4));
+	display: grid;
+	grid-template-columns: repeat(var(--sg-cols, 4), minmax(0, 1fr));
+	grid-auto-rows: var(--sg-cell);
+	grid-auto-flow: dense;
+	gap: var(--sg-gap, 10px);
+}
+
+.sg-metro .sg-item:nth-child(10n+1) { grid-column: span 2; grid-row: span 2; }
+.sg-metro .sg-item:nth-child(10n+4),
+.sg-metro .sg-item:nth-child(10n+9) { grid-column: span 2; }
+.sg-metro .sg-item:nth-child(10n+6) { grid-row: span 2; }
+
+.sg-metro .sg-link {
+	height: 100%;
+}
+
+.sg-metro .sg-img {
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* ---------- Film strip ---------- */
+
+.sg-filmstrip {
+	position: relative;
+	--sg-row: var(--sg-row-h, 240px);
+}
+
+.sg-strip-track {
+	display: flex;
+	gap: var(--sg-gap, 10px);
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+	padding-bottom: 6px;
+}
+
+.sg-strip-track:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 4px;
+}
+
+.sg-strip-track .sg-item {
+	flex: 0 0 auto;
+	height: var(--sg-row);
+	width: calc(var(--sg-row) * var(--sg-ar, 1.5));
+	scroll-snap-align: start;
+}
+
+.sg-strip-track .sg-link {
+	height: 100%;
+}
+
+.sg-strip-track .sg-img {
+	height: 100%;
+	object-fit: cover;
+}
+
+.sg-gallery .sg-strip-btn {
+	position: absolute;
+	z-index: 2;
+	top: calc(50% - 3px);
+	width: 44px;
+	height: 44px;
+	margin: -22px 0 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.92);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+	color: #1d2327;
+	font-size: 30px;
+	line-height: 40px;
+	cursor: pointer;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.2s ease;
+}
+
+.sg-strip-prev { left: 10px; }
+.sg-strip-next { right: 10px; }
+
+.sg-filmstrip.is-scrollable .sg-strip-btn:not(:disabled) {
+	opacity: 1;
+	visibility: visible;
+}
+
+@media (hover: none) {
+	.sg-gallery .sg-strip-btn {
+		display: none;
+	}
+}
+
+@media (max-width: 600px) {
+	.sg-filmstrip {
+		--sg-row: calc(var(--sg-row-h, 240px) * 0.7);
+	}
+}
+
+/* ---------- Spotlight ---------- */
+
+.sg-spotlight {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+	gap: var(--sg-gap, 10px);
+}
+
+.sg-spotlight-main .sg-link {
+	aspect-ratio: var(--sg-ratio, 4 / 3);
+}
+
+.sg-spotlight-main .sg-img {
+	height: 100%;
+	object-fit: cover;
+}
+
+.sg-spotlight-thumbs {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 8px;
+	align-content: start;
+	/* As tall as the main image (height 0 so it doesn't add to the row), scrolls if longer. */
+	height: 0;
+	min-height: 100%;
+	overflow-y: auto;
+}
+
+.sg-gallery .sg-spotlight-thumb {
+	display: block;
+	aspect-ratio: 1 / 1;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	border: 2px solid transparent;
+	border-radius: calc(var(--sg-radius, 0px) / 2);
+	background: none;
+	opacity: 0.6;
+	cursor: pointer;
+	transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.sg-gallery .sg-spotlight-thumb:hover,
+.sg-gallery .sg-spotlight-thumb:focus-visible {
+	opacity: 0.9;
+}
+
+.sg-gallery .sg-spotlight-thumb.is-active {
+	border-color: currentColor;
+	opacity: 1;
+}
+
+.sg-spotlight-thumb .sg-img {
+	height: 100%;
+	object-fit: cover;
+}
+
+@media (max-width: 900px) {
+	.sg-spotlight {
+		grid-template-columns: 1fr;
+	}
+	.sg-spotlight-thumbs {
+		grid-template-columns: repeat(6, minmax(0, 1fr));
+		height: auto;
+		min-height: 0;
+	}
+}
+
+@media (max-width: 600px) {
+	.sg-spotlight-thumbs {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+/* ---------- Video tiles ---------- */
+
+.sg-gallery .sg-has-video::before {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	top: 50%;
+	left: 50%;
+	width: 58px;
+	height: 58px;
+	margin: -29px 0 0 -29px;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M8 5v14l11-7z'/%3E%3C/svg%3E") 55% 50% / 26px no-repeat;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+	transition: transform 0.2s ease;
+}
+
+.sg-gallery .sg-has-video:hover::before {
+	transform: scale(1.08);
+}
+
+/* ---------- Watermark + protection ---------- */
+
+.sg-gallery .sg-watermark {
+	position: absolute;
+	z-index: 2;
+	right: 10px;
+	bottom: 8px;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+	pointer-events: none;
+	user-select: none;
+}
+
+.sg-protect img {
+	-webkit-user-drag: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+}
+
+.sg-lb-protect .glightbox-container img {
+	-webkit-user-drag: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+}
+
+.sg-lb-watermark {
+	position: fixed;
+	z-index: 999999;
+	right: 24px;
+	bottom: 24px;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 18px;
+	font-weight: 600;
+	text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+	pointer-events: none;
+	user-select: none;
+}
+
+.sg-lb-has-thumbs .sg-lb-watermark {
+	bottom: 100px;
+}
+
+/* ---------- Lightbox share menu ---------- */
+
+.sg-lb-share {
+	position: relative;
+}
+
+.sg-lb-share-menu {
+	position: absolute;
+	top: 44px;
+	left: 0;
+	min-width: 160px;
+	padding: 6px 0;
+	background: #fff;
+	border-radius: 6px;
+	box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.sg-lb-share-menu[hidden] {
+	display: none;
+}
+
+.sg-lb-tools .sg-lb-share-menu a,
+.sg-lb-tools .sg-lb-share-menu button {
+	display: block;
+	width: 100%;
+	height: auto;
+	padding: 8px 14px;
+	border-radius: 0;
+	background: none;
+	color: #1d2327;
+	font-size: 14px;
+	line-height: 1.3;
+	text-align: left;
+}
+
+.sg-lb-tools .sg-lb-share-menu a:hover,
+.sg-lb-tools .sg-lb-share-menu button:hover,
+.sg-lb-tools .sg-lb-share-menu a:focus-visible,
+.sg-lb-tools .sg-lb-share-menu button:focus-visible {
+	background: #f0f0f1;
+}
+
+.sg-lb-tools a[hidden] {
+	display: none;
+}

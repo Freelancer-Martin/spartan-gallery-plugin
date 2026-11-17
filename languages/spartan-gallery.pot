@@ -1,0 +1,1176 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Spartan Gallery 1.8.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/spartan-gallery\n"
+"POT-Creation-Date: 2026-11-17 16:48+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: spartan-gallery\n"
+
+#: public/class-spartan-gallery-renderer.php:114
+msgid "Download image"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:115
+msgid "Play slideshow"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:116
+msgid "Pause slideshow"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:117
+msgid "Share"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:118
+msgid "Copy link"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:119
+msgid "Link copied"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:121
+#, php-format
+msgid "Image %d"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:122
+#: public/class-spartan-gallery-renderer.php:778
+msgid "Previous"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:123
+#: public/class-spartan-gallery-renderer.php:786
+msgid "Next"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:424
+#: admin/class-spartan-gallery-welcome-dashboard.php:89
+msgid "Load more"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:440
+msgid "Filter images"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:441
+msgid "All"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:752
+msgid "Before"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:753
+msgid "After"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:755
+msgid "Drag to compare before and after"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:779
+#: admin/class-spartan-gallery-welcome-dashboard.php:163
+#: admin/js/block.js:90
+msgid "Gallery"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:802
+#, php-format
+msgid "Show image %d"
+msgstr ""
+
+#: public/class-spartan-gallery-renderer.php:904
+#, php-format
+msgid "%s photo"
+msgid_plural "%s photos"
+msgstr[0] ""
+msgstr[1] ""
+
+#: public/popup.php:29
+msgid "Image Button Links"
+msgstr ""
+
+#: public/popup.php:60
+msgid "Insert Button Url"
+msgstr ""
+
+#: public/popup.php:65
+msgid "Insert Button Title"
+msgstr ""
+
+#: public/popup.php:70
+msgid "Insert Image Title"
+msgstr ""
+
+#: public/popup.php:75
+msgid "Insert Image Description"
+msgstr ""
+
+#: public/popup.php:79
+msgid "Close"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:30
+#: includes/class-spartan-gallery-taxonomy.php:32
+#: admin/class-spartan-gallery-admin-tools.php:158
+#: admin/class-spartan-gallery-welcome-dashboard.php:248
+msgid "Gallery Tags"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:31
+#: admin/class-spartan-gallery-options.php:368
+msgid "Gallery Tag"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:33
+msgid "Search Gallery Tags"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:34
+msgid "All Gallery Tags"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:35
+msgid "Edit Gallery Tag"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:36
+msgid "Add New Gallery Tag"
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:37
+msgid "No gallery tags found."
+msgstr ""
+
+#: includes/class-spartan-gallery-taxonomy.php:38
+msgid "Separate tags with commas, e.g. Weddings, Portraits"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:41
+msgid "Gallery video URL"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:44
+msgid "Optional. YouTube, Vimeo or .mp4 link: Spartan Gallery shows this image as the poster and plays the video in the lightbox."
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:84
+#, php-format
+msgid "Duplicate &#8220;%s&#8221;"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:85
+msgid "Duplicate"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:95
+msgid "You are not allowed to duplicate this gallery."
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:103
+#, php-format
+msgid "%s (copy)"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:155
+msgid "Title"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:156
+msgid "Alt text"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:157
+msgid "Caption"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:158
+msgid "e.g. Weddings, Portraits"
+msgstr ""
+
+#: admin/class-spartan-gallery-admin-tools.php:159
+msgid "Video URL"
+msgstr ""
+
+#: admin/class-spartan-gallery-metaboxes.php:25
+#: admin/class-spartan-gallery-options.php:236
+#: admin/class-spartan-gallery-welcome-dashboard.php:166
+msgid "Shortcode"
+msgstr ""
+
+#: admin/class-spartan-gallery-metaboxes.php:36
+msgid "PHP code"
+msgstr ""
+
+#: admin/class-spartan-gallery-metaboxes.php:47
+msgid "Do you like this plugin?"
+msgstr ""
+
+#: admin/class-spartan-gallery-metaboxes.php:49
+msgid "buy me a coffee"
+msgstr ""
+
+#: admin/class-spartan-gallery-metaboxes.php:52
+msgid "If you like and use this plugin and would like to see future development, you can buy me a cup of coffee."
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:30
+msgid "Spartan Galleries"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:31
+#: admin/class-spartan-gallery-post-type.php:42
+#: admin/class-spartan-gallery-welcome-dashboard.php:103
+#: admin/js/block.js:130
+msgid "Spartan Gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:32
+#: admin/class-spartan-gallery-post-type.php:33
+msgid "Add New Gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:34
+msgid "Edit Gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:35
+msgid "New Gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:36
+msgid "All Galleries"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:37
+msgid "View Gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:38
+msgid "Search Galleries"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:39
+msgid "No galleries found."
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:40
+msgid "No galleries found in Trash."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:25
+msgid "Grid"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:25
+msgid "Even columns, cropped to one shape."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:26
+msgid "Masonry"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:26
+msgid "Uncropped, packed into columns."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:27
+msgid "Justified"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:27
+msgid "Equal-height rows, full width."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:28
+msgid "Mosaic"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:28
+msgid "Mix of large and small tiles."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:29
+msgid "Metro"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:29
+msgid "Magazine-style big, wide and tall tiles."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:30
+msgid "Polaroid"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:30
+msgid "Tilted instant-photo cards."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:31
+msgid "Hexagon"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:31
+msgid "Honeycomb grid."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:32
+msgid "Film strip"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:32
+msgid "One row that scrolls sideways."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:33
+msgid "Spotlight"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:33
+msgid "One large image beside a grid of thumbnails."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:34
+msgid "3D Slider"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:34
+msgid "3D coverflow carousel."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:35
+msgid "Carousel"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:35
+msgid "Several images side by side, swipeable."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:36
+#: admin/class-spartan-gallery-options.php:66
+msgid "Slideshow"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:36
+msgid "One large image with thumbnails."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:37
+msgid "Cards"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:37
+msgid "A stack of cards to swipe through."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:38
+msgid "3D Cube"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:38
+msgid "Images on the faces of a rotating cube."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:39
+msgid "Fullscreen Hero"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:39
+msgid "Big fading slides with a slow zoom."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:40
+msgid "Before / After"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:40
+msgid "Drag to compare image pairs (1+2, 3+4…)."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:50
+msgid "Portfolio"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:54
+msgid "Instagram"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:58
+msgid "Products"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:62
+msgid "Photography"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:80
+msgid "Spartan Gallery Options"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:81
+msgid "Live Preview"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:122
+msgid "Select gallery images"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:123
+msgid "Use selected images"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:129
+msgid "Copied!"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:130
+#: admin/class-spartan-gallery-options.php:238
+msgid "Copy"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:131
+#: admin/class-spartan-gallery-options.php:399
+msgid "Remove"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:132
+msgid "Preview could not be loaded."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:143
+#: admin/class-spartan-gallery-options.php:264
+#: admin/class-spartan-gallery-welcome-dashboard.php:164
+#: admin/js/block.js:110
+#: admin/js/block.js:197
+msgid "Layout"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:144
+#: admin/class-spartan-gallery-options.php:349
+#: admin/class-spartan-gallery-welcome-dashboard.php:165
+msgid "Images"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:145
+#: admin/class-spartan-gallery-options.php:415
+msgid "Image Style"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:146
+#: admin/class-spartan-gallery-options.php:461
+msgid "Filter & Loading"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:147
+#: admin/class-spartan-gallery-options.php:489
+#: admin/class-spartan-gallery-welcome-dashboard.php:87
+msgid "Lightbox"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:148
+#: admin/class-spartan-gallery-options.php:527
+msgid "Container"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:149
+#: admin/class-spartan-gallery-options.php:253
+msgid "Custom CSS"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:216
+msgid "Enabled"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:239
+msgid "Paste it into any page or post, or use the \"Spartan Gallery Block\" in the block editor. To show several galleries as cover cards, use [spartan_album] or the \"Spartan Album\" block."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:254
+msgid "CSS Code"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:256
+msgid "The gallery container has the class .spartan-gallery-wrapper (plus .sg-layout-grid, .sg-layout-masonry, …)."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:267
+msgid "Quick start:"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:287
+#: admin/js/block.js:199
+msgid "Columns"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:289
+msgid "Automatically reduced to 3 on tablets and 2 on phones."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:291
+msgid "Image shape"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:296
+msgid "Square (1:1)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:297
+msgid "Landscape (4:3)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:298
+msgid "Landscape (3:2)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:299
+msgid "Widescreen (16:9)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:300
+msgid "Portrait (3:4)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:301
+msgid "Original (no cropping)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:304
+msgid "Images are cropped from the center to fit."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:306
+msgid "Row height"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:308
+msgid "Rows stretch slightly so they always fill the full width."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:310
+msgid "Gap between images"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:314
+msgid "Slide size"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:316
+#: admin/class-spartan-gallery-options.php:529
+msgid "Width"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:318
+#: admin/class-spartan-gallery-options.php:325
+#: admin/class-spartan-gallery-options.php:533
+msgid "Height"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:326
+#, php-format
+msgid "% of the screen height"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:329
+msgid "Full width"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:330
+msgid "Stretch to the edges of the screen"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:331
+msgid "Breaks out of the content column. Turn off if your theme already shows the gallery full width."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:333
+msgid "Text on slides"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:334
+msgid "Show each image's caption over the slide"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:335
+msgid "The title is shown too when \"Show image title\" is on in the Lightbox tab."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:337
+msgid "Autoplay"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:339
+msgid "Pauses while the visitor hovers over the gallery."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:341
+msgid "Slide delay"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:342
+msgid "seconds"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:343
+msgid "Used by autoplay and by the lightbox slideshow button."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:353
+msgid "Images in this gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:355
+msgid "Choose images by hand"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:356
+msgid "All images with a Gallery Tag (updates automatically)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:361
+msgid "— Choose a tag —"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:365
+#, php-format
+msgid "%1$s (%2$s)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:375
+msgid "Newest first"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:376
+msgid "Oldest first"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:377
+msgid "By title"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:378
+msgid "Random"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:381
+msgid "Max."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:387
+#, php-format
+msgid "Tag images in the Media Library or in the table below; manage tags under %s."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:388
+msgid "Media › Gallery Tags"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:393
+msgid "Drag thumbnails to change the order."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:403
+msgid "Add / Manage Images"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:405
+msgid "Edit titles, captions, alt text, tags and video links"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:406
+msgid "Changes are saved to the Media Library when you click Update, so they apply everywhere the image is used."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:417
+msgid "Image quality"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:422
+msgid "Fast – smaller files, quickest loading"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:423
+msgid "Balanced – sharp on most screens (recommended)"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:424
+msgid "Full size – original uploads, largest files"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:427
+msgid "Each visitor still gets a size that fits their screen. The lightbox always shows the original."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:429
+msgid "Hover effect"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:434
+msgid "Zoom in"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:435
+msgid "Fade"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:436
+msgid "Darken"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:437
+msgid "Darken + show title"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:438
+msgid "None"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:443
+#: admin/class-spartan-gallery-options.php:564
+msgid "Rounded corners"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:447
+msgid "Protect images"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:448
+msgid "Disable right-click and dragging"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:449
+msgid "Discourages casual copying (also hides the lightbox download button). It cannot stop someone determined: images that can be seen can always be saved."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:451
+msgid "Watermark text"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:452
+msgid "© Your Name"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:453
+msgid "Shown over images in the gallery and the lightbox. The image files themselves are not changed."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:461
+msgid "For Grid, Masonry, Justified, Mosaic and Polaroid layouts."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:463
+#: admin/class-spartan-gallery-welcome-dashboard.php:88
+msgid "Filter buttons"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:464
+msgid "Show tag buttons above the gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:465
+msgid "Give images \"Gallery Tags\" in the Media Library (e.g. Weddings, Portraits). One button appears per tag used in this gallery, plus \"All\"."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:467
+msgid "Loading"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:472
+msgid "Show all images at once"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:473
+msgid "\"Load more\" button"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:474
+msgid "Load more automatically while scrolling"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:477
+msgid "Big galleries open faster when only the first images are shown."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:479
+msgid "Images per batch"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:483
+msgid "Filtering and \"load more\" are not available for the selected layout."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:489
+msgid "Full-screen viewer with swipe, keyboard and zoom. Not used by the Before / After layout."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:491
+msgid "Open images in a lightbox"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:495
+msgid "Show image title"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:497
+msgid "Shown under the image. WordPress uses the file name as the title unless you change it in the Media Library, so this is off by default."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:499
+msgid "Show caption"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:501
+msgid "The \"Caption\" field from the Media Library. Images without a caption show nothing."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:503
+msgid "Thumbnail strip"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:507
+msgid "Download button"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:511
+msgid "Share button"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:513
+msgid "Facebook, X, Pinterest and \"Copy link\" for the image being viewed."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:515
+msgid "Link to each image"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:517
+msgid "The address bar shows a link (…#sg-12-1/4) that reopens the lightbox at that image, so visitors can bookmark or send it."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:519
+msgid "Slideshow button"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:521
+msgid "Advances automatically using the \"Slide delay\" from the Layout tab."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:527
+msgid "Everything here is optional; leave fields empty for a full-width gallery without a frame."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:531
+#, php-format
+msgid "e.g. 800px or 80%. Empty = full width."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:535
+msgid "Empty = as tall as the images need. A fixed height adds a scrollbar."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:537
+msgid "Background"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:541
+msgid "Inner spacing"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:545
+msgid "Border"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:553
+msgid "Solid"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:554
+msgid "Dashed"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:555
+msgid "Dotted"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:556
+msgid "Double"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:562
+msgid "0 = no border."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:573
+msgid "Preview width"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:574
+msgid "Desktop"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:574
+msgid "Tablet"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:574
+msgid "Phone"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:578
+msgid "Refresh"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:583
+msgid "Gallery preview"
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:584
+msgid "Updates as you change settings. Nothing is saved until you click Update."
+msgstr ""
+
+#: admin/class-spartan-gallery-options.php:648
+msgid "Add images in the \"Images\" tab to see a preview."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:41
+#: admin/class-spartan-gallery-welcome-dashboard.php:42
+msgid "Getting Started"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:87
+msgid "Full-screen viewer with swipe, keyboard and zoom, plus optional thumbnails, download and slideshow buttons."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:88
+msgid "Tag images (Weddings, Portraits…) and let visitors filter the gallery with one click."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:89
+msgid "Big galleries show the first images instantly and load the rest with a button or while scrolling."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:90
+msgid "Albums"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:90
+msgid "Show several galleries as cover cards; each one opens in the lightbox."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:91
+msgid "Responsive & fast"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:91
+msgid "Columns adapt to phones and tablets, images use responsive sizes, and scripts only load where a gallery is shown."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:92
+msgid "Live preview"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:92
+msgid "See every change instantly in the editor, at desktop, tablet and phone widths — before you save."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:93
+msgid "Videos"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:93
+msgid "Add a YouTube, Vimeo or MP4 link to any image and it plays in the lightbox."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:94
+msgid "Share & link"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:94
+msgid "Every image gets its own link, plus optional Facebook, X, Pinterest and copy-link buttons."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:95
+msgid "Protection & watermark"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:95
+msgid "Discourage right-click saving and show your name over the images."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:99
+msgid "Getting Started with Spartan Gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:107
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:113
+#, php-format
+msgid "Beautiful, fast photo galleries in minutes. Pick one of %s layouts, add your images and paste a shortcode — no coding needed."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:117
+#: admin/class-spartan-gallery-welcome-dashboard.php:139
+msgid "Create a gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:118
+msgid "View all galleries"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:129
+msgid "Three steps to your first gallery"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:133
+msgid "Add images"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:138
+#, php-format
+msgid "%s, give it a name and open the Images tab. Drag thumbnails to change their order."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:146
+msgid "Choose a look"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:147
+msgid "Pick a layout or a one-click preset (Portfolio, Instagram, Products, Photography, Slideshow). The live preview updates as you go."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:151
+msgid "Publish it"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:152
+msgid "Click \"Copy\" next to the shortcode and paste it into any page, or add the \"Spartan Gallery Block\" in the block editor."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:159
+msgid "Your galleries"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:180
+msgid "(no title)"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:199
+#, php-format
+msgid "%s layouts"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:216
+msgid "Built in"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:230
+msgid "Shortcodes"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:233
+msgid "One gallery. The ID is shown on the gallery list and in the gallery editor."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:235
+msgid "All published galleries as cover cards."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:237
+msgid "Only the chosen galleries, in that order."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:241
+msgid "Tips"
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:247
+#, php-format
+msgid "Organize images with %s, then turn on \"Filter buttons\" in the gallery's Filter & Loading tab."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:252
+msgid "Write a Caption for an image in the Media Library to show it in the lightbox."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:253
+msgid "For Before / After, add images in pairs: the 1st image is \"before\", the 2nd \"after\", and so on."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:254
+msgid "Galleries with many images load faster with \"Load more\" turned on."
+msgstr ""
+
+#: admin/class-spartan-gallery-welcome-dashboard.php:263
+#, php-format
+msgid "Questions or ideas? Visit %s."
+msgstr ""
+
+#: admin/js/block.js:53
+msgid "Loading gallery…"
+msgstr ""
+
+#: admin/js/block.js:63
+msgid "Spartan Gallery Block"
+msgstr ""
+
+#: admin/js/block.js:64
+msgid "Show one of your Spartan Galleries."
+msgstr ""
+
+#: admin/js/block.js:80
+msgid "Select a gallery"
+msgstr ""
+
+#: admin/js/block.js:85
+msgid "Gallery default"
+msgstr ""
+
+#: admin/js/block.js:107
+msgid "Gallery Settings"
+msgstr ""
+
+#: admin/js/block.js:111
+msgid "Overrides the layout chosen in the gallery, for this block only."
+msgstr ""
+
+#: admin/js/block.js:122
+msgid "Edit this gallery"
+msgstr ""
+
+#: admin/js/block.js:127
+msgid "This gallery has no images yet."
+msgstr ""
+
+#: admin/js/block.js:130
+msgid "Choose which gallery to show."
+msgstr ""
+
+#: admin/js/block.js:143
+msgid "Spartan Album"
+msgstr ""
+
+#: admin/js/block.js:144
+msgid "Gallery covers; clicking one opens that gallery in a lightbox."
+msgstr ""
+
+#: admin/js/block.js:179
+msgid "Galleries"
+msgstr ""
+
+#: admin/js/block.js:180
+msgid "Leave all unchecked to show every published gallery."
+msgstr ""
+
+#: admin/js/block.js:209
+msgid "Show gallery titles"
+msgstr ""
+
+#: admin/js/block.js:218
+msgid "No published galleries with images yet."
+msgstr ""

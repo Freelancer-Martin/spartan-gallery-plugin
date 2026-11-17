@@ -32,10 +32,10 @@ class Spartan_Gallery_Renderer {
 	const POST_TYPE = 'spartan_gallery_type';
 
 	/** Layouts built on Swiper. */
-	const SWIPER_LAYOUTS = array( 'slider', 'carousel', 'slideshow' );
+	const SWIPER_LAYOUTS = array( 'slider', 'carousel', 'slideshow', 'cards', 'cube', 'hero' );
 
 	/** Layouts where the hover effect setting applies. */
-	const HOVER_LAYOUTS = array( 'grid', 'masonry', 'justified', 'mosaic', 'polaroid', 'carousel' );
+	const HOVER_LAYOUTS = array( 'grid', 'masonry', 'justified', 'mosaic', 'metro', 'polaroid', 'filmstrip', 'carousel' );
 
 	/** Layouts made of independent tiles: these support filtering and "load more". */
 	const COLLECTION_LAYOUTS = array( 'grid', 'masonry', 'justified', 'mosaic', 'polaroid' );
@@ -65,6 +65,12 @@ class Spartan_Gallery_Renderer {
 				'spartan-gallery-swiper-ui' => $url . 'css/spartan-gallery-swiper.css',
 				'spartan-gallery-glightbox' => $url . 'vendor/glightbox/glightbox.min.css',
 			),
+			// Loaded on demand by GLightbox when a video is opened.
+			'plyr' => array(
+				'js'   => $url . 'vendor/plyr/plyr.min.js',
+				'css'  => $url . 'vendor/plyr/plyr.css',
+				'icon' => $url . 'vendor/plyr/plyr.svg',
+			),
 			'js'  => array(
 				'imagesloaded'              => includes_url( 'js/imagesloaded.min.js' ),
 				'masonry'                   => includes_url( 'js/masonry.min.js' ),
@@ -90,6 +96,34 @@ class Spartan_Gallery_Renderer {
 		// Libraries are enqueued per layout; this script initializes whichever
 		// of them are present on DOMContentLoaded, so it declares no hard deps.
 		wp_register_script( 'spartan-gallery', $a['js']['spartan-gallery'], array(), $ver, true );
+		wp_add_inline_script( 'spartan-gallery', self::js_config(), 'before' );
+	}
+
+	/**
+	 * Settings + translated strings for spartan-gallery-public.js.
+	 */
+	public static function js_config() {
+		$a = self::asset_urls();
+		$config = array(
+			'plyr' => array(
+				'js'   => add_query_arg( 'ver', '3.7.8', $a['plyr']['js'] ),
+				'css'  => add_query_arg( 'ver', '3.7.8', $a['plyr']['css'] ),
+				'icon' => $a['plyr']['icon'],
+			),
+			'i18n' => array(
+				'download'  => __( 'Download image', 'spartan-gallery' ),
+				'play'      => __( 'Play slideshow', 'spartan-gallery' ),
+				'pause'     => __( 'Pause slideshow', 'spartan-gallery' ),
+				'share'     => __( 'Share', 'spartan-gallery' ),
+				'copyLink'  => __( 'Copy link', 'spartan-gallery' ),
+				'copied'    => __( 'Link copied', 'spartan-gallery' ),
+				/* translators: %d: image number */
+				'image'     => __( 'Image %d', 'spartan-gallery' ),
+				'previous'  => __( 'Previous', 'spartan-gallery' ),
+				'next'      => __( 'Next', 'spartan-gallery' ),
+			),
+		);
+		return 'window.spartanGalleryConfig = ' . wp_json_encode( $config ) . ';';
 	}
 
 	public static function enqueue_assets( $layout, $lightbox ) {
@@ -149,6 +183,50 @@ class Spartan_Gallery_Renderer {
 	}
 
 	/**
+	 * The images a gallery shows: hand-picked IDs, or every image with the
+	 * chosen Gallery Tag (newest/oldest/title/random, up to the limit).
+	 *
+	 * @param array  $settings  From Spartan_Gallery_Settings.
+	 * @param string $image_ids Comma-separated IDs (used for manual galleries).
+	 * @return WP_Post[]
+	 */
+	public static function gallery_attachments( array $settings, $image_ids ) {
+		if ( 'tag' !== $settings['source'] ) {
+			return self::get_attachments( Spartan_Gallery_Settings::parse_image_ids( $image_ids ) );
+		}
+		if ( ! $settings['source_tag'] || ! term_exists( (int) $settings['source_tag'], Spartan_Gallery_Taxonomy::TAXONOMY ) ) {
+			return array();
+		}
+
+		$orders = array(
+			'date_desc' => array( 'date', 'DESC' ),
+			'date_asc'  => array( 'date', 'ASC' ),
+			'title'     => array( 'title', 'ASC' ),
+			'random'    => array( 'rand', 'ASC' ),
+		);
+		list( $orderby, $order ) = $orders[ $settings['source_order'] ];
+
+		return get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'post_mime_type' => 'image',
+				'posts_per_page' => $settings['source_limit'],
+				'orderby'        => $orderby,
+				'order'          => $order,
+				'no_found_rows'  => true,
+				'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- the whole point of a tag-based gallery.
+					array(
+						'taxonomy' => Spartan_Gallery_Taxonomy::TAXONOMY,
+						'field'    => 'term_id',
+						'terms'    => (int) $settings['source_tag'],
+					),
+				),
+			)
+		);
+	}
+
+	/**
 	 * Derived values the layouts need, on top of the raw settings.
 	 */
 	private static function prepare( array $s ) {
@@ -180,10 +258,12 @@ class Spartan_Gallery_Renderer {
 	/**
 	 * Render a saved gallery for the front end.
 	 *
-	 * @param int $gallery_id Spartan Gallery post ID.
+	 * @param int   $gallery_id Spartan Gallery post ID.
+	 * @param array $overrides  Per-placement overrides; currently only 'layout'
+	 *                          (from the shortcode's layout="" or the block).
 	 * @return string HTML (empty string if the gallery doesn't exist or isn't viewable).
 	 */
-	public static function render( $gallery_id ) {
+	public static function render( $gallery_id, array $overrides = array() ) {
 		$gallery_id = absint( $gallery_id );
 		$gallery    = $gallery_id ? get_post( $gallery_id ) : null;
 
@@ -195,14 +275,17 @@ class Spartan_Gallery_Renderer {
 			return '';
 		}
 
-		$ids         = Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $gallery_id, 'spartan_gallery_uploaded_images', true ) );
-		$attachments = self::get_attachments( $ids );
+		$settings = Spartan_Gallery_Settings::get( $gallery_id );
+		if ( ! empty( $overrides['layout'] ) && in_array( $overrides['layout'], Spartan_Gallery_Settings::layouts(), true ) ) {
+			$settings['image_layout_select'] = $overrides['layout'];
+		}
+
+		$attachments = self::gallery_attachments( $settings, get_post_meta( $gallery_id, 'spartan_gallery_uploaded_images', true ) );
 		if ( empty( $attachments ) ) {
 			return '<!-- spartan-gallery: no images -->';
 		}
 
-		$settings = Spartan_Gallery_Settings::get( $gallery_id );
-		$s        = self::prepare( $settings );
+		$s = self::prepare( $settings );
 
 		self::enqueue_assets( $s['layout'], $s['lightbox'] );
 
@@ -270,6 +353,24 @@ class Spartan_Gallery_Renderer {
 			case 'compare':
 				$inner = self::render_compare( $attachments, $s, $uid );
 				break;
+			case 'metro':
+				$inner = self::render_metro( $attachments, $s, $uid );
+				break;
+			case 'filmstrip':
+				$inner = self::render_filmstrip( $attachments, $s, $uid );
+				break;
+			case 'spotlight':
+				$inner = self::render_spotlight( $attachments, $s, $uid );
+				break;
+			case 'cards':
+				$inner = self::render_cards( $attachments, $s, $uid );
+				break;
+			case 'cube':
+				$inner = self::render_cube( $attachments, $s, $uid );
+				break;
+			case 'hero':
+				$inner = self::render_hero( $attachments, $s, $uid );
+				break;
 			default:
 				$inner = self::render_grid( $attachments, $s, $uid );
 		}
@@ -282,8 +383,20 @@ class Spartan_Gallery_Renderer {
 		if ( in_array( $s['layout'], self::HOVER_LAYOUTS, true ) ) {
 			$classes[] = 'sg-hover-' . $s['hover_effect'];
 		}
+		if ( $s['protect_images'] ) {
+			$classes[] = 'sg-protect';
+		}
+		if ( 'hero' === $s['layout'] && $s['hero_fullwidth'] ) {
+			$classes[] = 'sg-fullwidth';
+		}
 
 		$data = '';
+		if ( $s['protect_images'] ) {
+			$data .= ' data-sg-protect';
+		}
+		if ( '' !== $s['watermark_text'] ) {
+			$data .= ' data-sg-watermark="' . esc_attr( $s['watermark_text'] ) . '"';
+		}
 		if ( $s['filter'] ) {
 			$data .= ' data-sg-filterable';
 		}
@@ -295,6 +408,8 @@ class Spartan_Gallery_Renderer {
 			$data .= ' data-sg-lb-download="' . ( $s['lightbox_download'] ? '1' : '0' ) . '"';
 			$data .= ' data-sg-lb-slideshow="' . ( $s['lightbox_slideshow'] ? '1' : '0' ) . '"';
 			$data .= ' data-sg-delay="' . absint( $s['autoplay_delay'] ) . '"';
+			$data .= ' data-sg-lb-share="' . ( $s['lightbox_share'] ? '1' : '0' ) . '"';
+			$data .= ' data-sg-deeplink="' . ( $s['deep_linking'] ? '1' : '0' ) . '"';
 		}
 
 		$html = '';
@@ -377,10 +492,19 @@ class Spartan_Gallery_Renderer {
 			return '<span class="' . esc_attr( $class ) . '">';
 		}
 
-		$full = wp_get_attachment_image_src( $attachment->ID, 'full' );
-		$href = $full ? $full[0] : wp_get_attachment_url( $attachment->ID );
+		$full  = wp_get_attachment_image_src( $attachment->ID, 'full' );
+		$href  = $full ? $full[0] : wp_get_attachment_url( $attachment->ID );
+		$video = self::video_url( $attachment->ID );
+		if ( $video ) {
+			// The image stays as the tile / poster; the lightbox plays the video.
+			$href   = $video;
+			$class .= ' sg-has-video';
+		}
 
 		$attrs = ' href="' . esc_url( $href ) . '" class="' . esc_attr( $class . ' sg-lightbox' ) . '" data-gallery="' . esc_attr( $uid ) . '"';
+		if ( $video ) {
+			$attrs .= ' data-sg-thumb="' . esc_url( $full ? $full[0] : '' ) . '"';
+		}
 
 		// The title is off by default: WordPress fills it with the file name
 		// ("IMG_1234") unless someone edits it in the Media Library.
@@ -401,7 +525,24 @@ class Spartan_Gallery_Renderer {
 	}
 
 	private static function link_close( $s ) {
-		return $s['lightbox'] ? '</a>' : '</span>';
+		$mark = '' !== $s['watermark_text'] ? '<span class="sg-watermark" aria-hidden="true">' . esc_html( $s['watermark_text'] ) . '</span>' : '';
+		return $mark . ( $s['lightbox'] ? '</a>' : '</span>' );
+	}
+
+	/**
+	 * YouTube / Vimeo / .mp4 / .webm URL attached to an image (see the
+	 * "Video URL" field), or '' when the image is just an image.
+	 */
+	public static function video_url( $attachment_id ) {
+		$url = (string) get_post_meta( $attachment_id, '_sg_video_url', true );
+		return self::is_video_url( $url ) ? $url : '';
+	}
+
+	public static function is_video_url( $url ) {
+		if ( ! $url || ! wp_http_validate_url( $url ) ) {
+			return false;
+		}
+		return (bool) preg_match( '~^https?://((www\.|m\.)?youtube\.com/|youtu\.be/|(www\.|player\.)?vimeo\.com/)|\.(mp4|webm|ogv)(\?.*)?$~i', $url );
 	}
 
 	/** Title overlay used by the "title" hover effect. */
@@ -618,6 +759,97 @@ class Spartan_Gallery_Renderer {
 		return $html . '</div>';
 	}
 
+	/**
+	 * Metro tiles: a fixed rhythm of big, wide, tall and small tiles on a
+	 * square-cell grid (sized with container query units, see the CSS).
+	 */
+	private static function render_metro( $attachments, $s, $uid ) {
+		$cols = max( 3, $s['columns'] );
+		$html = '<div class="sg-metro-wrap"><div class="sg-metro sg-cols-' . absint( $cols ) . '">';
+		foreach ( $attachments as $attachment ) {
+			$html .= self::item( $attachment, $s, $uid, array( 'sizes' => self::column_sizes( $cols / 2 ) ) );
+		}
+		return $html . '</div></div>';
+	}
+
+	/** One horizontally scrolling row (CSS scroll-snap) with arrow buttons. */
+	private static function render_filmstrip( $attachments, $s, $uid ) {
+		$html  = '<div class="sg-filmstrip" data-sg-filmstrip style="--sg-row-h:' . absint( $s['justified_row_height'] ) . 'px;">';
+		$html .= '<button type="button" class="sg-strip-btn sg-strip-prev" aria-label="' . esc_attr__( 'Previous', 'spartan-gallery' ) . '">&#8249;</button>';
+		$html .= '<div class="sg-strip-track" tabindex="0" role="region" aria-label="' . esc_attr__( 'Gallery', 'spartan-gallery' ) . '">';
+		foreach ( $attachments as $attachment ) {
+			$src = wp_get_attachment_image_src( $attachment->ID, $s['size'] );
+			$ar  = ( $src && $src[1] && $src[2] ) ? max( 0.4, min( 3, $src[1] / $src[2] ) ) : 1.5;
+			$html .= self::item( $attachment, $s, $uid, array(), ' style="--sg-ar:' . esc_attr( number_format( $ar, 4, '.', '' ) ) . ';"' );
+		}
+		$html .= '</div>';
+		$html .= '<button type="button" class="sg-strip-btn sg-strip-next" aria-label="' . esc_attr__( 'Next', 'spartan-gallery' ) . '">&#8250;</button>';
+		return $html . '</div>';
+	}
+
+	/** One large image plus a grid of thumbnails that switch it. */
+	private static function render_spotlight( $attachments, $s, $uid ) {
+		$main   = '';
+		$thumbs = '';
+		foreach ( $attachments as $i => $attachment ) {
+			$main .= '<div class="sg-spotlight-panel" id="' . esc_attr( $uid . '-p' . $i ) . '"' . ( $i ? ' hidden' : '' ) . '>';
+			$main .= self::link_open( $attachment, $s, $uid );
+			$main .= self::image( $attachment, $s['size'], array( 'sizes' => '(max-width: 900px) 100vw, 66vw' ) );
+			$main .= self::link_close( $s );
+			$main .= '</div>';
+
+			/* translators: %d: image number */
+			$label   = sprintf( __( 'Show image %d', 'spartan-gallery' ), $i + 1 );
+			$thumbs .= '<button type="button" class="sg-spotlight-thumb' . ( $i ? '' : ' is-active' ) . '" data-index="' . absint( $i ) . '" aria-controls="' . esc_attr( $uid . '-p' . $i ) . '" aria-pressed="' . ( $i ? 'false' : 'true' ) . '" aria-label="' . esc_attr( $label ) . '">';
+			$thumbs .= self::image( $attachment, 'thumbnail', array( 'alt' => '' ) );
+			$thumbs .= '</button>';
+		}
+		return '<div class="sg-spotlight" data-sg-spotlight style="' . esc_attr( self::ratio_style( $s, '4 / 3' ) ) . '"><div class="sg-spotlight-main">' . $main . '</div><div class="sg-spotlight-thumbs">' . $thumbs . '</div></div>';
+	}
+
+	/** Shared markup for the single-slide Swiper layouts (cards, cube, hero). */
+	private static function simple_swiper( $attachments, $s, $uid, $class, $data_attr, $style, $slide_extra = null, $pagination = true ) {
+		$html  = '<div class="' . esc_attr( $class ) . ' swiper" ' . $data_attr . self::swiper_data( $s ) . ' style="' . esc_attr( $style ) . '">';
+		$html .= '<div class="swiper-wrapper">';
+		foreach ( $attachments as $attachment ) {
+			$html .= '<div class="swiper-slide">';
+			$html .= self::link_open( $attachment, $s, $uid );
+			$html .= self::image( $attachment, $s['size'], array( 'sizes' => 'hero' === $s['layout'] ? '100vw' : '(max-width: 600px) 90vw, 560px' ) );
+			$html .= self::link_close( $s );
+			if ( $slide_extra ) {
+				$html .= call_user_func( $slide_extra, $attachment );
+			}
+			$html .= '</div>';
+		}
+		return $html . '</div>' . self::swiper_controls( $pagination ) . '</div>';
+	}
+
+	private static function render_cards( $attachments, $s, $uid ) {
+		return '<div class="sg-cards-wrap">' . self::simple_swiper( $attachments, $s, $uid, 'sg-cards', 'data-sg-cards', self::ratio_style( $s, '3 / 4' ), null, false ) . '</div>';
+	}
+
+	private static function render_cube( $attachments, $s, $uid ) {
+		return '<div class="sg-cube-wrap">' . self::simple_swiper( $attachments, $s, $uid, 'sg-cube', 'data-sg-cube', self::ratio_style( $s, '1 / 1' ) ) . '</div>';
+	}
+
+	private static function render_hero( $attachments, $s, $uid ) {
+		$text = function ( $attachment ) use ( $s ) {
+			if ( ! $s['hero_text'] ) {
+				return '';
+			}
+			$title   = $s['lightbox_title'] ? trim( wp_strip_all_tags( $attachment->post_title ) ) : '';
+			$caption = trim( wp_strip_all_tags( $attachment->post_excerpt ) );
+			if ( '' === $title && '' === $caption ) {
+				return '';
+			}
+			return '<div class="sg-hero-text">'
+				. ( '' !== $title ? '<p class="sg-hero-title">' . esc_html( $title ) . '</p>' : '' )
+				. ( '' !== $caption ? '<p class="sg-hero-caption">' . esc_html( $caption ) . '</p>' : '' )
+				. '</div>';
+		};
+		return self::simple_swiper( $attachments, $s, $uid, 'sg-hero', 'data-sg-hero', '--sg-hero-h:' . absint( $s['hero_height'] ) . 'vh;', $text );
+	}
+
 	/* ------------------------------------------------------------------ */
 	/* Albums                                                              */
 	/* ------------------------------------------------------------------ */
@@ -651,13 +883,12 @@ class Spartan_Gallery_Renderer {
 		$cards = '';
 
 		foreach ( $galleries as $gallery ) {
-			$ids         = Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $gallery->ID, 'spartan_gallery_uploaded_images', true ) );
-			$attachments = self::get_attachments( $ids );
+			$settings    = Spartan_Gallery_Settings::get( $gallery->ID );
+			$attachments = self::gallery_attachments( $settings, get_post_meta( $gallery->ID, 'spartan_gallery_uploaded_images', true ) );
 			if ( empty( $attachments ) ) {
 				continue;
 			}
 
-			$settings             = Spartan_Gallery_Settings::get( $gallery->ID );
 			$s                    = self::prepare( $settings );
 			$s['lightbox']        = true;
 			$group                = $uid . '-' . $gallery->ID;
@@ -678,7 +909,8 @@ class Spartan_Gallery_Renderer {
 			foreach ( $attachments as $attachment ) {
 				$thumb  = wp_get_attachment_image_src( $attachment->ID, 'thumbnail' );
 				$open   = self::link_open( $attachment, $s, $group );
-				$cards .= str_replace( '<a ', '<a hidden data-sg-thumb="' . esc_url( $thumb ? $thumb[0] : '' ) . '" ', $open ) . '</a>';
+				$extra  = false === strpos( $open, 'data-sg-thumb=' ) ? ' data-sg-thumb="' . esc_url( $thumb ? $thumb[0] : '' ) . '"' : '';
+				$cards .= str_replace( '<a ', '<a hidden' . $extra . ' ', $open ) . '</a>';
 			}
 			$cards .= '</div>';
 		}
@@ -703,7 +935,7 @@ class Spartan_Gallery_Renderer {
 		foreach ( $a['css'] as $href ) {
 			$head .= '<link rel="stylesheet" href="' . esc_url( add_query_arg( 'ver', $ver, $href ) ) . '" />';
 		}
-		$foot = '';
+		$foot = '<script>' . self::js_config() . '</script>';
 		foreach ( $a['js'] as $src ) {
 			$foot .= '<script src="' . esc_url( add_query_arg( 'ver', $ver, $src ) ) . '"></script>';
 		}

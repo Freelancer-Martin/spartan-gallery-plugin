@@ -27,19 +27,19 @@ class SpartnaGalleryPostType {
      */
     public function register() {
         $labels = array(
-            'name'                  => $this->name,
-            'singular_name'         => $this->singular_name,
-            'add_new'               => 'Add New',
-            'add_new_item'          => 'Add New '   . $this->singular_name,
-            'edit_item'             => 'Edit '      . $this->singular_name,
-            'new_item'              => 'New '       . $this->singular_name,
-            'all_items'             => 'All '       . $this->name,
-            'view_item'             => 'View '      . $this->name,
-            'search_items'          => 'Search '    . $this->name,
-            'not_found'             => 'No '        . strtolower($this->name) . ' found',
-            'not_found_in_trash'    => 'No '        . strtolower($this->name) . ' found in Trash',
+            'name'                  => __( 'Spartan Galleries', 'spartan-gallery' ),
+            'singular_name'         => __( 'Spartan Gallery', 'spartan-gallery' ),
+            'add_new'               => __( 'Add New Gallery', 'spartan-gallery' ),
+            'add_new_item'          => __( 'Add New Gallery', 'spartan-gallery' ),
+            'edit_item'             => __( 'Edit Gallery', 'spartan-gallery' ),
+            'new_item'              => __( 'New Gallery', 'spartan-gallery' ),
+            'all_items'             => __( 'All Galleries', 'spartan-gallery' ),
+            'view_item'             => __( 'View Gallery', 'spartan-gallery' ),
+            'search_items'          => __( 'Search Galleries', 'spartan-gallery' ),
+            'not_found'             => __( 'No galleries found.', 'spartan-gallery' ),
+            'not_found_in_trash'    => __( 'No galleries found in Trash.', 'spartan-gallery' ),
             'parent_item_colon'     => '',
-            'menu_name'             => $this->name
+            'menu_name'             => __( 'Spartan Gallery', 'spartan-gallery' ),
         );
         $args = array(
             'labels'                => $labels,

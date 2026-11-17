@@ -149,3 +149,132 @@
 		height: 46px;
 	}
 }
+
+/* ---------- Cards ---------- */
+
+.sg-cards-wrap {
+	position: relative;
+	padding: 20px 64px 30px;
+	overflow: hidden;
+	--swiper-navigation-color: #1d2327;
+}
+
+.sg-cards.swiper {
+	width: min(380px, 78%);
+	overflow: visible;
+}
+
+.sg-cards .swiper-slide {
+	aspect-ratio: var(--sg-ratio, 3 / 4);
+	overflow: hidden;
+	border-radius: max(var(--sg-radius, 0px), 14px);
+	background: #ddd;
+}
+
+.sg-cards .sg-link,
+.sg-cube .sg-link,
+.sg-hero .sg-link {
+	width: 100%;
+	height: 100%;
+	border-radius: 0;
+}
+
+.sg-cards .sg-img,
+.sg-cube .sg-img,
+.sg-hero .sg-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* ---------- Cube ---------- */
+
+.sg-cube-wrap {
+	padding: 10px 0 60px;
+	--swiper-navigation-color: #fff;
+	--swiper-pagination-color: #1d2327;
+}
+
+.sg-cube.swiper {
+	width: min(520px, 100%);
+	aspect-ratio: var(--sg-ratio, 1 / 1);
+	overflow: visible;
+}
+
+.sg-cube .swiper-pagination {
+	bottom: -40px;
+}
+
+.sg-cube .swiper-button-prev,
+.sg-cube .swiper-button-next {
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+/* ---------- Fullscreen hero ---------- */
+
+.sg-hero.swiper {
+	width: 100%;
+	height: var(--sg-hero-h, 70vh);
+	min-height: 280px;
+	border-radius: var(--sg-radius, 0);
+	background: #111;
+	--swiper-navigation-color: #fff;
+	--swiper-pagination-color: #fff;
+	--swiper-pagination-bullet-inactive-color: #fff;
+}
+
+.sg-fullwidth .sg-hero.swiper {
+	width: 100vw;
+	margin-left: calc(50% - 50vw);
+	border-radius: 0;
+}
+
+/* Ken Burns: the active slide slowly zooms in. */
+.sg-hero .swiper-slide .sg-img {
+	transform: scale(1);
+	transition: transform 9s ease-out;
+}
+
+.sg-hero .swiper-slide-active .sg-img {
+	transform: scale(1.12);
+}
+
+.sg-hero .sg-hero-text {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 80px 8% 56px;
+	background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+	color: #fff;
+	pointer-events: none;
+}
+
+.sg-hero .sg-hero-title {
+	margin: 0 0 6px;
+	font-size: clamp(24px, 4vw, 48px);
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+.sg-hero .sg-hero-caption {
+	margin: 0;
+	max-width: 760px;
+	font-size: clamp(15px, 1.6vw, 20px);
+	line-height: 1.45;
+	opacity: 0.92;
+}
+
+.sg-hero .swiper-button-prev,
+.sg-hero .swiper-button-next {
+	filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sg-hero .swiper-slide .sg-img,
+	.sg-hero .swiper-slide-active .sg-img {
+		transform: none;
+		transition: none;
+	}
+}

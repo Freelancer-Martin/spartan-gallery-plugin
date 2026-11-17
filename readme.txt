@@ -5,7 +5,7 @@ Tags:               gallery, portfolio, photo gallery, gutenberg, responsive
 Requires at least: 4.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag:         1.7.2
+Stable tag:         1.8.0
 License:            GPLv2 or later
 License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,26 +13,46 @@ License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
 Spartan Gallery is a responsive, multipurpose portfolio gallery plugin for WordPress. It works well for agencies, personal portfolios, architecture and photography studios, product showcases, artist portfolios, and blogs.
 
-Ten layouts are included:
+Sixteen layouts are included:
 
 * **Grid** – even columns (1–6), images cropped to the shape you choose.
 * **Masonry** – uncropped images packed into columns, Pinterest-style.
 * **Justified** – rows of equal height that always fill the full width.
 * **Mosaic** – a grid mixing large and small tiles.
+* **Metro** – magazine-style big, wide and tall tiles.
 * **Polaroid** – tilted instant-photo cards that straighten on hover.
 * **Hexagon** – a honeycomb grid.
+* **Film strip** – one row that scrolls sideways.
+* **Spotlight** – one large image beside a grid of thumbnails.
 * **3D Slider** – a touch-friendly 3D coverflow carousel.
 * **Carousel** – several images side by side, swipeable, optional autoplay.
 * **Slideshow** – one large image with a thumbnail strip, optional autoplay.
+* **Cards** – a stack of cards to swipe through.
+* **3D Cube** – images on the faces of a rotating cube.
+* **Fullscreen Hero** – big fading slides with a slow "Ken Burns" zoom and caption text.
 * **Before / After** – drag a handle to compare pairs of images.
 
-Every layout (except Before / After) can open images in a full-screen lightbox with swipe, keyboard navigation, captions from the Media Library, a thumbnail strip, and optional download and slideshow buttons. Choose a hover effect (zoom, fade, darken, or title overlay), rounded corners and image quality per gallery.
+Every layout (except Before / After) can open images in a full-screen lightbox with swipe, keyboard navigation, captions from the Media Library, a thumbnail strip, and optional download, slideshow and share buttons. Choose a hover effect (zoom, fade, darken, or title overlay), rounded corners and image quality per gallery.
+
+**Videos:** add a YouTube, Vimeo or MP4 link to any image ("Gallery video URL" in the Media Library) and it plays in the lightbox, with the image as its poster.
+
+**Share & deep links:** every image gets its own link that reopens the lightbox at that image, plus optional Facebook, X, Pinterest and copy-link buttons.
+
+**Protection & watermark:** optionally disable right-click/dragging and show a text watermark over the images.
+
+**Smart galleries:** instead of picking images by hand, show every image with a Gallery Tag — new images with that tag appear automatically.
 
 **Filterable galleries:** give images "Gallery Tags" in the Media Library and turn on filter buttons, so visitors can show only Weddings, Portraits, etc.
 
 **Load more:** big galleries can show the first images and load the rest with a "Load more" button or automatically while scrolling.
 
 **Albums:** show several galleries as cover cards with `[spartan_album]` or the "Spartan Album" block; clicking a cover opens that gallery in the lightbox.
+
+**Block editor:** the Spartan Gallery and Spartan Album blocks show a live preview of the real gallery, and the gallery block can switch layout per placement.
+
+**Bulk image details:** edit titles, captions, alt text, tags and video links for all images of a gallery in one table. Galleries can be duplicated from the gallery list.
+
+**Translations:** includes an Estonian translation; ready for translation into any language.
 
 Galleries are responsive (columns reduce automatically on tablets and phones), use WordPress' responsive image sizes, and only load their scripts and styles on pages that actually contain a gallery. The front end does not require jQuery.
 
@@ -49,6 +69,8 @@ Each gallery has its own options panel with one-click presets (Portfolio, Instag
 
 Replace 123 with the gallery ID shown in the Spartan Gallery list. (`page_id` is still accepted as an alias.)
 
+`[spartan_gallery id="123" layout="masonry"]` shows the same gallery with a different layout on this page. Layout names: grid, masonry, justified, mosaic, metro, polaroid, hexagon, filmstrip, spotlight, slider, carousel, slideshow, cards, cube, hero, compare.
+
 = Albums =
 
 `[spartan_album]` lists every published gallery as a cover card.
@@ -56,10 +78,11 @@ Replace 123 with the gallery ID shown in the Spartan Gallery list. (`page_id` is
 
 = Third-party libraries =
 
-Bundled in `public/vendor/`, both MIT licensed:
+Bundled in `public/vendor/`, all MIT licensed:
 
 * [Swiper](https://swiperjs.com/) 14.4.0 – 3D slider, carousel and slideshow. Source: https://github.com/nolimits4web/swiper
 * [GLightbox](https://biati-digital.github.io/glightbox/) 3.3.1 – lightbox. Source: https://github.com/biati-digital/glightbox
+* [Plyr](https://plyr.io/) 3.7.8 – video player inside the lightbox (loaded only when a video is opened; its icons are served locally, nothing is loaded from the Plyr CDN). Source: https://github.com/sampotts/plyr
 
 The Masonry layout uses the Masonry and imagesLoaded scripts that ship with WordPress core.
 
@@ -96,6 +119,17 @@ coming soon
 12. The Getting Started page.
 
 == Changelog ==
+
+= 1.8.0 =
+* Six new layouts: Metro, Film strip, Spotlight, Cards, 3D Cube and Fullscreen Hero (16 in total).
+* Block editor: live preview of galleries and albums, and a per-block layout override. The shortcode accepts layout="…" too.
+* Videos: a "Gallery video URL" field on images (YouTube, Vimeo, MP4) plays in the lightbox. Plyr is bundled; nothing is loaded from third-party CDNs.
+* Share button (Facebook, X, Pinterest, copy link) and deep links that reopen the lightbox at a given image.
+* Smart galleries: show every image with a chosen Gallery Tag (newest, oldest, by title or random).
+* Edit titles, captions, alt text, tags and video links for all gallery images in one table.
+* "Duplicate" action in the gallery list.
+* Optional right-click/drag protection and text watermark.
+* Estonian translation; all admin and block editor text is translatable. Post type labels are now translatable (and "Spartan Gallerys" is fixed).
 
 = 1.7.2 =
 * Fixed: with both the lightbox thumbnail strip and a title/caption turned on, the caption was hidden behind the strip and the image was not centered.
@@ -152,6 +186,9 @@ coming soon
 * First stable release.
 
 == Upgrade Notice ==
+
+= 1.8.0 =
+Six new layouts, block editor previews, videos, sharing, smart (tag-based) galleries and an Estonian translation. Existing galleries are unchanged.
 
 = 1.7.0 =
 Adds filter buttons (via Gallery Tags), load more / infinite scroll and albums. No changes to existing galleries.

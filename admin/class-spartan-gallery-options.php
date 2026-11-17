@@ -26,11 +26,17 @@ class Spartan_Gallery_Options {
 			'masonry'   => array( __( 'Masonry', 'spartan-gallery' ), __( 'Uncropped, packed into columns.', 'spartan-gallery' ) ),
 			'justified' => array( __( 'Justified', 'spartan-gallery' ), __( 'Equal-height rows, full width.', 'spartan-gallery' ) ),
 			'mosaic'    => array( __( 'Mosaic', 'spartan-gallery' ), __( 'Mix of large and small tiles.', 'spartan-gallery' ) ),
+			'metro'     => array( __( 'Metro', 'spartan-gallery' ), __( 'Magazine-style big, wide and tall tiles.', 'spartan-gallery' ) ),
 			'polaroid'  => array( __( 'Polaroid', 'spartan-gallery' ), __( 'Tilted instant-photo cards.', 'spartan-gallery' ) ),
 			'hexagon'   => array( __( 'Hexagon', 'spartan-gallery' ), __( 'Honeycomb grid.', 'spartan-gallery' ) ),
+			'filmstrip' => array( __( 'Film strip', 'spartan-gallery' ), __( 'One row that scrolls sideways.', 'spartan-gallery' ) ),
+			'spotlight' => array( __( 'Spotlight', 'spartan-gallery' ), __( 'One large image beside a grid of thumbnails.', 'spartan-gallery' ) ),
 			'slider'    => array( __( '3D Slider', 'spartan-gallery' ), __( '3D coverflow carousel.', 'spartan-gallery' ) ),
 			'carousel'  => array( __( 'Carousel', 'spartan-gallery' ), __( 'Several images side by side, swipeable.', 'spartan-gallery' ) ),
 			'slideshow' => array( __( 'Slideshow', 'spartan-gallery' ), __( 'One large image with thumbnails.', 'spartan-gallery' ) ),
+			'cards'     => array( __( 'Cards', 'spartan-gallery' ), __( 'A stack of cards to swipe through.', 'spartan-gallery' ) ),
+			'cube'      => array( __( '3D Cube', 'spartan-gallery' ), __( 'Images on the faces of a rotating cube.', 'spartan-gallery' ) ),
+			'hero'      => array( __( 'Fullscreen Hero', 'spartan-gallery' ), __( 'Big fading slides with a slow zoom.', 'spartan-gallery' ) ),
 			'compare'   => array( __( 'Before / After', 'spartan-gallery' ), __( 'Drag to compare image pairs (1+2, 3+4…).', 'spartan-gallery' ) ),
 		);
 	}
@@ -118,6 +124,7 @@ class Spartan_Gallery_Options {
 				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
 				'previewAction'  => self::PREVIEW_ACTION,
 				'previewNonce'   => wp_create_nonce( self::PREVIEW_ACTION ),
+				'rowsAction'     => Spartan_Gallery_Admin_Tools::ROWS_ACTION,
 				'presets'        => $presets,
 				'copied'         => esc_html__( 'Copied!', 'spartan-gallery' ),
 				'copy'           => esc_html__( 'Copy', 'spartan-gallery' ),
@@ -277,11 +284,11 @@ class Spartan_Gallery_Options {
 		echo '</div>';
 		echo '</td></tr>';
 
-		self::row_open( __( 'Columns', 'spartan-gallery' ), 'gallery_columns', array( 'grid', 'masonry', 'mosaic', 'polaroid', 'carousel', 'compare' ) );
+		self::row_open( __( 'Columns', 'spartan-gallery' ), 'gallery_columns', array( 'grid', 'masonry', 'mosaic', 'metro', 'polaroid', 'carousel', 'compare' ) );
 		self::select( 'gallery_columns', $v['gallery_columns'], array_combine( range( 1, 6 ), range( 1, 6 ) ) );
 		self::row_close( __( 'Automatically reduced to 3 on tablets and 2 on phones.', 'spartan-gallery' ) );
 
-		self::row_open( __( 'Image shape', 'spartan-gallery' ), 'grid_aspect_ratio', array( 'grid', 'carousel', 'slideshow' ) );
+		self::row_open( __( 'Image shape', 'spartan-gallery' ), 'grid_aspect_ratio', array( 'grid', 'carousel', 'slideshow', 'spotlight', 'cards', 'cube' ) );
 		self::select(
 			'grid_aspect_ratio',
 			$v['grid_aspect_ratio'],
@@ -296,11 +303,11 @@ class Spartan_Gallery_Options {
 		);
 		self::row_close( __( 'Images are cropped from the center to fit.', 'spartan-gallery' ) );
 
-		self::row_open( __( 'Row height', 'spartan-gallery' ), 'justified_row_height', array( 'justified' ) );
+		self::row_open( __( 'Row height', 'spartan-gallery' ), 'justified_row_height', array( 'justified', 'filmstrip' ) );
 		self::number( 'justified_row_height', $v['justified_row_height'], 'px' );
 		self::row_close( __( 'Rows stretch slightly so they always fill the full width.', 'spartan-gallery' ) );
 
-		self::row_open( __( 'Gap between images', 'spartan-gallery' ), 'img_margin', array( 'grid', 'masonry', 'justified', 'mosaic', 'polaroid', 'carousel', 'slideshow', 'compare' ) );
+		self::row_open( __( 'Gap between images', 'spartan-gallery' ), 'img_margin', array( 'grid', 'masonry', 'justified', 'mosaic', 'metro', 'polaroid', 'filmstrip', 'spotlight', 'carousel', 'slideshow', 'compare' ) );
 		self::number( 'img_margin', $v['img_margin'], 'px' );
 		self::row_close();
 
@@ -315,7 +322,19 @@ class Spartan_Gallery_Options {
 		echo '</span>';
 		self::row_close();
 
-		self::row_open( __( 'Autoplay', 'spartan-gallery' ), 'autoplay', array( 'slider', 'carousel', 'slideshow' ) );
+		self::row_open( __( 'Height', 'spartan-gallery' ), 'hero_height', array( 'hero' ) );
+		self::number( 'hero_height', $v['hero_height'], __( '% of the screen height', 'spartan-gallery' ) );
+		self::row_close();
+
+		self::row_open( __( 'Full width', 'spartan-gallery' ), 'hero_fullwidth', array( 'hero' ) );
+		self::toggle( 'hero_fullwidth', $v['hero_fullwidth'], __( 'Stretch to the edges of the screen', 'spartan-gallery' ) );
+		self::row_close( __( 'Breaks out of the content column. Turn off if your theme already shows the gallery full width.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Text on slides', 'spartan-gallery' ), 'hero_text', array( 'hero' ) );
+		self::toggle( 'hero_text', $v['hero_text'], __( 'Show each image\'s caption over the slide', 'spartan-gallery' ) );
+		self::row_close( __( 'The title is shown too when "Show image title" is on in the Lightbox tab.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Autoplay', 'spartan-gallery' ), 'autoplay', array( 'slider', 'carousel', 'slideshow', 'cards', 'cube', 'hero' ) );
 		self::toggle( 'autoplay', $v['autoplay'] );
 		self::row_close( __( 'Pauses while the visitor hovers over the gallery.', 'spartan-gallery' ) );
 
@@ -327,10 +346,51 @@ class Spartan_Gallery_Options {
 	}
 
 	private static function render_upload_panel( $id ) {
-		self::section_open( 'upload', __( 'Images', 'spartan-gallery' ), __( 'Drag thumbnails to change the order. Title, caption and Gallery Tags are edited in the Media Library: click "Add / Manage Images", then click an image.', 'spartan-gallery' ) );
+		self::section_open( 'upload', __( 'Images', 'spartan-gallery' ) );
 		$uploaded_ids = implode( ',', Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $id, 'spartan_gallery_uploaded_images', true ) ) );
+		$v            = Spartan_Gallery_Settings::get( $id );
 
-		echo '<tr><td colspan="2">';
+		self::row_open( __( 'Images in this gallery', 'spartan-gallery' ) );
+		echo '<fieldset class="sg-source">';
+		echo '<label><input type="radio" name="source" value="manual" ' . checked( $v['source'], 'manual', false ) . ' /> ' . esc_html__( 'Choose images by hand', 'spartan-gallery' ) . '</label><br />';
+		echo '<label><input type="radio" name="source" value="tag" ' . checked( $v['source'], 'tag', false ) . ' /> ' . esc_html__( 'All images with a Gallery Tag (updates automatically)', 'spartan-gallery' ) . '</label>';
+		echo '</fieldset>';
+		self::row_close();
+
+		$terms = get_terms( array( 'taxonomy' => Spartan_Gallery_Taxonomy::TAXONOMY, 'hide_empty' => false ) );
+		$tag_options = array( 0 => __( '— Choose a tag —', 'spartan-gallery' ) );
+		if ( ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				/* translators: 1: tag name, 2: number of images */
+				$tag_options[ $term->term_id ] = sprintf( __( '%1$s (%2$s)', 'spartan-gallery' ), $term->name, number_format_i18n( $term->count ) );
+			}
+		}
+		echo '<tr class="sg-source-tag"><th scope="row"><label for="source_tag">' . esc_html__( 'Gallery Tag', 'spartan-gallery' ) . '</label></th><td>';
+		self::select( 'source_tag', $v['source_tag'], $tag_options );
+		echo ' ';
+		self::select(
+			'source_order',
+			$v['source_order'],
+			array(
+				'date_desc' => __( 'Newest first', 'spartan-gallery' ),
+				'date_asc'  => __( 'Oldest first', 'spartan-gallery' ),
+				'title'     => __( 'By title', 'spartan-gallery' ),
+				'random'    => __( 'Random', 'spartan-gallery' ),
+			)
+		);
+		echo ' <label>' . esc_html__( 'Max.', 'spartan-gallery' ) . ' ';
+		self::number( 'source_limit', $v['source_limit'] );
+		echo '</label>';
+		echo '<p class="description">';
+		printf(
+			/* translators: %s: link to Media > Gallery Tags */
+			esc_html__( 'Tag images in the Media Library or in the table below; manage tags under %s.', 'spartan-gallery' ),
+			'<a href="' . esc_url( admin_url( 'edit-tags.php?taxonomy=' . Spartan_Gallery_Taxonomy::TAXONOMY . '&post_type=attachment' ) ) . '">' . esc_html__( 'Media › Gallery Tags', 'spartan-gallery' ) . '</a>'
+		);
+		echo '</p></td></tr>';
+
+		echo '<tr class="sg-source-manual"><td colspan="2">';
+		echo '<p class="description">' . esc_html__( 'Drag thumbnails to change the order.', 'spartan-gallery' ) . '</p>';
 		echo '<input type="hidden" id="spartan_gallery_uploaded_images" name="spartan_gallery_uploaded_images" value="' . esc_attr( $uploaded_ids ) . '" />';
 		echo '<div id="sg-gallery-preview" class="sg-gallery-preview">';
 		foreach ( Spartan_Gallery_Settings::parse_image_ids( $uploaded_ids ) as $att_id ) {
@@ -341,6 +401,12 @@ class Spartan_Gallery_Options {
 		}
 		echo '</div>';
 		echo '<p><button type="button" class="button button-primary" id="sg-gallery-select">' . esc_html__( 'Add / Manage Images', 'spartan-gallery' ) . '</button></p>';
+
+		echo '<details class="sg-details"' . ( $uploaded_ids ? '' : ' hidden' ) . '><summary>' . esc_html__( 'Edit titles, captions, alt text, tags and video links', 'spartan-gallery' ) . '</summary>';
+		echo '<p class="description">' . esc_html__( 'Changes are saved to the Media Library when you click Update, so they apply everywhere the image is used.', 'spartan-gallery' ) . '</p>';
+		echo '<table class="widefat sg-details-table"><tbody id="sg-details-rows">';
+		echo Spartan_Gallery_Admin_Tools::rows_html( Spartan_Gallery_Settings::parse_image_ids( $uploaded_ids ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in rows_html().
+		echo '</tbody></table></details>';
 		echo '</td></tr>';
 		self::section_close();
 	}
@@ -377,6 +443,14 @@ class Spartan_Gallery_Options {
 		self::row_open( __( 'Rounded corners', 'spartan-gallery' ), 'image_radius' );
 		self::number( 'image_radius', $v['image_radius'], 'px' );
 		self::row_close();
+
+		self::row_open( __( 'Protect images', 'spartan-gallery' ), 'protect_images' );
+		self::toggle( 'protect_images', $v['protect_images'], __( 'Disable right-click and dragging', 'spartan-gallery' ) );
+		self::row_close( __( 'Discourages casual copying (also hides the lightbox download button). It cannot stop someone determined: images that can be seen can always be saved.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Watermark text', 'spartan-gallery' ), 'watermark_text' );
+		echo '<input type="text" id="watermark_text" name="watermark_text" value="' . esc_attr( $v['watermark_text'] ) . '" maxlength="80" class="regular-text" placeholder="' . esc_attr__( '© Your Name', 'spartan-gallery' ) . '" />';
+		self::row_close( __( 'Shown over images in the gallery and the lightbox. The image files themselves are not changed.', 'spartan-gallery' ) );
 
 		self::section_close();
 	}
@@ -433,6 +507,14 @@ class Spartan_Gallery_Options {
 		self::row_open( __( 'Download button', 'spartan-gallery' ), 'lightbox_download' );
 		self::toggle( 'lightbox_download', $v['lightbox_download'] );
 		self::row_close();
+
+		self::row_open( __( 'Share button', 'spartan-gallery' ), 'lightbox_share' );
+		self::toggle( 'lightbox_share', $v['lightbox_share'] );
+		self::row_close( __( 'Facebook, X, Pinterest and "Copy link" for the image being viewed.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Link to each image', 'spartan-gallery' ), 'deep_linking' );
+		self::toggle( 'deep_linking', $v['deep_linking'] );
+		self::row_close( __( 'The address bar shows a link (…#sg-12-1/4) that reopens the lightbox at that image, so visitors can bookmark or send it.', 'spartan-gallery' ) );
 
 		self::row_open( __( 'Slideshow button', 'spartan-gallery' ), 'lightbox_slideshow' );
 		self::toggle( 'lightbox_slideshow', $v['lightbox_slideshow'] );
@@ -524,6 +606,10 @@ class Spartan_Gallery_Options {
 		if ( isset( $request['spartan_gallery_uploaded_images'] ) ) {
 			update_post_meta( $post_id, 'spartan_gallery_uploaded_images', implode( ',', Spartan_Gallery_Settings::parse_image_ids( $request['spartan_gallery_uploaded_images'] ) ) );
 		}
+
+		if ( isset( $request['sg_img'] ) ) {
+			Spartan_Gallery_Admin_Tools::save_rows( $request['sg_img'], isset( $request['sg_img_orig'] ) ? $request['sg_img_orig'] : array() );
+		}
 	}
 
 	/**
@@ -556,7 +642,7 @@ class Spartan_Gallery_Options {
 	 * @param string $image_ids Comma-separated attachment IDs.
 	 */
 	private static function preview_html( $post_id, array $settings, $image_ids ) {
-		$attachments = Spartan_Gallery_Renderer::get_attachments( Spartan_Gallery_Settings::parse_image_ids( $image_ids ) );
+		$attachments = Spartan_Gallery_Renderer::gallery_attachments( $settings, $image_ids );
 
 		if ( empty( $attachments ) ) {
 			$markup = '<p style="color:#646970;text-align:center;padding:40px 0;">' . esc_html__( 'Add images in the "Images" tab to see a preview.', 'spartan-gallery' ) . '</p>';

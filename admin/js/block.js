@@ -1,188 +1,226 @@
-(function (blocks, blockEditor, components, element, apiFetch) {
-    var registerBlockType = blocks.registerBlockType;
-    var InspectorControls = blockEditor.InspectorControls;
-    var PanelBody = components.PanelBody;
-    var SelectControl = components.SelectControl;
-    var createElement = element.createElement;
+/**
+ * Spartan Gallery blocks: "Spartan Gallery Block" and "Spartan Album".
+ *
+ * Both are rendered by PHP (render_callback); in the editor they show a
+ * live server-side preview of the real gallery.
+ */
+( function ( blocks, blockEditor, components, element, apiFetch, i18n, serverSideRender ) {
+	var registerBlockType = blocks.registerBlockType;
+	var InspectorControls = blockEditor.InspectorControls;
+	var useBlockProps     = blockEditor.useBlockProps;
+	var PanelBody         = components.PanelBody;
+	var SelectControl     = components.SelectControl;
+	var Placeholder       = components.Placeholder;
+	var Spinner           = components.Spinner;
+	var el                = element.createElement;
+	var useState          = element.useState;
+	var useEffect         = element.useEffect;
+	var __                = i18n.__;
+	var ServerSideRender  = serverSideRender;
 
-    registerBlockType('custom/gallery-block', {
-        title: 'Spartan Gallery Block',
-        icon: 'format-gallery',
-        category: 'common',
+	var data = window.sgBlockData || { layouts: [] };
 
-        attributes: {
-            galleryId: {
-                type: 'integer',
-                default: 0,
-            },
-        },
+	/** Published + draft galleries, fetched once and shared by both blocks. */
+	var galleryRequest = null;
+	function useGalleries() {
+		var state = useState( null );
+		var galleries = state[ 0 ];
+		var setGalleries = state[ 1 ];
+		useEffect( function () {
+			if ( ! galleryRequest ) {
+				galleryRequest = apiFetch( { path: '/wp/v2/spartan_gallery_type?per_page=100&status=publish,draft,private&_fields=id,title,status' } )
+					.catch( function () {
+						return apiFetch( { path: '/wp/v2/spartan_gallery_type?per_page=100&_fields=id,title' } );
+					} );
+			}
+			galleryRequest.then( setGalleries ).catch( function () {
+				setGalleries( [] );
+			} );
+		}, [] );
+		return galleries;
+	}
 
-        edit: function (props) {
-            var attributes = props.attributes;
-            var setAttributes = props.setAttributes;
-            var galleryId = attributes.galleryId;
-            var [galleries, setGalleries] = wp.element.useState([]);
-            var [loading, setLoading] = wp.element.useState(true);
+	function galleryLabel( g ) {
+		var title = ( g.title && g.title.rendered ) || ( '#' + g.id );
+		return g.status && 'publish' !== g.status ? title + ' (' + g.status + ')' : title;
+	}
 
-            // Fetch galleries using the REST API
-            wp.element.useEffect(() => {
-                apiFetch({ path: '/wp/v2/spartan_gallery_type' })
-                    .then(function (response) {
-                        setGalleries(response);
-                        setLoading(false);
-                    })
-                    .catch(function (error) {
-                        console.error('Error fetching galleries:', error);
-                        setLoading(false);
-                    });
-            }, []);
+	function preview( blockName, attributes, emptyLabel ) {
+		return el( ServerSideRender, {
+			block: blockName,
+			attributes: attributes,
+			LoadingResponsePlaceholder: function () {
+				return el( Placeholder, { icon: 'format-gallery', label: __( 'Loading gallery…', 'spartan-gallery' ) }, el( Spinner ) );
+			},
+			EmptyResponsePlaceholder: function () {
+				return el( Placeholder, { icon: 'format-gallery', label: emptyLabel } );
+			}
+		} );
+	}
 
-            // Build the options for SelectControl
-            function getGalleryOptions() {
-                var options = [{ label: 'Select a Gallery', value: 0 }];
-                galleries.forEach(function (gallery) {
-                    options.push({
-                        label: gallery.title.rendered,
-                        value: gallery.id,
-                    });
-                });
-                return options;
-            }
+	registerBlockType( 'custom/gallery-block', {
+		apiVersion: 2,
+		title: __( 'Spartan Gallery Block', 'spartan-gallery' ),
+		description: __( 'Show one of your Spartan Galleries.', 'spartan-gallery' ),
+		icon: 'format-gallery',
+		category: 'media',
+		keywords: [ 'gallery', 'photos', 'images', 'lightbox' ],
 
-            // Render function
-            return createElement(
-                'div',
-                {},
-                createElement(
-                    InspectorControls,
-                    {},
-                    createElement(
-                        PanelBody,
-                        { title: 'Gallery Settings' },
-                        loading
-                            ? createElement('p', {}, 'Loading galleries...')
-                            : createElement(SelectControl, {
-                                  label: 'Select a Gallery',
-                                  value: galleryId || 0,
-                                  options: getGalleryOptions(),
-                                  onChange: function (selectedId) {
-                                      setAttributes({ galleryId: parseInt(selectedId, 10) });
-                                  },
-                              })
-                    )
-                ),
-                createElement(
-                    'div',
-                    { className: 'gallery-block' },
-                    galleryId
-                        ? createElement('p', {}, 'Gallery ID: ' + galleryId)
-                        : createElement('p', {}, 'Please select a gallery.')
-                )
-            );
-        },
+		attributes: {
+			galleryId: { type: 'integer', default: 0 },
+			layout: { type: 'string', default: '' }
+		},
 
-        save: function () {
-            // Since this block is rendered dynamically, return null
-            return null;
-        },
-    });
-    registerBlockType('custom/album-block', {
-        title: 'Spartan Album',
-        description: 'Gallery covers; clicking one opens that gallery in a lightbox.',
-        icon: 'images-alt2',
-        category: 'common',
+		edit: function ( props ) {
+			var a = props.attributes;
+			var setAttributes = props.setAttributes;
+			var galleries = useGalleries();
+			var blockProps = useBlockProps();
 
-        attributes: {
-            galleryIds: { type: 'array', items: { type: 'integer' }, default: [] },
-            columns: { type: 'integer', default: 3 },
-            showTitles: { type: 'boolean', default: true },
-        },
+			var galleryOptions = [ { label: __( 'Select a gallery', 'spartan-gallery' ), value: 0 } ].concat(
+				( galleries || [] ).map( function ( g ) {
+					return { label: galleryLabel( g ), value: g.id };
+				} )
+			);
+			var layoutOptions = [ { label: __( 'Gallery default', 'spartan-gallery' ), value: '' } ].concat( data.layouts );
 
-        edit: function (props) {
-            var a = props.attributes;
-            var setAttributes = props.setAttributes;
-            var [galleries, setGalleries] = wp.element.useState([]);
-            var [loading, setLoading] = wp.element.useState(true);
+			var picker = galleries === null
+				? el( Spinner )
+				: el( SelectControl, {
+					label: __( 'Gallery', 'spartan-gallery' ),
+					value: a.galleryId || 0,
+					options: galleryOptions,
+					onChange: function ( v ) {
+						setAttributes( { galleryId: parseInt( v, 10 ) || 0 } );
+					},
+					__nextHasNoMarginBottom: true
+				} );
 
-            wp.element.useEffect(function () {
-                apiFetch({ path: '/wp/v2/spartan_gallery_type?per_page=100&_fields=id,title' })
-                    .then(function (response) {
-                        setGalleries(response);
-                        setLoading(false);
-                    })
-                    .catch(function () {
-                        setLoading(false);
-                    });
-            }, []);
+			return el(
+				'div',
+				blockProps,
+				el(
+					InspectorControls,
+					{},
+					el(
+						PanelBody,
+						{ title: __( 'Gallery Settings', 'spartan-gallery' ) },
+						picker,
+						el( SelectControl, {
+							label: __( 'Layout', 'spartan-gallery' ),
+							help: __( 'Overrides the layout chosen in the gallery, for this block only.', 'spartan-gallery' ),
+							value: a.layout,
+							options: layoutOptions,
+							onChange: function ( v ) {
+								setAttributes( { layout: v } );
+							},
+							__nextHasNoMarginBottom: true
+						} ),
+						a.galleryId ? el(
+							'p',
+							{},
+							el( 'a', { href: data.editUrl + a.galleryId, target: '_blank', rel: 'noopener noreferrer' }, __( 'Edit this gallery', 'spartan-gallery' ) )
+						) : null
+					)
+				),
+				a.galleryId
+					? preview( 'custom/gallery-block', a, __( 'This gallery has no images yet.', 'spartan-gallery' ) )
+					: el(
+						Placeholder,
+						{ icon: 'format-gallery', label: __( 'Spartan Gallery', 'spartan-gallery' ), instructions: __( 'Choose which gallery to show.', 'spartan-gallery' ) },
+						picker
+					)
+			);
+		},
 
-            function toggleGallery(id, checked) {
-                var ids = a.galleryIds.filter(function (x) { return x !== id; });
-                if (checked) {
-                    ids.push(id);
-                }
-                setAttributes({ galleryIds: ids });
-            }
+		save: function () {
+			return null;
+		}
+	} );
 
-            var selectedNames = galleries
-                .filter(function (g) { return a.galleryIds.indexOf(g.id) !== -1; })
-                .map(function (g) { return g.title.rendered; });
+	registerBlockType( 'custom/album-block', {
+		apiVersion: 2,
+		title: __( 'Spartan Album', 'spartan-gallery' ),
+		description: __( 'Gallery covers; clicking one opens that gallery in a lightbox.', 'spartan-gallery' ),
+		icon: 'images-alt2',
+		category: 'media',
+		keywords: [ 'album', 'gallery', 'portfolio' ],
 
-            return createElement(
-                'div',
-                {},
-                createElement(
-                    InspectorControls,
-                    {},
-                    createElement(
-                        PanelBody,
-                        { title: 'Galleries' },
-                        createElement('p', {}, 'Leave all unchecked to show every gallery.'),
-                        loading
-                            ? createElement('p', {}, 'Loading galleries...')
-                            : galleries.map(function (g) {
-                                  return createElement(components.CheckboxControl, {
-                                      key: g.id,
-                                      label: g.title.rendered || '#' + g.id,
-                                      checked: a.galleryIds.indexOf(g.id) !== -1,
-                                      onChange: function (checked) { toggleGallery(g.id, checked); },
-                                  });
-                              })
-                    ),
-                    createElement(
-                        PanelBody,
-                        { title: 'Layout' },
-                        createElement(components.RangeControl, {
-                            label: 'Columns',
-                            min: 1,
-                            max: 6,
-                            value: a.columns,
-                            onChange: function (v) { setAttributes({ columns: v || 3 }); },
-                        }),
-                        createElement(components.ToggleControl, {
-                            label: 'Show gallery titles',
-                            checked: a.showTitles,
-                            onChange: function (v) { setAttributes({ showTitles: v }); },
-                        })
-                    )
-                ),
-                createElement(
-                    'div',
-                    { className: 'gallery-block' },
-                    createElement('strong', {}, 'Spartan Album'),
-                    createElement(
-                        'p',
-                        {},
-                        selectedNames.length
-                            ? 'Galleries: ' + selectedNames.join(', ')
-                            : 'All galleries'
-                    ),
-                    createElement('p', {}, a.columns + ' columns')
-                )
-            );
-        },
+		attributes: {
+			galleryIds: { type: 'array', items: { type: 'integer' }, default: [] },
+			columns: { type: 'integer', default: 3 },
+			showTitles: { type: 'boolean', default: true }
+		},
 
-        save: function () {
-            return null;
-        },
-    });
-})(wp.blocks, wp.blockEditor, wp.components, wp.element, wp.apiFetch);
+		edit: function ( props ) {
+			var a = props.attributes;
+			var setAttributes = props.setAttributes;
+			var galleries = useGalleries();
+			var blockProps = useBlockProps();
+
+			function toggleGallery( id, checked ) {
+				var ids = a.galleryIds.filter( function ( x ) {
+					return x !== id;
+				} );
+				if ( checked ) {
+					ids.push( id );
+				}
+				setAttributes( { galleryIds: ids } );
+			}
+
+			return el(
+				'div',
+				blockProps,
+				el(
+					InspectorControls,
+					{},
+					el(
+						PanelBody,
+						{ title: __( 'Galleries', 'spartan-gallery' ) },
+						el( 'p', {}, __( 'Leave all unchecked to show every published gallery.', 'spartan-gallery' ) ),
+						galleries === null
+							? el( Spinner )
+							: galleries.map( function ( g ) {
+								return el( components.CheckboxControl, {
+									key: g.id,
+									label: galleryLabel( g ),
+									checked: a.galleryIds.indexOf( g.id ) !== -1,
+									onChange: function ( checked ) {
+										toggleGallery( g.id, checked );
+									},
+									__nextHasNoMarginBottom: true
+								} );
+							} )
+					),
+					el(
+						PanelBody,
+						{ title: __( 'Layout', 'spartan-gallery' ) },
+						el( components.RangeControl, {
+							label: __( 'Columns', 'spartan-gallery' ),
+							min: 1,
+							max: 6,
+							value: a.columns,
+							onChange: function ( v ) {
+								setAttributes( { columns: v || 3 } );
+							},
+							__nextHasNoMarginBottom: true
+						} ),
+						el( components.ToggleControl, {
+							label: __( 'Show gallery titles', 'spartan-gallery' ),
+							checked: a.showTitles,
+							onChange: function ( v ) {
+								setAttributes( { showTitles: v } );
+							},
+							__nextHasNoMarginBottom: true
+						} )
+					)
+				),
+				preview( 'custom/album-block', a, __( 'No published galleries with images yet.', 'spartan-gallery' ) )
+			);
+		},
+
+		save: function () {
+			return null;
+		}
+	} );
+} )( wp.blocks, wp.blockEditor, wp.components, wp.element, wp.apiFetch, wp.i18n, wp.serverSideRender );

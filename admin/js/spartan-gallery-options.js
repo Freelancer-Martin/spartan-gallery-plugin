@@ -137,13 +137,56 @@
 			return $hiddenInput.val().split( ',' ).filter( Boolean );
 		}
 
+		var $rows    = $( '#sg-details-rows' );
+		var $details = $( '.sg-details' );
+
 		function syncIdsFromThumbs() {
 			var ids = $thumbs.children( '.sg-gallery-thumb' ).map( function () {
 				return String( $( this ).data( 'id' ) );
 			} ).get();
 			$hiddenInput.val( ids.join( ',' ) );
+			syncDetailRows( ids );
 			schedulePreview();
 		}
+
+		// Keep the image details table in step with the thumbnails: drop rows of
+		// removed images, fetch server-rendered rows (with current tags etc.)
+		// for newly added ones.
+		function syncDetailRows( ids ) {
+			$rows.children( '.sg-detail-row' ).each( function () {
+				if ( ids.indexOf( String( $( this ).data( 'id' ) ) ) === -1 ) {
+					$( this ).remove();
+				}
+			} );
+			var have = $rows.children( '.sg-detail-row' ).map( function () {
+				return String( $( this ).data( 'id' ) );
+			} ).get();
+			var missing = ids.filter( function ( id ) {
+				return have.indexOf( id ) === -1;
+			} );
+			$details.prop( 'hidden', ! ids.length );
+			if ( ! missing.length ) {
+				return;
+			}
+			$.post( data.ajaxUrl, {
+				action: data.rowsAction,
+				sg_preview_nonce: data.previewNonce,
+				ids: missing.join( ',' )
+			} ).done( function ( res ) {
+				if ( res && res.success ) {
+					$rows.append( res.data.html );
+				}
+			} );
+		}
+
+		// Image source: hand-picked vs. all images with a tag.
+		function toggleSource() {
+			var tag = 'tag' === $( 'input[name="source"]:checked' ).val();
+			$( '.sg-source-tag' ).toggle( tag );
+			$( '.sg-source-manual' ).toggle( ! tag );
+		}
+		$( 'input[name="source"]' ).on( 'change', toggleSource );
+		toggleSource();
 
 		function thumbHtml( id, url ) {
 			var $thumb = $( '<span class="sg-gallery-thumb"><img alt="" /><a href="#" class="sg-gallery-remove">&times;</a></span>' );
@@ -289,7 +332,9 @@
 		}
 
 		$wrap.on( 'change input', 'input, select, textarea', function () {
-			if ( this.id === 'sg-shortcode' ) {
+			// Image details are saved to the Media Library on Update; the
+			// preview reads them from there, so typing there changes nothing yet.
+			if ( this.id === 'sg-shortcode' || $( this ).closest( '.sg-details' ).length ) {
 				return;
 			}
 			schedulePreview();

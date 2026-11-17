@@ -90,6 +90,9 @@ function wpw_welcome_page_content() {
 		array( 'dashicons-images-alt2', __( 'Albums', 'spartan-gallery' ), __( 'Show several galleries as cover cards; each one opens in the lightbox.', 'spartan-gallery' ) ),
 		array( 'dashicons-smartphone', __( 'Responsive & fast', 'spartan-gallery' ), __( 'Columns adapt to phones and tablets, images use responsive sizes, and scripts only load where a gallery is shown.', 'spartan-gallery' ) ),
 		array( 'dashicons-welcome-view-site', __( 'Live preview', 'spartan-gallery' ), __( 'See every change instantly in the editor, at desktop, tablet and phone widths — before you save.', 'spartan-gallery' ) ),
+		array( 'dashicons-video-alt3', __( 'Videos', 'spartan-gallery' ), __( 'Add a YouTube, Vimeo or MP4 link to any image and it plays in the lightbox.', 'spartan-gallery' ) ),
+		array( 'dashicons-share', __( 'Share & link', 'spartan-gallery' ), __( 'Every image gets its own link, plus optional Facebook, X, Pinterest and copy-link buttons.', 'spartan-gallery' ) ),
+		array( 'dashicons-lock', __( 'Protection & watermark', 'spartan-gallery' ), __( 'Discourage right-click saving and show your name over the images.', 'spartan-gallery' ) ),
 	);
 	?>
 	<div class="wrap sgw">
@@ -104,7 +107,12 @@ function wpw_welcome_page_content() {
 					echo esc_html( sprintf( __( 'Version %s', 'spartan-gallery' ), PLUGIN_NAME_VERSION ) );
 					?>
 				</p>
-				<p class="sgw-lead"><?php esc_html_e( 'Beautiful, fast photo galleries in minutes. Pick one of ten layouts, add your images and paste a shortcode — no coding needed.', 'spartan-gallery' ); ?></p>
+				<p class="sgw-lead">
+					<?php
+					/* translators: %s: number of layouts */
+					echo esc_html( sprintf( __( 'Beautiful, fast photo galleries in minutes. Pick one of %s layouts, add your images and paste a shortcode — no coding needed.', 'spartan-gallery' ), number_format_i18n( count( Spartan_Gallery_Options::layouts() ) ) ) );
+					?>
+				</p>
 				<p class="sgw-actions">
 					<a class="button button-primary button-hero" href="<?php echo esc_url( $new_url ); ?>"><?php esc_html_e( 'Create a gallery', 'spartan-gallery' ); ?></a>
 					<a class="button button-hero" href="<?php echo esc_url( $list_url ); ?>"><?php esc_html_e( 'View all galleries', 'spartan-gallery' ); ?></a>
@@ -164,7 +172,7 @@ function wpw_welcome_page_content() {
 						foreach ( $galleries as $gallery ) :
 							$settings = Spartan_Gallery_Settings::get( $gallery->ID );
 							$layout   = $settings['image_layout_select'];
-							$count    = count( Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $gallery->ID, 'spartan_gallery_uploaded_images', true ) ) );
+							$count    = count( Spartan_Gallery_Renderer::gallery_attachments( $settings, get_post_meta( $gallery->ID, 'spartan_gallery_uploaded_images', true ) ) );
 							$title    = get_the_title( $gallery );
 							?>
 							<tr>
@@ -185,7 +193,12 @@ function wpw_welcome_page_content() {
 		<?php endif; ?>
 
 		<section class="sgw-section">
-			<h2><?php esc_html_e( 'Ten layouts', 'spartan-gallery' ); ?></h2>
+			<h2>
+				<?php
+				/* translators: %s: number of layouts */
+				echo esc_html( sprintf( __( '%s layouts', 'spartan-gallery' ), number_format_i18n( count( Spartan_Gallery_Options::layouts() ) ) ) );
+				?>
+			</h2>
 			<div class="sgw-layouts">
 				<?php foreach ( Spartan_Gallery_Options::layouts() as $value => $data ) : ?>
 					<figure class="sgw-layout">

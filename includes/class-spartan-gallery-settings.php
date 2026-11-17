@@ -43,7 +43,7 @@ class Spartan_Gallery_Settings {
 	);
 
 	public static function layouts() {
-		return array( 'grid', 'masonry', 'justified', 'mosaic', 'polaroid', 'hexagon', 'slider', 'carousel', 'slideshow', 'compare' );
+		return array( 'grid', 'masonry', 'justified', 'mosaic', 'metro', 'polaroid', 'hexagon', 'filmstrip', 'spotlight', 'slider', 'carousel', 'slideshow', 'cards', 'cube', 'hero', 'compare' );
 	}
 
 	public static function aspect_ratios() {
@@ -58,7 +58,7 @@ class Spartan_Gallery_Settings {
 	}
 
 	/**
-	 * type: int (min/max) | bool | enum (choices) | layout | length | color | css
+	 * type: int (min/max) | bool | enum (choices) | layout | length | color | css | text
 	 */
 	public static function fields() {
 		return array(
@@ -76,6 +76,17 @@ class Spartan_Gallery_Settings {
 			'lightbox_thumbnails'  => array( 'type' => 'bool', 'default' => true ),
 			'lightbox_download'    => array( 'type' => 'bool', 'default' => false ),
 			'lightbox_slideshow'   => array( 'type' => 'bool', 'default' => false ),
+			'source'               => array( 'type' => 'enum', 'default' => 'manual', 'choices' => array( 'manual', 'tag' ) ),
+			'source_tag'           => array( 'type' => 'int', 'default' => 0, 'min' => 0, 'max' => PHP_INT_MAX ),
+			'source_order'         => array( 'type' => 'enum', 'default' => 'date_desc', 'choices' => array( 'date_desc', 'date_asc', 'title', 'random' ) ),
+			'source_limit'         => array( 'type' => 'int', 'default' => 100, 'min' => 1, 'max' => 500 ),
+			'hero_height'          => array( 'type' => 'int', 'default' => 70, 'min' => 30, 'max' => 100 ),
+			'hero_fullwidth'       => array( 'type' => 'bool', 'default' => false ),
+			'hero_text'            => array( 'type' => 'bool', 'default' => true ),
+			'lightbox_share'       => array( 'type' => 'bool', 'default' => false ),
+			'deep_linking'         => array( 'type' => 'bool', 'default' => true ),
+			'protect_images'       => array( 'type' => 'bool', 'default' => false ),
+			'watermark_text'       => array( 'type' => 'text', 'default' => '' ),
 			'filter_enabled'       => array( 'type' => 'bool', 'default' => false ),
 			'pagination'           => array( 'type' => 'enum', 'default' => 'none', 'choices' => array( 'none', 'button', 'scroll' ) ),
 			'per_page'             => array( 'type' => 'int', 'default' => 12, 'min' => 1, 'max' => 200 ),
@@ -143,6 +154,9 @@ class Spartan_Gallery_Settings {
 
 			case 'css':
 				return wp_strip_all_tags( (string) $raw );
+
+			case 'text':
+				return mb_substr( sanitize_text_field( (string) $raw ), 0, 80 );
 		}
 
 		return $f['default'];

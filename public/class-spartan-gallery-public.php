@@ -52,8 +52,9 @@ class Spartan_Gallery_Public {
 	public function enqueue_scripts() {}
 
 	/**
-	 * [spartan_gallery id="123"]
+	 * [spartan_gallery id="123"]  or  [spartan_gallery id="123" layout="masonry"]
 	 *
+	 * `layout` overrides the gallery's own layout for this placement.
 	 * `page_id` is accepted as an alias because older documentation used it.
 	 */
 	public function spartan_gallery_shortcode( $atts = array(), $content = null, $tag = '' ) {
@@ -61,6 +62,7 @@ class Spartan_Gallery_Public {
 			array(
 				'id'      => '',
 				'page_id' => '',
+				'layout'  => '',
 			),
 			array_change_key_case( (array) $atts, CASE_LOWER ),
 			$tag
@@ -68,7 +70,12 @@ class Spartan_Gallery_Public {
 
 		$id = $atts['id'] ? $atts['id'] : $atts['page_id'];
 
-		return Spartan_Gallery_Renderer::render( absint( $id ) );
+		$overrides = array();
+		if ( '' !== $atts['layout'] ) {
+			$overrides['layout'] = sanitize_key( $atts['layout'] );
+		}
+
+		return Spartan_Gallery_Renderer::render( absint( $id ), $overrides );
 	}
 
 	/**
