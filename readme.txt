@@ -5,7 +5,7 @@ Tags: gallery, photo gallery, portfolio, lightbox, masonry
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,7 +62,7 @@ Each gallery has its own options panel with one-click presets (Portfolio, Instag
 
 = Example site =
 
-* [Spartan Gallery official site](https://freelancermartin.ee/)
+* [Spartan Gallery official site](https://freelancermartin.com/)
 
 
  = Shortcode =
@@ -159,6 +159,9 @@ An Estonian translation is included and all text is translatable at translate.wo
 12. The Getting Started page.
 
 == Changelog ==
+
+= 1.8.1 =
+* The plugin's website link now points to freelancermartin.com.
 
 = 1.8.0 =
 * Six new layouts: Metro, Film strip, Spotlight, Cards, 3D Cube and Fullscreen Hero (16 in total).

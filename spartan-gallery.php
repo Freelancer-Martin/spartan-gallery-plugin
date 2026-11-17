@@ -8,14 +8,14 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              developerforwebsites@gmail.com
+ * @link              https://freelancermartin.com
  * @since             1.0.0
  * @package           Spartan_Gallery
  *
  * @wordpress-plugin
  * Plugin Name:       Spartan Gallery
  * Description:       A responsive, multipurpose gallery plugin with sixteen layouts, a built-in lightbox with video and sharing, tag filters, load more, albums, live preview, Gutenberg blocks, and per-gallery styling options. No jQuery on the front end.
- * Version:           1.8.0
+ * Version:           1.8.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Freelancer Martin
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Current plugin version (SemVer).
  */
-define( 'SPARTAN_GALLERY_VERSION', '1.8.0' );
+define( 'SPARTAN_GALLERY_VERSION', '1.8.1' );
 
 
 /**

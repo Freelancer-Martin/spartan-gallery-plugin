@@ -258,7 +258,7 @@ function spartan_gallery_welcome_page() {
 			printf(
 				/* translators: %s: website link */
 				esc_html__( 'Questions or ideas? Visit %s.', 'spartan-gallery' ),
-				'<a href="https://freelancermartin.ee/" target="_blank" rel="noopener noreferrer">freelancermartin.ee</a>'
+				'<a href="https://freelancermartin.com/" target="_blank" rel="noopener noreferrer">freelancermartin.com</a>'
 			);
 			?>
 		</p>

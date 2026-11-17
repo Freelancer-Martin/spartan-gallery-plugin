@@ -3,7 +3,7 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       developerforwebsites@gmail.com
+ * @link       https://freelancermartin.com
  * @since      1.0.0
  *
  * @package    Spartan_Gallery
