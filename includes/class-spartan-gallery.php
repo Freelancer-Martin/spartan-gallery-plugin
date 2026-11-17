@@ -164,6 +164,11 @@ class Spartan_Gallery {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-spartan-gallery-settings.php';
 
 		/**
+		 * "Gallery Tags" taxonomy on images (filterable galleries).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-spartan-gallery-taxonomy.php';
+
+		/**
 		 * Renders galleries (all layouts) for the shortcode and the block.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-spartan-gallery-renderer.php';

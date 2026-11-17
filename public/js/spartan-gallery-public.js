@@ -51,14 +51,16 @@
 		if ( typeof window.Masonry !== 'function' ) {
 			return;
 		}
+		// Filtered-out / not-yet-loaded tiles are excluded from the packing.
 		var msnry = new window.Masonry( el, {
-			itemSelector: '.sg-item',
+			itemSelector: '.sg-item:not(.sg-filtered-out):not(.sg-paged-out)',
 			columnWidth: '.sg-masonry-sizer',
 			gutter: intAttr( el, 'data-sg-gutter', 0 ),
 			percentPosition: true,
 			transitionDuration: 0
 		} );
 		el.classList.add( 'is-ready' );
+		el.sgMasonry = msnry;
 
 		// Images carry width/height attributes so the layout is right before
 		// they load, but re-pack as they arrive in case a theme overrides that.
@@ -196,6 +198,118 @@
 	}
 
 	/* ---------------------------------------------------------------- */
+	/* Filtering + load more                                             */
+	/* ---------------------------------------------------------------- */
+
+	function initCollection( gallery ) {
+		var container = gallery.querySelector( '.sg-grid, .sg-masonry, .sg-justified, .sg-mosaic, .sg-polaroid' );
+		if ( ! container ) {
+			return;
+		}
+		var items    = Array.prototype.slice.call( container.querySelectorAll( ':scope > .sg-item' ) );
+		var perPage  = intAttr( gallery, 'data-sg-per-page', 0 );
+		var limit    = perPage || Infinity;
+		var filter   = '*';
+		var moreWrap = gallery.querySelector( '.sg-more-wrap' );
+		var buttons  = gallery.querySelectorAll( '.sg-filter' );
+
+		function matches( item ) {
+			if ( '*' === filter ) {
+				return true;
+			}
+			return ( ' ' + ( item.getAttribute( 'data-sg-tags' ) || '' ) + ' ' ).indexOf( ' ' + filter + ' ' ) !== -1;
+		}
+
+		function apply() {
+			var matching = 0;
+			items.forEach( function ( item ) {
+				var match = matches( item );
+				item.classList.toggle( 'sg-filtered-out', ! match );
+				item.classList.toggle( 'sg-paged-out', match && matching >= limit );
+				if ( match ) {
+					matching++;
+				}
+				// Lightbox browses every image that matches the filter, including
+				// ones not loaded into the grid yet.
+				var link = item.querySelector( 'a.sg-link' );
+				if ( link ) {
+					link.classList.toggle( 'sg-lightbox', match );
+				}
+			} );
+
+			if ( moreWrap ) {
+				moreWrap.hidden = matching <= limit;
+			}
+			if ( container.sgMasonry ) {
+				container.sgMasonry.reloadItems();
+				container.sgMasonry.layout();
+			}
+			refreshLightbox();
+		}
+
+		Array.prototype.forEach.call( buttons, function ( button ) {
+			button.addEventListener( 'click', function () {
+				filter = button.getAttribute( 'data-filter' ) || '*';
+				limit  = perPage || Infinity;
+				Array.prototype.forEach.call( buttons, function ( b ) {
+					b.classList.toggle( 'is-active', b === button );
+					b.setAttribute( 'aria-pressed', b === button ? 'true' : 'false' );
+				} );
+				apply();
+			} );
+		} );
+
+		function loadMore() {
+			if ( moreWrap && ! moreWrap.hidden ) {
+				limit += perPage;
+				apply();
+			}
+		}
+
+		if ( moreWrap ) {
+			moreWrap.querySelector( '.sg-more' ).addEventListener( 'click', function () {
+				var firstNew = null;
+				loadMore();
+				// Move focus to the first newly shown image for keyboard users.
+				items.some( function ( item ) {
+					if ( ! item.classList.contains( 'sg-paged-out' ) && ! item.classList.contains( 'sg-filtered-out' ) && ! item.hasAttribute( 'data-sg-seen' ) ) {
+						firstNew = item;
+						return true;
+					}
+					return false;
+				} );
+				markSeen();
+				if ( firstNew ) {
+					var link = firstNew.querySelector( '.sg-link' );
+					if ( link && link.focus ) {
+						link.focus( { preventScroll: true } );
+					}
+				}
+			} );
+
+			if ( 'scroll' === gallery.getAttribute( 'data-sg-paging' ) && 'IntersectionObserver' in window ) {
+				new IntersectionObserver( function ( entries ) {
+					if ( entries[ 0 ].isIntersecting ) {
+						loadMore();
+						markSeen();
+					}
+				}, { rootMargin: '300px 0px' } ).observe( moreWrap );
+			}
+		}
+
+		function markSeen() {
+			items.forEach( function ( item ) {
+				if ( ! item.classList.contains( 'sg-paged-out' ) && ! item.classList.contains( 'sg-filtered-out' ) ) {
+					item.setAttribute( 'data-sg-seen', '' );
+				}
+			} );
+		}
+
+		apply();
+		markSeen();
+	}
+
+	/* ---------------------------------------------------------------- */
 	/* Lightbox                                                          */
 	/* ---------------------------------------------------------------- */
 
@@ -258,7 +372,7 @@
 			strip.className = 'sg-lb-thumbs';
 			items.forEach( function ( item, i ) {
 				var img = item.node.querySelector( 'img' );
-				var src = img ? ( img.currentSrc || img.src ) : item.href;
+				var src = item.node.getAttribute( 'data-sg-thumb' ) || ( img ? ( img.currentSrc || img.src ) : item.href );
 				var b   = document.createElement( 'button' );
 				b.type = 'button';
 				b.setAttribute( 'aria-label', 'Image ' + ( i + 1 ) );
@@ -311,6 +425,18 @@
 		}
 	}
 
+	/**
+	 * Re-collect lightbox entries after filtering or late-inserted galleries.
+	 * GLightbox's own reload() adds another click handler every time it is
+	 * called (so images would open twice), so only refresh the element list;
+	 * its delegated click handler already matches by selector.
+	 */
+	function refreshLightbox() {
+		if ( lightbox && ! lightbox.lightboxOpen ) {
+			lightbox.elements = lightbox.getElements();
+		}
+	}
+
 	function closeExtras() {
 		if ( ! extras ) {
 			return;
@@ -330,7 +456,7 @@
 			return;
 		}
 		if ( lightbox ) {
-			lightbox.reload();
+			refreshLightbox();
 			return;
 		}
 		// One instance for the whole page; data-gallery keeps each gallery's
@@ -357,6 +483,7 @@
 		each( '[data-sg-slideshow]', initSlideshow );
 		each( '[data-sg-compare]', initCompare );
 		initLightbox();
+		each( '[data-sg-filterable], [data-sg-per-page]', initCollection );
 	}
 
 	// Allow themes/page builders that inject galleries later to re-run this.

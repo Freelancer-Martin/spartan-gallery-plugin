@@ -40,7 +40,7 @@ class Spartan_Gallery_Public {
 		// being printed late in the footer (avoids a flash of unstyled images).
 		if ( is_singular() ) {
 			$post = get_post();
-			if ( $post && ( has_shortcode( $post->post_content, 'spartan_gallery' ) || has_block( 'custom/gallery-block', $post ) ) ) {
+			if ( $post && ( has_shortcode( $post->post_content, 'spartan_gallery' ) || has_shortcode( $post->post_content, 'spartan_album' ) || has_block( 'custom/gallery-block', $post ) || has_block( 'custom/album-block', $post ) ) ) {
 				wp_enqueue_style( 'spartan-gallery' );
 			}
 		}
@@ -71,7 +71,33 @@ class Spartan_Gallery_Public {
 		return Spartan_Gallery_Renderer::render( absint( $id ) );
 	}
 
+	/**
+	 * [spartan_album ids="12,15,18" columns="3" titles="yes"]
+	 *
+	 * Without ids, every published gallery is listed.
+	 */
+	public function spartan_album_shortcode( $atts = array(), $content = null, $tag = '' ) {
+		$atts = shortcode_atts(
+			array(
+				'ids'     => '',
+				'columns' => 3,
+				'titles'  => 'yes',
+			),
+			array_change_key_case( (array) $atts, CASE_LOWER ),
+			$tag
+		);
+
+		return Spartan_Gallery_Renderer::render_album(
+			Spartan_Gallery_Settings::parse_image_ids( $atts['ids'] ),
+			array(
+				'columns' => absint( $atts['columns'] ),
+				'titles'  => ! in_array( strtolower( (string) $atts['titles'] ), array( 'no', 'false', '0', 'off' ), true ),
+			)
+		);
+	}
+
 	public function register_shortcodes() {
 		add_shortcode( 'spartan_gallery', array( $this, 'spartan_gallery_shortcode' ) );
+		add_shortcode( 'spartan_album', array( $this, 'spartan_album_shortcode' ) );
 	}
 }

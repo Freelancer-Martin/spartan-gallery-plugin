@@ -5,7 +5,7 @@ Tags:               gallery, portfolio, photo gallery, gutenberg, responsive
 Requires at least: 4.6
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag:         1.6.0
+Stable tag:         1.7.0
 License:            GPLv2 or later
 License URI:        http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,12 @@ Ten layouts are included:
 
 Every layout (except Before / After) can open images in a full-screen lightbox with swipe, keyboard navigation, captions from the Media Library, a thumbnail strip, and optional download and slideshow buttons. Choose a hover effect (zoom, fade, darken, or title overlay), rounded corners and image quality per gallery.
 
+**Filterable galleries:** give images "Gallery Tags" in the Media Library and turn on filter buttons, so visitors can show only Weddings, Portraits, etc.
+
+**Load more:** big galleries can show the first images and load the rest with a "Load more" button or automatically while scrolling.
+
+**Albums:** show several galleries as cover cards with `[spartan_album]` or the "Spartan Album" block; clicking a cover opens that gallery in the lightbox.
+
 Galleries are responsive (columns reduce automatically on tablets and phones), use WordPress' responsive image sizes, and only load their scripts and styles on pages that actually contain a gallery. The front end does not require jQuery.
 
 Each gallery has its own options panel with one-click presets (Portfolio, Instagram, Products, Photography, Slideshow), a live preview with desktop/tablet/phone widths, drag-and-drop image ordering, and a copy-the-shortcode button. A Gutenberg block adds galleries anywhere in the block editor.
@@ -48,6 +54,11 @@ https://www.youtube.com/watch?v=VF1u_1SLHjs
 `[spartan_gallery id="123"]`
 
 Replace 123 with the gallery ID shown in the Spartan Gallery list. (`page_id` is still accepted as an alias.)
+
+= Albums =
+
+`[spartan_album]` lists every published gallery as a cover card.
+`[spartan_album ids="12,15,18" columns="3" titles="no"]` shows only the chosen galleries, in that order.
 
 = Third-party libraries =
 
@@ -91,6 +102,12 @@ coming soon
 
 == Changelog ==
 
+= 1.7.0 =
+* Filterable galleries: new "Gallery Tags" for images (Media > Gallery Tags) and optional filter buttons above Grid, Masonry, Justified, Mosaic and Polaroid galleries.
+* "Load more" button or infinite scroll for large galleries, with a configurable batch size. Works together with the filters.
+* Albums: [spartan_album] shortcode and "Spartan Album" block show galleries as cover cards that open in the lightbox.
+* The lightbox only includes images that match the active filter.
+
 = 1.6.0 =
 * New layouts: Mosaic, Polaroid, Carousel, Slideshow (with thumbnails) and Before / After.
 * Live preview in the gallery editor, with desktop, tablet and phone widths.
@@ -132,6 +149,9 @@ coming soon
 * First stable release.
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+Adds filter buttons (via Gallery Tags), load more / infinite scroll and albums. No changes to existing galleries.
 
 = 1.6.0 =
 Adds five new layouts, a live preview and presets. Existing gallery settings are converted automatically.

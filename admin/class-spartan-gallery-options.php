@@ -136,6 +136,7 @@ class Spartan_Gallery_Options {
 			'layout'    => array( __( 'Layout', 'spartan-gallery' ), 'dashicons-layout' ),
 			'upload'    => array( __( 'Images', 'spartan-gallery' ), 'dashicons-format-gallery' ),
 			'style'     => array( __( 'Image Style', 'spartan-gallery' ), 'dashicons-admin-customizer' ),
+			'browse'    => array( __( 'Filter & Loading', 'spartan-gallery' ), 'dashicons-filter' ),
 			'lightbox'  => array( __( 'Lightbox', 'spartan-gallery' ), 'dashicons-visibility' ),
 			'container' => array( __( 'Container', 'spartan-gallery' ), 'dashicons-admin-appearance' ),
 			'css'       => array( __( 'Custom CSS', 'spartan-gallery' ), 'dashicons-editor-code' ),
@@ -228,7 +229,7 @@ class Spartan_Gallery_Options {
 		echo '<label for="sg-shortcode">' . esc_html__( 'Shortcode', 'spartan-gallery' ) . '</label> ';
 		echo '<input type="text" id="sg-shortcode" class="code" readonly="readonly" value="' . esc_attr( $shortcode ) . '" size="' . esc_attr( strlen( $shortcode ) + 2 ) . '" /> ';
 		echo '<button type="button" class="button" id="sg-copy-shortcode">' . esc_html__( 'Copy', 'spartan-gallery' ) . '</button>';
-		echo '<span class="sg-shortcode-hint">' . esc_html__( 'Paste it into any page or post, or use the "Spartan Gallery Block" in the block editor.', 'spartan-gallery' ) . '</span>';
+		echo '<span class="sg-shortcode-hint">' . esc_html__( 'Paste it into any page or post, or use the "Spartan Gallery Block" in the block editor. To show several galleries as cover cards, use [spartan_album] or the "Spartan Album" block.', 'spartan-gallery' ) . '</span>';
 		echo '</div>';
 
 		echo '<div class="sg-options-wrap">';
@@ -238,6 +239,7 @@ class Spartan_Gallery_Options {
 		self::render_layout_panel( $v );
 		self::render_upload_panel( $id );
 		self::render_style_panel( $v );
+		self::render_browse_panel( $v );
 		self::render_lightbox_panel( $v );
 		self::render_container_panel( $v );
 
@@ -325,7 +327,7 @@ class Spartan_Gallery_Options {
 	}
 
 	private static function render_upload_panel( $id ) {
-		self::section_open( 'upload', __( 'Images', 'spartan-gallery' ), __( 'Drag thumbnails to change the order. Title and caption are taken from the Media Library.', 'spartan-gallery' ) );
+		self::section_open( 'upload', __( 'Images', 'spartan-gallery' ), __( 'Drag thumbnails to change the order. Title, caption and Gallery Tags are edited in the Media Library: click "Add / Manage Images", then click an image.', 'spartan-gallery' ) );
 		$uploaded_ids = implode( ',', Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $id, 'spartan_gallery_uploaded_images', true ) ) );
 
 		echo '<tr><td colspan="2">';
@@ -375,6 +377,36 @@ class Spartan_Gallery_Options {
 		self::row_open( __( 'Rounded corners', 'spartan-gallery' ), 'image_radius' );
 		self::number( 'image_radius', $v['image_radius'], 'px' );
 		self::row_close();
+
+		self::section_close();
+	}
+
+	private static function render_browse_panel( $v ) {
+		$layouts = Spartan_Gallery_Renderer::COLLECTION_LAYOUTS;
+
+		self::section_open( 'browse', __( 'Filter & Loading', 'spartan-gallery' ), __( 'For Grid, Masonry, Justified, Mosaic and Polaroid layouts.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Filter buttons', 'spartan-gallery' ), 'filter_enabled', $layouts );
+		self::toggle( 'filter_enabled', $v['filter_enabled'], __( 'Show tag buttons above the gallery', 'spartan-gallery' ) );
+		self::row_close( __( 'Give images "Gallery Tags" in the Media Library (e.g. Weddings, Portraits). One button appears per tag used in this gallery, plus "All".', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Loading', 'spartan-gallery' ), 'pagination', $layouts );
+		self::select(
+			'pagination',
+			$v['pagination'],
+			array(
+				'none'   => __( 'Show all images at once', 'spartan-gallery' ),
+				'button' => __( '"Load more" button', 'spartan-gallery' ),
+				'scroll' => __( 'Load more automatically while scrolling', 'spartan-gallery' ),
+			)
+		);
+		self::row_close( __( 'Big galleries open faster when only the first images are shown.', 'spartan-gallery' ) );
+
+		self::row_open( __( 'Images per batch', 'spartan-gallery' ), 'per_page', $layouts );
+		self::number( 'per_page', $v['per_page'] );
+		self::row_close();
+
+		echo '<tr data-sg-layouts="hexagon slider carousel slideshow compare"><td colspan="2"><p class="description">' . esc_html__( 'Filtering and "load more" are not available for the selected layout.', 'spartan-gallery' ) . '</p></td></tr>';
 
 		self::section_close();
 	}

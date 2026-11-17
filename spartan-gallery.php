@@ -14,8 +14,8 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Spartan Gallery
- * Description:       A responsive, multipurpose gallery plugin with ten layouts (Grid, Masonry, Justified, Mosaic, Polaroid, Hexagon, 3D Slider, Carousel, Slideshow and Before/After), a built-in lightbox, live preview, a Gutenberg block, and per-gallery styling options. No jQuery on the front end.
- * Version:           1.6.0
+ * Description:       A responsive, multipurpose gallery plugin with ten layouts (Grid, Masonry, Justified, Mosaic, Polaroid, Hexagon, 3D Slider, Carousel, Slideshow and Before/After), a built-in lightbox, tag filters, load more, albums, live preview, Gutenberg blocks, and per-gallery styling options. No jQuery on the front end.
+ * Version:           1.7.0
  * Author:            Freelancer Martin
  * Author URI:        https://freelancermartin.com
  * License:           GPL-2.0+
@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PLUGIN_NAME_VERSION', '1.6.0' );
+define( 'PLUGIN_NAME_VERSION', '1.7.0' );
 
 
 // Add the transient on plugin activation.

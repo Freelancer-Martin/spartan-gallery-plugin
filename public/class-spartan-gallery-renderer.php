@@ -37,8 +37,14 @@ class Spartan_Gallery_Renderer {
 	/** Layouts where the hover effect setting applies. */
 	const HOVER_LAYOUTS = array( 'grid', 'masonry', 'justified', 'mosaic', 'polaroid', 'carousel' );
 
+	/** Layouts made of independent tiles: these support filtering and "load more". */
+	const COLLECTION_LAYOUTS = array( 'grid', 'masonry', 'justified', 'mosaic', 'polaroid' );
+
 	/** Per-request counter so several galleries on one page get unique ids. */
 	private static $instance = 0;
+
+	/** Position of the tile being rendered, for "load more" (reset per gallery). */
+	private static $item_index = 0;
 
 	/** Back-compat wrapper; the schema lives in Spartan_Gallery_Settings. */
 	public static function normalize_layout( $value ) {
@@ -159,6 +165,11 @@ class Spartan_Gallery_Renderer {
 		// The compare layout's slider handle would fight with a lightbox click.
 		$s['lightbox'] = $s['lightbox_enabled'] && 'compare' !== $s['layout'];
 
+		$collection   = in_array( $s['layout'], self::COLLECTION_LAYOUTS, true );
+		$s['filter']  = $collection && $s['filter_enabled'];
+		$s['paged']   = $collection && 'none' !== $s['pagination'];
+		$s['tag_map'] = array();
+
 		return $s;
 	}
 
@@ -208,6 +219,17 @@ class Spartan_Gallery_Renderer {
 	public static function render_markup( $gallery_id, array $settings, array $attachments ) {
 		$s   = self::prepare( $settings );
 		$uid = 'sg-' . absint( $gallery_id ) . '-' . ( ++self::$instance );
+
+		self::$item_index = 0;
+
+		$filter_bar = '';
+		if ( $s['filter'] ) {
+			list( $s['tag_map'], $terms ) = Spartan_Gallery_Taxonomy::tags_for( wp_list_pluck( $attachments, 'ID' ) );
+			$filter_bar = self::filter_bar( $terms );
+			if ( '' === $filter_bar ) {
+				$s['filter'] = false;
+			}
+		}
 
 		// "Fast"/"Balanced" cap how large an image the browser may pick from
 		// srcset; the lightbox always links the full-size original.
@@ -262,6 +284,12 @@ class Spartan_Gallery_Renderer {
 		}
 
 		$data = '';
+		if ( $s['filter'] ) {
+			$data .= ' data-sg-filterable';
+		}
+		if ( $s['paged'] ) {
+			$data .= ' data-sg-per-page="' . absint( $s['per_page'] ) . '" data-sg-paging="' . esc_attr( $s['pagination'] ) . '"';
+		}
 		if ( $s['lightbox'] ) {
 			$data .= ' data-sg-lb-thumbs="' . ( $s['lightbox_thumbnails'] ? '1' : '0' ) . '"';
 			$data .= ' data-sg-lb-download="' . ( $s['lightbox_download'] ? '1' : '0' ) . '"';
@@ -275,10 +303,31 @@ class Spartan_Gallery_Renderer {
 		}
 		$html .= '<div class="spartan-gallery-box">';
 		$html .= '<div id="' . esc_attr( $uid ) . '" class="' . esc_attr( implode( ' ', $classes ) ) . '" style="' . esc_attr( self::container_style( $s ) ) . '"' . $data . '>';
+		$html .= $filter_bar;
 		$html .= $inner;
+		if ( $s['paged'] && count( $attachments ) > $s['per_page'] ) {
+			$html .= '<div class="sg-more-wrap"><button type="button" class="sg-more">' . esc_html__( 'Load more', 'spartan-gallery' ) . '</button></div>';
+			// Without JavaScript there's nothing to reveal the rest, so show everything.
+			$html .= '<noscript><style>#' . esc_attr( $uid ) . ' .sg-paged-out{display:block!important}#' . esc_attr( $uid ) . ' .sg-more-wrap{display:none}</style></noscript>';
+		}
 		$html .= '</div></div>';
 
 		return $html;
+	}
+
+	/**
+	 * @param WP_Term[] $terms Tags used by this gallery's images.
+	 */
+	private static function filter_bar( $terms ) {
+		if ( empty( $terms ) ) {
+			return '';
+		}
+		$html  = '<div class="sg-filters" role="toolbar" aria-label="' . esc_attr__( 'Filter images', 'spartan-gallery' ) . '">';
+		$html .= '<button type="button" class="sg-filter is-active" data-filter="*" aria-pressed="true">' . esc_html__( 'All', 'spartan-gallery' ) . '</button>';
+		foreach ( $terms as $term ) {
+			$html .= '<button type="button" class="sg-filter" data-filter="' . esc_attr( $term->slug ) . '" aria-pressed="false">' . esc_html( $term->name ) . '</button>';
+		}
+		return $html . '</div>';
 	}
 
 	private static function container_style( $s ) {
@@ -367,7 +416,18 @@ class Spartan_Gallery_Renderer {
 
 	/** A standard gallery tile: wrapper, link, image, optional hover caption. */
 	private static function item( $attachment, $s, $uid, $img_attr = array(), $item_attr = '' ) {
-		return '<div class="sg-item"' . $item_attr . '>'
+		$class = 'sg-item';
+		if ( $s['paged'] && self::$item_index >= $s['per_page'] ) {
+			$class .= ' sg-paged-out';
+		}
+		++self::$item_index;
+
+		if ( $s['filter'] ) {
+			$tags       = isset( $s['tag_map'][ $attachment->ID ] ) ? $s['tag_map'][ $attachment->ID ] : array();
+			$item_attr .= ' data-sg-tags="' . esc_attr( implode( ' ', $tags ) ) . '"';
+		}
+
+		return '<div class="' . $class . '"' . $item_attr . '>'
 			. self::link_open( $attachment, $s, $uid )
 			. self::image( $attachment, $s['size'], $img_attr )
 			. self::hover_caption( $attachment, $s )
@@ -552,6 +612,81 @@ class Spartan_Gallery_Renderer {
 		}
 
 		return $html . '</div>';
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Albums                                                              */
+	/* ------------------------------------------------------------------ */
+
+	/**
+	 * A grid of gallery covers. Clicking a cover opens that gallery's images
+	 * in the lightbox.
+	 *
+	 * @param int[] $gallery_ids Empty = all published galleries.
+	 * @param array $args        columns (1-6), titles (bool).
+	 */
+	public static function render_album( array $gallery_ids, array $args = array() ) {
+		$args = wp_parse_args( $args, array( 'columns' => 3, 'titles' => true ) );
+		$cols = max( 1, min( 6, absint( $args['columns'] ) ) );
+
+		$query = array(
+			'post_type'      => self::POST_TYPE,
+			'post_status'    => 'publish',
+			'posts_per_page' => 100,
+			'no_found_rows'  => true,
+		);
+		if ( $gallery_ids ) {
+			$query['post__in'] = $gallery_ids;
+			$query['orderby']  = 'post__in';
+		} else {
+			$query['orderby'] = array( 'menu_order' => 'ASC', 'date' => 'DESC' );
+		}
+		$galleries = get_posts( $query );
+
+		$uid   = 'sg-album-' . ( ++self::$instance );
+		$cards = '';
+
+		foreach ( $galleries as $gallery ) {
+			$ids         = Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $gallery->ID, 'spartan_gallery_uploaded_images', true ) );
+			$attachments = self::get_attachments( $ids );
+			if ( empty( $attachments ) ) {
+				continue;
+			}
+
+			$settings             = Spartan_Gallery_Settings::get( $gallery->ID );
+			$s                    = self::prepare( $settings );
+			$s['lightbox']        = true;
+			$group                = $uid . '-' . $gallery->ID;
+			$cover                = array_shift( $attachments );
+			$count                = count( $attachments ) + 1;
+
+			$cards .= '<div class="sg-item sg-album-card">';
+			$cards .= self::link_open( $cover, $s, $group, 'sg-album-cover' );
+			$cards .= self::image( $cover, 'large', array( 'sizes' => self::column_sizes( $cols ) ) );
+			if ( $args['titles'] ) {
+				$cards .= '<span class="sg-album-meta"><span class="sg-album-title">' . esc_html( get_the_title( $gallery ) ) . '</span>';
+				/* translators: %s: number of images */
+				$cards .= '<span class="sg-album-count">' . esc_html( sprintf( _n( '%s photo', '%s photos', $count, 'spartan-gallery' ), number_format_i18n( $count ) ) ) . '</span></span>';
+			}
+			$cards .= '</a>';
+
+			// The rest of the gallery: lightbox entries without visible tiles.
+			foreach ( $attachments as $attachment ) {
+				$thumb  = wp_get_attachment_image_src( $attachment->ID, 'thumbnail' );
+				$open   = self::link_open( $attachment, $s, $group );
+				$cards .= str_replace( '<a ', '<a hidden data-sg-thumb="' . esc_url( $thumb ? $thumb[0] : '' ) . '" ', $open ) . '</a>';
+			}
+			$cards .= '</div>';
+		}
+
+		if ( '' === $cards ) {
+			return '<!-- spartan-gallery: empty album -->';
+		}
+
+		self::enqueue_assets( 'album', true );
+
+		return '<div class="spartan-gallery-box"><div id="' . esc_attr( $uid ) . '" class="spartan-gallery-wrapper sg-gallery sg-layout-album sg-hover-zoom" data-sg-lb-thumbs="1" data-sg-lb-download="0" data-sg-lb-slideshow="1" data-sg-delay="4">'
+			. '<div class="sg-album sg-cols-' . $cols . '">' . $cards . '</div></div></div>';
 	}
 
 	/**
