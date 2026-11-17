@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Spartan Gallery 1.8.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/spartan-gallery\n"
-"POT-Creation-Date: 2026-11-17 16:48+0000\n"
+"POT-Creation-Date: 2026-11-17 16:57+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -48,7 +48,7 @@ msgid "Next"
 msgstr ""
 
 #: public/class-spartan-gallery-renderer.php:424
-#: admin/class-spartan-gallery-welcome-dashboard.php:89
+#: admin/class-spartan-gallery-welcome-dashboard.php:86
 msgid "Load more"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgid "Drag to compare before and after"
 msgstr ""
 
 #: public/class-spartan-gallery-renderer.php:779
-#: admin/class-spartan-gallery-welcome-dashboard.php:163
+#: admin/class-spartan-gallery-welcome-dashboard.php:160
 #: admin/js/block.js:90
 msgid "Gallery"
 msgstr ""
@@ -90,34 +90,10 @@ msgid_plural "%s photos"
 msgstr[0] ""
 msgstr[1] ""
 
-#: public/popup.php:29
-msgid "Image Button Links"
-msgstr ""
-
-#: public/popup.php:60
-msgid "Insert Button Url"
-msgstr ""
-
-#: public/popup.php:65
-msgid "Insert Button Title"
-msgstr ""
-
-#: public/popup.php:70
-msgid "Insert Image Title"
-msgstr ""
-
-#: public/popup.php:75
-msgid "Insert Image Description"
-msgstr ""
-
-#: public/popup.php:79
-msgid "Close"
-msgstr ""
-
 #: includes/class-spartan-gallery-taxonomy.php:30
 #: includes/class-spartan-gallery-taxonomy.php:32
 #: admin/class-spartan-gallery-admin-tools.php:158
-#: admin/class-spartan-gallery-welcome-dashboard.php:248
+#: admin/class-spartan-gallery-welcome-dashboard.php:245
 msgid "Gallery Tags"
 msgstr ""
 
@@ -196,70 +172,75 @@ msgstr ""
 msgid "Video URL"
 msgstr ""
 
-#: admin/class-spartan-gallery-metaboxes.php:25
-#: admin/class-spartan-gallery-options.php:236
-#: admin/class-spartan-gallery-welcome-dashboard.php:166
-msgid "Shortcode"
-msgstr ""
-
-#: admin/class-spartan-gallery-metaboxes.php:36
-msgid "PHP code"
-msgstr ""
-
-#: admin/class-spartan-gallery-metaboxes.php:47
-msgid "Do you like this plugin?"
-msgstr ""
-
-#: admin/class-spartan-gallery-metaboxes.php:49
-msgid "buy me a coffee"
-msgstr ""
-
-#: admin/class-spartan-gallery-metaboxes.php:52
-msgid "If you like and use this plugin and would like to see future development, you can buy me a cup of coffee."
-msgstr ""
-
-#: admin/class-spartan-gallery-post-type.php:30
+#: admin/class-spartan-gallery-post-type.php:29
 msgid "Spartan Galleries"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:31
-#: admin/class-spartan-gallery-post-type.php:42
-#: admin/class-spartan-gallery-welcome-dashboard.php:103
+#: admin/class-spartan-gallery-post-type.php:30
+#: admin/class-spartan-gallery-post-type.php:40
+#: admin/class-spartan-gallery-welcome-dashboard.php:100
 #: admin/js/block.js:130
 msgid "Spartan Gallery"
 msgstr ""
 
+#: admin/class-spartan-gallery-post-type.php:31
 #: admin/class-spartan-gallery-post-type.php:32
-#: admin/class-spartan-gallery-post-type.php:33
 msgid "Add New Gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:34
+#: admin/class-spartan-gallery-post-type.php:33
 msgid "Edit Gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:35
+#: admin/class-spartan-gallery-post-type.php:34
 msgid "New Gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:36
+#: admin/class-spartan-gallery-post-type.php:35
 msgid "All Galleries"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:37
+#: admin/class-spartan-gallery-post-type.php:36
 msgid "View Gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:38
+#: admin/class-spartan-gallery-post-type.php:37
 msgid "Search Galleries"
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:39
+#: admin/class-spartan-gallery-post-type.php:38
 msgid "No galleries found."
 msgstr ""
 
-#: admin/class-spartan-gallery-post-type.php:40
+#: admin/class-spartan-gallery-post-type.php:39
 msgid "No galleries found in Trash."
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:71
+#: admin/class-spartan-gallery-options.php:236
+#: admin/class-spartan-gallery-welcome-dashboard.php:163
+msgid "Shortcode"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:72
+#: admin/class-spartan-gallery-options.php:143
+#: admin/class-spartan-gallery-options.php:264
+#: admin/class-spartan-gallery-welcome-dashboard.php:161
+#: admin/js/block.js:110
+#: admin/js/block.js:197
+msgid "Layout"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:73
+#: admin/class-spartan-gallery-options.php:144
+#: admin/class-spartan-gallery-options.php:349
+#: admin/class-spartan-gallery-welcome-dashboard.php:162
+msgid "Images"
+msgstr ""
+
+#: admin/class-spartan-gallery-post-type.php:97
+#, php-format
+msgid "Tag: %s"
 msgstr ""
 
 #: admin/class-spartan-gallery-options.php:25
@@ -441,20 +422,6 @@ msgstr ""
 msgid "Preview could not be loaded."
 msgstr ""
 
-#: admin/class-spartan-gallery-options.php:143
-#: admin/class-spartan-gallery-options.php:264
-#: admin/class-spartan-gallery-welcome-dashboard.php:164
-#: admin/js/block.js:110
-#: admin/js/block.js:197
-msgid "Layout"
-msgstr ""
-
-#: admin/class-spartan-gallery-options.php:144
-#: admin/class-spartan-gallery-options.php:349
-#: admin/class-spartan-gallery-welcome-dashboard.php:165
-msgid "Images"
-msgstr ""
-
 #: admin/class-spartan-gallery-options.php:145
 #: admin/class-spartan-gallery-options.php:415
 msgid "Image Style"
@@ -467,7 +434,7 @@ msgstr ""
 
 #: admin/class-spartan-gallery-options.php:147
 #: admin/class-spartan-gallery-options.php:489
-#: admin/class-spartan-gallery-welcome-dashboard.php:87
+#: admin/class-spartan-gallery-welcome-dashboard.php:84
 msgid "Lightbox"
 msgstr ""
 
@@ -762,7 +729,7 @@ msgid "For Grid, Masonry, Justified, Mosaic and Polaroid layouts."
 msgstr ""
 
 #: admin/class-spartan-gallery-options.php:463
-#: admin/class-spartan-gallery-welcome-dashboard.php:88
+#: admin/class-spartan-gallery-welcome-dashboard.php:85
 msgid "Filter buttons"
 msgstr ""
 
@@ -935,178 +902,178 @@ msgstr ""
 msgid "Add images in the \"Images\" tab to see a preview."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:41
-#: admin/class-spartan-gallery-welcome-dashboard.php:42
+#: admin/class-spartan-gallery-welcome-dashboard.php:38
+#: admin/class-spartan-gallery-welcome-dashboard.php:39
 msgid "Getting Started"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:87
+#: admin/class-spartan-gallery-welcome-dashboard.php:84
 msgid "Full-screen viewer with swipe, keyboard and zoom, plus optional thumbnails, download and slideshow buttons."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:88
+#: admin/class-spartan-gallery-welcome-dashboard.php:85
 msgid "Tag images (Weddings, Portraits…) and let visitors filter the gallery with one click."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:89
+#: admin/class-spartan-gallery-welcome-dashboard.php:86
 msgid "Big galleries show the first images instantly and load the rest with a button or while scrolling."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:90
+#: admin/class-spartan-gallery-welcome-dashboard.php:87
 msgid "Albums"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:90
+#: admin/class-spartan-gallery-welcome-dashboard.php:87
 msgid "Show several galleries as cover cards; each one opens in the lightbox."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:91
+#: admin/class-spartan-gallery-welcome-dashboard.php:88
 msgid "Responsive & fast"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:91
+#: admin/class-spartan-gallery-welcome-dashboard.php:88
 msgid "Columns adapt to phones and tablets, images use responsive sizes, and scripts only load where a gallery is shown."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:92
+#: admin/class-spartan-gallery-welcome-dashboard.php:89
 msgid "Live preview"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:92
+#: admin/class-spartan-gallery-welcome-dashboard.php:89
 msgid "See every change instantly in the editor, at desktop, tablet and phone widths — before you save."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:93
+#: admin/class-spartan-gallery-welcome-dashboard.php:90
 msgid "Videos"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:93
+#: admin/class-spartan-gallery-welcome-dashboard.php:90
 msgid "Add a YouTube, Vimeo or MP4 link to any image and it plays in the lightbox."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:94
+#: admin/class-spartan-gallery-welcome-dashboard.php:91
 msgid "Share & link"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:94
+#: admin/class-spartan-gallery-welcome-dashboard.php:91
 msgid "Every image gets its own link, plus optional Facebook, X, Pinterest and copy-link buttons."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:95
+#: admin/class-spartan-gallery-welcome-dashboard.php:92
 msgid "Protection & watermark"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:95
+#: admin/class-spartan-gallery-welcome-dashboard.php:92
 msgid "Discourage right-click saving and show your name over the images."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:99
+#: admin/class-spartan-gallery-welcome-dashboard.php:96
 msgid "Getting Started with Spartan Gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:107
+#: admin/class-spartan-gallery-welcome-dashboard.php:104
 #, php-format
 msgid "Version %s"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:113
+#: admin/class-spartan-gallery-welcome-dashboard.php:110
 #, php-format
 msgid "Beautiful, fast photo galleries in minutes. Pick one of %s layouts, add your images and paste a shortcode — no coding needed."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:117
-#: admin/class-spartan-gallery-welcome-dashboard.php:139
+#: admin/class-spartan-gallery-welcome-dashboard.php:114
+#: admin/class-spartan-gallery-welcome-dashboard.php:136
 msgid "Create a gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:118
+#: admin/class-spartan-gallery-welcome-dashboard.php:115
 msgid "View all galleries"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:129
+#: admin/class-spartan-gallery-welcome-dashboard.php:126
 msgid "Three steps to your first gallery"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:133
+#: admin/class-spartan-gallery-welcome-dashboard.php:130
 msgid "Add images"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:138
+#: admin/class-spartan-gallery-welcome-dashboard.php:135
 #, php-format
 msgid "%s, give it a name and open the Images tab. Drag thumbnails to change their order."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:146
+#: admin/class-spartan-gallery-welcome-dashboard.php:143
 msgid "Choose a look"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:147
+#: admin/class-spartan-gallery-welcome-dashboard.php:144
 msgid "Pick a layout or a one-click preset (Portfolio, Instagram, Products, Photography, Slideshow). The live preview updates as you go."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:151
+#: admin/class-spartan-gallery-welcome-dashboard.php:148
 msgid "Publish it"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:152
+#: admin/class-spartan-gallery-welcome-dashboard.php:149
 msgid "Click \"Copy\" next to the shortcode and paste it into any page, or add the \"Spartan Gallery Block\" in the block editor."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:159
+#: admin/class-spartan-gallery-welcome-dashboard.php:156
 msgid "Your galleries"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:180
+#: admin/class-spartan-gallery-welcome-dashboard.php:177
 msgid "(no title)"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:199
+#: admin/class-spartan-gallery-welcome-dashboard.php:196
 #, php-format
 msgid "%s layouts"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:216
+#: admin/class-spartan-gallery-welcome-dashboard.php:213
 msgid "Built in"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:230
+#: admin/class-spartan-gallery-welcome-dashboard.php:227
 msgid "Shortcodes"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:233
+#: admin/class-spartan-gallery-welcome-dashboard.php:230
 msgid "One gallery. The ID is shown on the gallery list and in the gallery editor."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:235
+#: admin/class-spartan-gallery-welcome-dashboard.php:232
 msgid "All published galleries as cover cards."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:237
+#: admin/class-spartan-gallery-welcome-dashboard.php:234
 msgid "Only the chosen galleries, in that order."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:241
+#: admin/class-spartan-gallery-welcome-dashboard.php:238
 msgid "Tips"
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:247
+#: admin/class-spartan-gallery-welcome-dashboard.php:244
 #, php-format
 msgid "Organize images with %s, then turn on \"Filter buttons\" in the gallery's Filter & Loading tab."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:252
+#: admin/class-spartan-gallery-welcome-dashboard.php:249
 msgid "Write a Caption for an image in the Media Library to show it in the lightbox."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:253
+#: admin/class-spartan-gallery-welcome-dashboard.php:250
 msgid "For Before / After, add images in pairs: the 1st image is \"before\", the 2nd \"after\", and so on."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:254
+#: admin/class-spartan-gallery-welcome-dashboard.php:251
 msgid "Galleries with many images load faster with \"Load more\" turned on."
 msgstr ""
 
-#: admin/class-spartan-gallery-welcome-dashboard.php:263
+#: admin/class-spartan-gallery-welcome-dashboard.php:260
 #, php-format
 msgid "Questions or ideas? Visit %s."
 msgstr ""

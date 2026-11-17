@@ -72,8 +72,8 @@ class Spartan_Gallery {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
-			$this->version = PLUGIN_NAME_VERSION;
+		if ( defined( 'SPARTAN_GALLERY_VERSION' ) ) {
+			$this->version = SPARTAN_GALLERY_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
@@ -118,10 +118,6 @@ class Spartan_Gallery {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-spartan-gallery-i18n.php';
 
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-admin.php';
 
 
 		/**
@@ -135,10 +131,6 @@ class Spartan_Gallery {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-post-type.php';
 
 
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-spartan-gallery-metaboxes.php';
 
 		/**
 		 * The class responsible for the Spartan Gallery options metabox (native
@@ -180,11 +172,6 @@ class Spartan_Gallery {
 
 
 
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/custom-columns.php';
 
 
 
@@ -236,10 +223,8 @@ class Spartan_Gallery {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Spartan_Gallery_Admin( $this->get_plugin_name(), $this->get_version() );
-
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		// Admin features register their own hooks (options metabox, admin
+		// tools, blocks, Getting Started page); see the classes in admin/.
 
 	}
 
@@ -257,7 +242,6 @@ class Spartan_Gallery {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
-		$this->loader->add_action( 'spartan_gallery', $plugin_public, 'spartan_gallery_shortcode' );
 
 
 	}

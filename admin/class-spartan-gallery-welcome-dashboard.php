@@ -4,9 +4,6 @@
  *
  * Shown once after activation, and always reachable from the menu.
  *
- * Function names keep their original wpw_ prefix because spartan-gallery.php
- * checks for wpw_welcome_page() when registering the activation hooks.
- *
  * @package Spartan_Gallery
  * @subpackage Spartan_Gallery/admin
  */
@@ -17,40 +14,40 @@ if ( ! defined( 'WPINC' ) ) {
 /**
  * Redirect to the page once, right after activation (single-site only).
  */
-function wpw_safe_welcome_redirect() {
-	if ( ! get_transient( '_welcome_redirect_wpw' ) ) {
+function spartan_gallery_welcome_redirect() {
+	if ( ! get_transient( 'spartan_gallery_welcome_redirect' ) ) {
 		return;
 	}
-	delete_transient( '_welcome_redirect_wpw' );
+	delete_transient( 'spartan_gallery_welcome_redirect' );
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of WP's own bulk-activation flag.
 	if ( is_network_admin() || isset( $_GET['activate-multi'] ) || ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
 
-	wp_safe_redirect( add_query_arg( array( 'page' => 'wpw_welcome_page' ), admin_url( 'edit.php?post_type=spartan_gallery_type' ) ) );
+	wp_safe_redirect( add_query_arg( array( 'page' => 'spartan-gallery-getting-started' ), admin_url( 'edit.php?post_type=spartan_gallery_type' ) ) );
 	exit;
 }
-add_action( 'admin_init', 'wpw_safe_welcome_redirect' );
+add_action( 'admin_init', 'spartan_gallery_welcome_redirect' );
 
-function wpw_welcome_page() {
-	global $wpw_sub_menu;
+function spartan_gallery_welcome_menu() {
+	global $spartan_gallery_welcome_hook;
 
-	$wpw_sub_menu = add_submenu_page(
+	$spartan_gallery_welcome_hook = add_submenu_page(
 		'edit.php?post_type=spartan_gallery_type',
 		__( 'Getting Started', 'spartan-gallery' ),
 		__( 'Getting Started', 'spartan-gallery' ),
 		'edit_posts',
-		'wpw_welcome_page',
-		'wpw_welcome_page_content'
+		'spartan-gallery-getting-started',
+		'spartan_gallery_welcome_page'
 	);
 }
-add_action( 'admin_menu', 'wpw_welcome_page' );
+add_action( 'admin_menu', 'spartan_gallery_welcome_menu' );
 
-function wpw_styles( $hook ) {
-	global $wpw_sub_menu;
+function spartan_gallery_welcome_styles( $hook ) {
+	global $spartan_gallery_welcome_hook;
 
-	if ( $hook !== $wpw_sub_menu ) {
+	if ( $hook !== $spartan_gallery_welcome_hook ) {
 		return;
 	}
 
@@ -58,15 +55,15 @@ function wpw_styles( $hook ) {
 		'spartan-gallery-welcome',
 		plugin_dir_url( __FILE__ ) . 'css/spartan-gallery-welcome.css',
 		array(),
-		PLUGIN_NAME_VERSION
+		SPARTAN_GALLERY_VERSION
 	);
 }
-add_action( 'admin_enqueue_scripts', 'wpw_styles' );
+add_action( 'admin_enqueue_scripts', 'spartan_gallery_welcome_styles' );
 
 /**
  * Page markup.
  */
-function wpw_welcome_page_content() {
+function spartan_gallery_welcome_page() {
 	$new_url  = admin_url( 'post-new.php?post_type=spartan_gallery_type' );
 	$list_url = admin_url( 'edit.php?post_type=spartan_gallery_type' );
 	$tags_url = admin_url( 'edit-tags.php?taxonomy=sg_image_tag&post_type=attachment' );
@@ -104,7 +101,7 @@ function wpw_welcome_page_content() {
 				<p class="sgw-version">
 					<?php
 					/* translators: %s: plugin version */
-					echo esc_html( sprintf( __( 'Version %s', 'spartan-gallery' ), PLUGIN_NAME_VERSION ) );
+					echo esc_html( sprintf( __( 'Version %s', 'spartan-gallery' ), SPARTAN_GALLERY_VERSION ) );
 					?>
 				</p>
 				<p class="sgw-lead">

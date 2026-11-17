@@ -1,13 +1,15 @@
 === Spartan Gallery ===
-
-Contributors:       Freelancer Martin
-Tags:               gallery, portfolio, photo gallery, gutenberg, responsive
-Requires at least: 4.6
-Tested up to: 7.0
+Contributors: freelancermartin
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVJ7GE7QM5F3N
+Tags: gallery, photo gallery, portfolio, lightbox, masonry
+Requires at least: 6.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag:         1.8.0
-License:            GPLv2 or later
-License URI:        http://www.gnu.org/licenses/gpl-2.0.html
+Stable tag: 1.8.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Responsive photo galleries with 16 layouts, a lightbox with video, tag filters, albums and a live preview. No jQuery on the front end.
 
 == Description ==
 
@@ -58,9 +60,9 @@ Galleries are responsive (columns reduce automatically on tablets and phones), u
 
 Each gallery has its own options panel with one-click presets (Portfolio, Instagram, Products, Photography, Slideshow), a live preview with desktop/tablet/phone widths, drag-and-drop image ordering, and a copy-the-shortcode button. A Gutenberg block adds galleries anywhere in the block editor.
 
-= Visit Example Site  =
+= Example site =
 
-* [Spartan Gallery Official Site  ](https://freelancermartin.ee/)
+* [Spartan Gallery official site](https://freelancermartin.ee/)
 
 
  = Shortcode =
@@ -101,7 +103,45 @@ If installing the plugin from wordpress.org:
 
 == Frequently Asked Questions ==
 
-coming soon
+= How do I add a gallery to a page? =
+
+Create a gallery under Spartan Gallery > Add New Gallery, add images and choose a layout. Then either click "Copy" next to the shortcode at the top of the gallery editor and paste it into the page, or add the "Spartan Gallery Block" in the block editor and pick the gallery.
+
+= Can I show the same gallery with a different layout somewhere else? =
+
+Yes. Use `[spartan_gallery id="123" layout="masonry"]`, or choose a layout in the block's sidebar. The gallery's own layout stays unchanged.
+
+= How do I add a video? =
+
+Open the image in the Media Library (or in the gallery's "Edit titles, captions…" table) and paste a YouTube, Vimeo or .mp4 link into "Gallery video URL". The image is shown in the gallery with a play icon and the video plays in the lightbox.
+
+= Why does the lightbox show the file name under my image? =
+
+It doesn't by default. WordPress uses the file name as an image's title, so "Show image title" in the Lightbox tab is off unless you turn it on. Captions written in the Media Library are shown.
+
+= How do the filter buttons work? =
+
+Give images Gallery Tags (Media > Gallery Tags, or the tags column in the gallery editor), then turn on "Filter buttons" in the gallery's Filter & Loading tab. One button appears for each tag used in that gallery.
+
+= Can a gallery update itself when I upload new photos? =
+
+Yes. In the Images tab choose "All images with a Gallery Tag" and pick a tag. Every image with that tag is shown, newest first by default.
+
+= Does the plugin load anything from other websites? =
+
+No scripts or styles are loaded from third-party servers; all libraries are bundled. Embedded YouTube/Vimeo videos (only when you add them) and the optional share buttons naturally connect to those services when a visitor uses them. YouTube embeds use the privacy-enhanced youtube-nocookie.com domain.
+
+= Will this slow down my site? =
+
+The plugin's CSS and JavaScript load only on pages that contain a gallery, and each layout loads only the library it needs. Images use WordPress' responsive sizes and lazy loading, and "Load more" keeps very large galleries quick.
+
+= Can I protect my photos from being copied? =
+
+"Protect images" disables right-click and dragging and "Watermark text" shows your name over the images. This discourages casual copying, but anything visible in a browser can still be saved by a determined visitor.
+
+= Is it translated? =
+
+An Estonian translation is included and all text is translatable at translate.wordpress.org.
 
 == Screenshots ==
 
@@ -130,6 +170,10 @@ coming soon
 * "Duplicate" action in the gallery list.
 * Optional right-click/drag protection and text watermark.
 * Estonian translation; all admin and block editor text is translatable. Post type labels are now translatable (and "Spartan Gallerys" is fixed).
+* Galleries no longer have their own (empty) public pages, archive or sitemap entries; they are shown through the shortcode and blocks only.
+* The gallery list shows each gallery's shortcode, layout and image count.
+* Fixed: the plugin removed the "Categories" column from the regular Posts list.
+* Removed leftover code: unused image sizes, an unused metabox, the old shortcode box (with a remotely loaded PayPal button) and empty admin scripts loaded on every admin page.
 
 = 1.7.2 =
 * Fixed: with both the lightbox thumbnail strip and a title/caption turned on, the caption was hidden behind the strip and the image was not centered.

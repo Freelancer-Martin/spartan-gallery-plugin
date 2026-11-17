@@ -16,6 +16,8 @@
  * Plugin Name:       Spartan Gallery
  * Description:       A responsive, multipurpose gallery plugin with sixteen layouts, a built-in lightbox with video and sharing, tag filters, load more, albums, live preview, Gutenberg blocks, and per-gallery styling options. No jQuery on the front end.
  * Version:           1.8.0
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
  * Author:            Freelancer Martin
  * Author URI:        https://freelancermartin.com
  * License:           GPL-2.0+
@@ -30,44 +32,23 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
+ * Current plugin version (SemVer).
  */
-define( 'PLUGIN_NAME_VERSION', '1.8.0' );
+define( 'SPARTAN_GALLERY_VERSION', '1.8.0' );
 
 
-// Add the transient on plugin activation.
-if ( ! function_exists( 'wpw_welcome_page' ) ) {
-	// Hook that runs on plugin activation.
-	register_activation_hook(  __FILE__, 'wpw_welcome_activate' );
-	/**
-	 * Add the transient.
-	 *
-	 * Add the welcome page transient.
-	 *
-	 * @since 1.0.0
-	 */
-	function wpw_welcome_activate() {
-		// Transient max age is 60 seconds.
-		set_transient( '_welcome_redirect_wpw', true, 60 );
-	}
+/**
+ * Show the Getting Started page once, right after activation.
+ */
+function spartan_gallery_welcome_activate() {
+	set_transient( 'spartan_gallery_welcome_redirect', true, 60 );
 }
-// Delete the Transient on plugin deactivation.
-if ( ! function_exists( 'wpw_welcome_page' ) ) {
-	// Hook that runs on plugin deactivation.
-	register_deactivation_hook(  __FILE__ , 'wpw_welcome_deactivate' );
-	/**
-	 * Delete the Transient on plugin deactivation.
-	 *
-	 * Delete the welcome page transient.
-	 *
-	 * @since   2.0.0
-	 */
-	function wpw_welcome_deactivate() {
-	  delete_transient( '_welcome_redirect_wpw' );
-	}
+register_activation_hook( __FILE__, 'spartan_gallery_welcome_activate' );
+
+function spartan_gallery_welcome_deactivate() {
+	delete_transient( 'spartan_gallery_welcome_redirect' );
 }
+register_deactivation_hook( __FILE__, 'spartan_gallery_welcome_deactivate' );
 
 /**
  * The code that runs during plugin activation.

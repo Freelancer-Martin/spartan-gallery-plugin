@@ -92,7 +92,7 @@ class Spartan_Gallery_Options {
 		}
 
 		wp_enqueue_style( 'wp-color-picker' );
-		wp_enqueue_style( 'spartan-gallery-options', plugin_dir_url( __FILE__ ) . 'css/spartan-gallery-options.css', array( 'wp-color-picker' ), PLUGIN_NAME_VERSION );
+		wp_enqueue_style( 'spartan-gallery-options', plugin_dir_url( __FILE__ ) . 'css/spartan-gallery-options.css', array( 'wp-color-picker' ), SPARTAN_GALLERY_VERSION );
 
 		wp_enqueue_media();
 		wp_enqueue_script( 'jquery-ui-spinner' );
@@ -105,7 +105,7 @@ class Spartan_Gallery_Options {
 			'spartan-gallery-options',
 			plugin_dir_url( __FILE__ ) . 'js/spartan-gallery-options.js',
 			array( 'jquery', 'jquery-ui-spinner', 'jquery-ui-sortable', 'wp-color-picker', 'media-editor' ),
-			PLUGIN_NAME_VERSION,
+			SPARTAN_GALLERY_VERSION,
 			true
 		);
 

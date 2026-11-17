@@ -13,7 +13,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-class Gallery_Block {
+class Spartan_Gallery_Block {
 
 	const SCRIPT = 'spartan-gallery-block';
 
@@ -28,7 +28,7 @@ class Gallery_Block {
 			self::SCRIPT,
 			plugin_dir_url( __FILE__ ) . 'js/block.js',
 			array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-api-fetch', 'wp-i18n', 'wp-server-side-render' ),
-			file_exists( $file ) ? (string) filemtime( $file ) : PLUGIN_NAME_VERSION,
+			file_exists( $file ) ? (string) filemtime( $file ) : SPARTAN_GALLERY_VERSION,
 			true
 		);
 		wp_set_script_translations( self::SCRIPT, 'spartan-gallery', plugin_dir_path( dirname( __FILE__ ) ) . 'languages' );
@@ -148,4 +148,4 @@ class Gallery_Block {
 	}
 }
 
-new Gallery_Block();
+new Spartan_Gallery_Block();

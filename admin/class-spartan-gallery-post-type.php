@@ -1,101 +1,106 @@
 <?php
 /**
- * Use namespace to avoid conflict
- */
-namespace PostType;
-/**
- * Class Event
- * @package PostType
+ * The "spartan_gallery_type" post type and its admin list columns.
  *
- * Use actual name of post type for
- * easy readability.
+ * Galleries are shown through the shortcode / blocks, not as pages of
+ * their own, so the post type is not public: no empty single pages, no
+ * archive, nothing added to search results or the XML sitemap. It stays
+ * in the REST API (for the block editor) and the admin UI.
  *
- * Potential conflicts removed by namespace
+ * @package    Spartan_Gallery
+ * @subpackage Spartan_Gallery/admin
  */
-class SpartnaGalleryPostType {
-    /**
-     * @var string
-     *
-     * Set post type params
-     */
-    private $type               = 'spartan_gallery_type';
-    private $slug               = 'spartan_gallery';
-    private $name               = 'Spartan Gallerys';
-    private $singular_name      = 'Spartan Gallery';
-    /**
-     * Register post type
-     */
-    public function register() {
-        $labels = array(
-            'name'                  => __( 'Spartan Galleries', 'spartan-gallery' ),
-            'singular_name'         => __( 'Spartan Gallery', 'spartan-gallery' ),
-            'add_new'               => __( 'Add New Gallery', 'spartan-gallery' ),
-            'add_new_item'          => __( 'Add New Gallery', 'spartan-gallery' ),
-            'edit_item'             => __( 'Edit Gallery', 'spartan-gallery' ),
-            'new_item'              => __( 'New Gallery', 'spartan-gallery' ),
-            'all_items'             => __( 'All Galleries', 'spartan-gallery' ),
-            'view_item'             => __( 'View Gallery', 'spartan-gallery' ),
-            'search_items'          => __( 'Search Galleries', 'spartan-gallery' ),
-            'not_found'             => __( 'No galleries found.', 'spartan-gallery' ),
-            'not_found_in_trash'    => __( 'No galleries found in Trash.', 'spartan-gallery' ),
-            'parent_item_colon'     => '',
-            'menu_name'             => __( 'Spartan Gallery', 'spartan-gallery' ),
-        );
-        $args = array(
-            'labels'                => $labels,
-            'public'                => true,
-            'publicly_queryable'    => true,
-            'show_ui'               => true,
-            'show_in_menu'          => true,
-            'query_var'             => true,
-            'rewrite'               => array( 'slug' => $this->slug ),
-            'capability_type'       => 'post',
-            'has_archive'           => true,
-            'hierarchical'          => true,
-            'menu_position'         => 8,
-            'supports'              => array( 'title', /*'editor' ,  'excerpt', 'author', 'thumbnail' */),
-            'yarpp_support'         => true,
-            'show_in_rest'          => true,  // This is crucial for REST API access
-            //'rest_base' => 'spartan-gallery-type', // The custom endpoint name (for REST API)
-        );
-        register_post_type( $this->type, $args );
-    }
-    /**
-     * @param $columns
-     * @return mixed
-     *
-     * Choose the columns you want in
-     * the admin table for this post
-     */
-    public function set_columns($columns) {
-        // Set/unset post type table columns here
-        return $columns;
-    }
-    /**
-     * @param $column
-     * @param $post_id
-     *
-     * Edit the contents of each column in
-     * the admin table for this post
-     */
-    public function edit_columns($column, $post_id) {
-        // Post type table column content code here
-    }
-    /**
-     * Event constructor.
-     *
-     * When class is instantiated
-     */
-    public function __construct() {
-        // Register the post type
-        add_action('init', array($this, 'register'));
-        // Admin set post columns
-        add_filter( 'manage_edit-'.$this->type.'_columns',        array($this, 'set_columns'), 10, 1) ;
-        // Admin edit post columns
-        add_action( 'manage_'.$this->type.'_posts_custom_column', array($this, 'edit_columns'), 10, 2 );
-    }
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
-/**
- * Instantiate class, creating post type
- */
-new SpartnaGalleryPostType();
+
+class Spartan_Gallery_Post_Type {
+
+	const TYPE = 'spartan_gallery_type';
+
+	public function __construct() {
+		add_action( 'init', array( $this, 'register' ) );
+		add_filter( 'manage_' . self::TYPE . '_posts_columns', array( $this, 'columns' ) );
+		add_action( 'manage_' . self::TYPE . '_posts_custom_column', array( $this, 'column_content' ), 10, 2 );
+	}
+
+	public function register() {
+		$labels = array(
+			'name'               => __( 'Spartan Galleries', 'spartan-gallery' ),
+			'singular_name'      => __( 'Spartan Gallery', 'spartan-gallery' ),
+			'add_new'            => __( 'Add New Gallery', 'spartan-gallery' ),
+			'add_new_item'       => __( 'Add New Gallery', 'spartan-gallery' ),
+			'edit_item'          => __( 'Edit Gallery', 'spartan-gallery' ),
+			'new_item'           => __( 'New Gallery', 'spartan-gallery' ),
+			'all_items'          => __( 'All Galleries', 'spartan-gallery' ),
+			'view_item'          => __( 'View Gallery', 'spartan-gallery' ),
+			'search_items'       => __( 'Search Galleries', 'spartan-gallery' ),
+			'not_found'          => __( 'No galleries found.', 'spartan-gallery' ),
+			'not_found_in_trash' => __( 'No galleries found in Trash.', 'spartan-gallery' ),
+			'menu_name'          => __( 'Spartan Gallery', 'spartan-gallery' ),
+		);
+
+		register_post_type(
+			self::TYPE,
+			array(
+				'labels'              => $labels,
+				'public'              => false,
+				'publicly_queryable'  => false,
+				'exclude_from_search' => true,
+				'show_ui'             => true,
+				'show_in_menu'        => true,
+				'show_in_nav_menus'   => false,
+				'show_in_rest'        => true, // The block editor lists galleries through the REST API.
+				'query_var'           => false,
+				'rewrite'             => false,
+				'has_archive'         => false,
+				'hierarchical'        => false,
+				'capability_type'     => 'post',
+				'menu_position'       => 8,
+				'menu_icon'           => 'dashicons-format-gallery',
+				'supports'            => array( 'title' ),
+			)
+		);
+	}
+
+	public function columns( $columns ) {
+		$new = array();
+		foreach ( $columns as $key => $label ) {
+			$new[ $key ] = $label;
+			if ( 'title' === $key ) {
+				$new['sg_shortcode'] = __( 'Shortcode', 'spartan-gallery' );
+				$new['sg_layout']    = __( 'Layout', 'spartan-gallery' );
+				$new['sg_images']    = __( 'Images', 'spartan-gallery' );
+			}
+		}
+		return $new;
+	}
+
+	public function column_content( $column, $post_id ) {
+		switch ( $column ) {
+			case 'sg_shortcode':
+				echo '<code style="user-select:all">[spartan_gallery id="' . absint( $post_id ) . '"]</code>';
+				break;
+
+			case 'sg_layout':
+				$settings = Spartan_Gallery_Settings::get( $post_id );
+				$layouts  = Spartan_Gallery_Options::layouts();
+				$layout   = $settings['image_layout_select'];
+				echo esc_html( isset( $layouts[ $layout ] ) ? $layouts[ $layout ][0] : $layout );
+				break;
+
+			case 'sg_images':
+				$settings = Spartan_Gallery_Settings::get( $post_id );
+				if ( 'tag' === $settings['source'] ) {
+					$term = $settings['source_tag'] ? get_term( (int) $settings['source_tag'], Spartan_Gallery_Taxonomy::TAXONOMY ) : null;
+					/* translators: %s: Gallery Tag name */
+					echo esc_html( sprintf( __( 'Tag: %s', 'spartan-gallery' ), $term && ! is_wp_error( $term ) ? $term->name : '—' ) );
+				} else {
+					echo esc_html( number_format_i18n( count( Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $post_id, 'spartan_gallery_uploaded_images', true ) ) ) ) );
+				}
+				break;
+		}
+	}
+}
+
+new Spartan_Gallery_Post_Type();

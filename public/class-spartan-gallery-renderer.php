@@ -83,7 +83,7 @@ class Spartan_Gallery_Renderer {
 
 	public static function register_assets() {
 		$a   = self::asset_urls();
-		$ver = PLUGIN_NAME_VERSION;
+		$ver = SPARTAN_GALLERY_VERSION;
 
 		wp_register_style( 'spartan-gallery', $a['css']['spartan-gallery'], array(), $ver );
 		wp_register_style( 'spartan-gallery-hexagon', $a['css']['spartan-gallery-hexagon'], array( 'spartan-gallery' ), $ver );
@@ -930,15 +930,19 @@ class Spartan_Gallery_Renderer {
 	 */
 	public static function preview_document( $markup ) {
 		$a    = self::asset_urls();
-		$ver  = rawurlencode( PLUGIN_NAME_VERSION );
+		$ver  = rawurlencode( SPARTAN_GALLERY_VERSION );
 		$head = '';
 		foreach ( $a['css'] as $href ) {
-			$head .= '<link rel="stylesheet" href="' . esc_url( add_query_arg( 'ver', $ver, $href ) ) . '" />';
+			$head .= '<link rel="stylesheet" href="' . esc_url( add_query_arg( 'ver', $ver, $href ) ) . '" />'; // phpcs:ignore WordPress.WP.EnqueuedResources -- iframe srcdoc document, see below.
 		}
+		// This is a standalone HTML document for the admin preview iframe's
+		// srcdoc, not a WordPress page, so the enqueue API isn't available here.
+		// phpcs:disable WordPress.WP.EnqueuedResources
 		$foot = '<script>' . self::js_config() . '</script>';
 		foreach ( $a['js'] as $src ) {
 			$foot .= '<script src="' . esc_url( add_query_arg( 'ver', $ver, $src ) ) . '"></script>';
 		}
+		// phpcs:enable WordPress.WP.EnqueuedResources
 
 		return '<!doctype html><html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />'
 			. $head
