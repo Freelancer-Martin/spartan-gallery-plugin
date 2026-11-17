@@ -43,12 +43,6 @@ Each gallery has its own options panel with one-click presets (Portfolio, Instag
 * [Spartan Gallery Official Site  ](https://freelancermartin.ee/)
 
 
-= See a how Spartan Gallery works =
-
-https://www.youtube.com/watch?v=VF1u_1SLHjs
-
-
-
  = Shortcode =
 
 `[spartan_gallery id="123"]`

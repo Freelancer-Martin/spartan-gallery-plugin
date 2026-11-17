@@ -1,0 +1,337 @@
+/**
+ * Spartan Gallery – Getting Started page.
+ * Brand colours from the logo: helmet green #627a62, lettering brown #4a2e2a.
+ */
+
+.sgw {
+	--sgw-green: #627a62;
+	--sgw-green-soft: #eef2ee;
+	--sgw-brown: #4a2e2a;
+	--sgw-border: #dcdcde;
+	--sgw-muted: #50575e;
+	max-width: 1180px;
+	color: #1d2327;
+}
+
+.sgw h2 {
+	margin: 0 0 16px;
+	font-size: 20px;
+	line-height: 1.3;
+	color: var(--sgw-brown);
+}
+
+.sgw h3 {
+	margin: 0 0 6px;
+	font-size: 15px;
+	line-height: 1.35;
+}
+
+.sgw p {
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.sgw-section {
+	margin-top: 36px;
+}
+
+/* ---------- Hero ---------- */
+
+.sgw-hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+	gap: 32px;
+	align-items: center;
+	margin-top: 16px;
+	padding: 36px 40px;
+	background: #fff;
+	border: 1px solid var(--sgw-border);
+	border-top: 4px solid var(--sgw-green);
+	border-radius: 8px;
+}
+
+.sgw-logo {
+	display: block;
+	width: 100%;
+	max-width: 420px;
+	height: auto;
+	/* The PNG has a light grey backdrop: push it to white, then multiply so
+	   it disappears into the hero background. */
+	filter: brightness(1.06) contrast(1.25);
+	mix-blend-mode: multiply;
+}
+
+.sgw-version {
+	display: inline-block;
+	margin: 12px 0 0;
+	padding: 2px 10px;
+	background: var(--sgw-green-soft);
+	border-radius: 999px;
+	color: var(--sgw-green);
+	font-size: 12px !important;
+	font-weight: 600;
+}
+
+.sgw .sgw-lead {
+	max-width: 520px;
+	margin: 14px 0 22px;
+	font-size: 16px;
+	color: var(--sgw-muted);
+}
+
+.sgw-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin: 0;
+}
+
+.sgw-hero-art {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.sgw-hero-art img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 6px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.sgw-hero-art img:nth-child(odd) {
+	transform: translateY(10px);
+}
+
+/* ---------- Steps ---------- */
+
+.sgw-steps {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: none;
+}
+
+.sgw-steps li {
+	position: relative;
+	margin: 0;
+	padding: 22px 22px 18px 72px;
+	background: #fff;
+	border: 1px solid var(--sgw-border);
+	border-radius: 8px;
+}
+
+.sgw-step-num {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: var(--sgw-green);
+	color: #fff;
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 36px;
+	text-align: center;
+}
+
+.sgw-steps p {
+	margin: 0;
+	color: var(--sgw-muted);
+}
+
+/* ---------- Your galleries ---------- */
+
+.sgw-galleries {
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.sgw-galleries code {
+	font-size: 12px;
+}
+
+.sgw-status {
+	margin-left: 6px;
+	padding: 1px 8px;
+	background: #f0f0f1;
+	border-radius: 999px;
+	color: var(--sgw-muted);
+	font-size: 11px;
+}
+
+/* ---------- Layouts ---------- */
+
+.sgw-layouts {
+	display: grid;
+	grid-template-columns: repeat(5, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.sgw-layout {
+	margin: 0;
+	padding: 10px;
+	background: #fff;
+	border: 1px solid var(--sgw-border);
+	border-radius: 8px;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sgw-layout:hover {
+	border-color: var(--sgw-green);
+	box-shadow: 0 2px 10px rgba(98, 122, 98, 0.15);
+}
+
+.sgw-layout img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 4px;
+}
+
+.sgw-layout figcaption {
+	padding: 8px 2px 2px;
+}
+
+.sgw-layout strong {
+	display: block;
+	font-size: 13px;
+}
+
+.sgw-layout span {
+	display: block;
+	margin-top: 2px;
+	color: var(--sgw-muted);
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+/* ---------- Features ---------- */
+
+.sgw-features {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+}
+
+.sgw-feature {
+	padding: 20px 22px;
+	background: #fff;
+	border: 1px solid var(--sgw-border);
+	border-radius: 8px;
+}
+
+.sgw-feature .dashicons {
+	width: 40px;
+	height: 40px;
+	margin-bottom: 10px;
+	border-radius: 8px;
+	background: var(--sgw-green-soft);
+	color: var(--sgw-green);
+	font-size: 22px;
+	line-height: 40px;
+	text-align: center;
+}
+
+.sgw-feature p {
+	margin: 0;
+	color: var(--sgw-muted);
+}
+
+/* ---------- Shortcodes + tips ---------- */
+
+.sgw-columns {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+}
+
+.sgw-card {
+	padding: 22px 24px;
+	background: #fff;
+	border: 1px solid var(--sgw-border);
+	border-radius: 8px;
+}
+
+.sgw-shortcodes {
+	margin: 0;
+}
+
+.sgw-shortcodes dt {
+	margin-top: 12px;
+}
+
+.sgw-shortcodes dt:first-child {
+	margin-top: 0;
+}
+
+.sgw-shortcodes code {
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 4px;
+	user-select: all;
+}
+
+.sgw-shortcodes dd {
+	margin: 4px 0 0;
+	color: var(--sgw-muted);
+}
+
+.sgw-tips {
+	margin: 0;
+	padding-left: 18px;
+	list-style: disc;
+}
+
+.sgw-tips li {
+	margin-bottom: 8px;
+	color: var(--sgw-muted);
+	line-height: 1.55;
+}
+
+.sgw-footer {
+	margin: 32px 0 8px;
+	color: var(--sgw-muted);
+	text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1100px) {
+	.sgw-layouts {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.sgw-features {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 900px) {
+	.sgw-hero {
+		grid-template-columns: 1fr;
+		padding: 28px 24px;
+	}
+	.sgw-hero-art {
+		display: none;
+	}
+	.sgw-steps,
+	.sgw-columns {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 600px) {
+	.sgw-layouts,
+	.sgw-features {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.sgw-galleries th:nth-child(4),
+	.sgw-galleries td:nth-child(4) {
+		display: none;
+	}
+}

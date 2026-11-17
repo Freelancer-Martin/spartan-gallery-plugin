@@ -1,198 +1,257 @@
 <?php
-
 /**
- * Welcome Logic
+ * "Getting Started" page (Spartan Gallery > Getting Started).
  *
- * @since 1.0.0
- * @package WPW
+ * Shown once after activation, and always reachable from the menu.
+ *
+ * Function names keep their original wpw_ prefix because spartan-gallery.php
+ * checks for wpw_welcome_page() when registering the activation hooks.
+ *
+ * @package Spartan_Gallery
+ * @subpackage Spartan_Gallery/admin
  */
-
 if ( ! defined( 'WPINC' ) ) {
-
-    die;
-
+	die;
 }
 
 /**
- * Welcome page redirect.
- *
- * Only happens once and if the site is not a network or multisite.
- *
- * @since 1.0.0
+ * Redirect to the page once, right after activation (single-site only).
  */
 function wpw_safe_welcome_redirect() {
+	if ( ! get_transient( '_welcome_redirect_wpw' ) ) {
+		return;
+	}
+	delete_transient( '_welcome_redirect_wpw' );
 
-    // Bail if no activation redirect transient is present.
-    if ( ! get_transient( '_welcome_redirect_wpw' ) ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of WP's own bulk-activation flag.
+	if ( is_network_admin() || isset( $_GET['activate-multi'] ) || ! current_user_can( 'edit_posts' ) ) {
+		return;
+	}
 
-        return;
-
-    }
-
-  // Delete the redirect transient.
-  delete_transient( '_welcome_redirect_wpw' );
-
-  // Bail if activating from network or bulk sites.
-  if ( is_network_admin() || isset( $_GET['activate-multi'] ) ) {
-
-    return;
-
-  }
-
-  // Redirect to Welcome Page.
-  // Redirects to `your-domain.com/wp-admin/plugin.php?page=wpw_welcome_page`.
-  wp_safe_redirect( add_query_arg( array( 'page' => 'wpw_welcome_page' ), admin_url( 'edit.php?post_type=spartan_gallery_type' ) ) );
-
+	wp_safe_redirect( add_query_arg( array( 'page' => 'wpw_welcome_page' ), admin_url( 'edit.php?post_type=spartan_gallery_type' ) ) );
+	exit;
 }
-
 add_action( 'admin_init', 'wpw_safe_welcome_redirect' );
 
-/**
- * Adds welcome page sub menu.
- *
- * @since 1.0.0
- */
 function wpw_welcome_page() {
+	global $wpw_sub_menu;
 
-  global $wpw_sub_menu;
-
-  $wpw_sub_menu = add_submenu_page(
-      'edit.php?post_type=spartan_gallery_type', // The slug name for the parent menu (or the file name of a standard WordPress admin page).
-      __( 'Welcome Page', 'spartan_gallery' ), // The text to be displayed in the title tags of the page when the menu is selected.
-      __( 'Welcome Page', 'spartan_gallery' ), // The text to be used for the menu.
-      'read', // The capability required for this menu to be displayed to the user.
-      'wpw_welcome_page', // The slug name to refer to this menu by (should be unique for this menu).
-      'wpw_welcome_page_content' // The function to be called to output the content for this page.
-  );
-
+	$wpw_sub_menu = add_submenu_page(
+		'edit.php?post_type=spartan_gallery_type',
+		__( 'Getting Started', 'spartan-gallery' ),
+		__( 'Getting Started', 'spartan-gallery' ),
+		'edit_posts',
+		'wpw_welcome_page',
+		'wpw_welcome_page_content'
+	);
 }
-
 add_action( 'admin_menu', 'wpw_welcome_page' );
 
-/**
- * Welcome page content.
- *
- * @since 1.0.0
- */
-function wpw_welcome_page_content() {  ?>
-
-        <style>
-          .svg .wp-badge.welcome__logo {
-            background: url('<?php echo plugin_dir_url( __FILE__ ) . "img/spartan-logo.png" ; ?>') center 24px no-repeat;
-            background-size: contain;
-            color: #fff;
-            width: 50%;
-          }
-
-          /* Responsive Youtube Video*/
-          .embed-container {
-            height: 0;
-            max-width: 100%;
-            overflow: hidden;
-            padding-bottom: 56.25%;
-            position: relative;
-          }
-
-          .embed-container iframe,
-          .embed-container object,
-          .embed-container embed {
-            top: 0;
-            height: 100%;
-            left: 0;
-            position: absolute;
-            width: 100%;
-          }
-        </style>
-
-        <div class="wrap about-wrap">
-
-        <h1><?php printf( __( 'Spartan Gallery &nbsp; %s', 'spartan_gallery' ), PLUGIN_NAME_VERSION ); ?></h1>
-
-        <div class="about-text">
-            <?php printf( __( "Spartan Gallery Welcome Page.", 'spartan_gallery' ), PLUGIN_NAME_VERSION ); ?>
-        </div>
-
-        <div class="wp-badge welcome__logo"></div>
-
-        <div class="feature-section one-col">
-            <h3><?php _e( 'Get Started', 'spartan_gallery' ); ?></h3>
-            <ul>
-                <h4><a href="<?php echo admin_url(); ?>themes.php?page=tgmpa-install-plugins">1. Install required Settings and Activate these</a></h4>
-                <li><strong><?php _e( '1. To start setting up your plugin go to menu "Dashboard" > Select Spartan Gallery > "<a href="'.admin_url().'post-new.php?post_type=spartan_gallery_type" >Create New Gallery</a>".', 'spartan_gallery' ); ?></strong></li>
-                <li><strong><?php _e( '2. Create New Gallery', 'spartan_gallery' ); ?></strong></li>
-                <li><strong><?php _e( '3. Upload Images', 'spartan_gallery' ); ?></strong></li>
-                <li><strong><?php _e( '4. Choose Image Layout Options', 'spartan_gallery' ); ?></strong></li>
-                <li><strong><?php _e( '5. Select Image Settings', 'spartan_gallery' ); ?></strong></li>
-                <li><strong><?php _e( '8. Copy and Paste shortcode where do you wish', 'spartan_gallery' ); ?></strong></li>
-
-
-            </ul>
-
-         </div>
-
-        <div class="feature-section one-col">
-            <h3><?php _e( 'What is Inside?', 'spartan_gallery' ); ?></h3>
-            <div class="headline-feature feature-video">
-                <div class='embed-container'>
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/VF1u_1SLHjs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-        <h3 style="text-align: center;" ><?php _e( 'Check Our Other Plugins', 'spartan_gallery' ); ?></h3>
-        
-
-        <div class="tx-wspace-24"></div><div class="tx-wspace-24"></div>
-
-        <div id="dashboard_right_now" class="postbox">
-            <h2 class="hndle nxw-title"><span>Why should you Give Us Feedback?</span></h2>
-            <div class="inside">
-                <div class="main">
-                  <p style="padding-bottom: 12px; font-size: 15px; color: #555;">
-                    We developers looking to develop new things and ideas for wordpress every day, but for this we need some data. Now comes YOUR important part, please
-                    take few minutes to fill up customer survey. That is pricless to our team because than we now what you are expecting from us in future.</p>
-
-                    <p style="padding-bottom: 12px; font-size: 15px; color: #555;">If you like a theme , share few words in facebook or Linkedin Community, When it is bad, we will learn from that and when it is good we THANK you for that, it helps the theme to spread.
-                    Few words of appriciation also motivates the designers and the developers.  </p>
-
-                    <p style="padding-bottom: 12px; font-size: 15px; color: #555;"><b>If you have not posted your review/feedback yet, we would be very happy you to post your review.
-                    Even if you drop a single word, they are worth gold for us.</b></p>
-                    <a class="button button-primary button-hero" href="http://www.developerforwebsites.com/help">Write Your Feedback</a>
-                    <p style="padding-top: 6px; font-size: 15px; color: #555;"><b>Thanks in Advance</b><br /><span style="font-size: 12px;"><i><a href="http://developerforwebsites.com">Freelancer Martin</a></i></span></p>
-
-                </div>
-            </div>
-        </div>
-
-      </div>
-      <?php
-}
-
-/**
- * Enqueue Styles.
- *
- * @since 1.0.0
- */
 function wpw_styles( $hook ) {
+	global $wpw_sub_menu;
 
-    global $wpw_sub_menu;
+	if ( $hook !== $wpw_sub_menu ) {
+		return;
+	}
 
-    // Add style to the welcome page only.
-    if ( $hook != $wpw_sub_menu ) {
-
-      return;
-
-    }
-
-    // Welcome page styles.
-    wp_enqueue_style(
-      'wpw_style',
-       __FILE__ . '/welcome/css/style.css',
-      array(),
-       __FILE__,
-      'all'
-    );
-
+	wp_enqueue_style(
+		'spartan-gallery-welcome',
+		plugin_dir_url( __FILE__ ) . 'css/spartan-gallery-welcome.css',
+		array(),
+		PLUGIN_NAME_VERSION
+	);
 }
-
-// Enqueue the styles.
 add_action( 'admin_enqueue_scripts', 'wpw_styles' );
+
+/**
+ * Page markup.
+ */
+function wpw_welcome_page_content() {
+	$new_url  = admin_url( 'post-new.php?post_type=spartan_gallery_type' );
+	$list_url = admin_url( 'edit.php?post_type=spartan_gallery_type' );
+	$tags_url = admin_url( 'edit-tags.php?taxonomy=sg_image_tag&post_type=attachment' );
+	$img_url  = plugin_dir_url( __FILE__ ) . 'img/';
+
+	$galleries = get_posts(
+		array(
+			'post_type'      => 'spartan_gallery_type',
+			'post_status'    => array( 'publish', 'draft', 'private' ),
+			'posts_per_page' => 6,
+			'orderby'        => 'modified',
+			'order'          => 'DESC',
+			'no_found_rows'  => true,
+		)
+	);
+
+	$features = array(
+		array( 'dashicons-visibility', __( 'Lightbox', 'spartan-gallery' ), __( 'Full-screen viewer with swipe, keyboard and zoom, plus optional thumbnails, download and slideshow buttons.', 'spartan-gallery' ) ),
+		array( 'dashicons-filter', __( 'Filter buttons', 'spartan-gallery' ), __( 'Tag images (Weddings, Portraits…) and let visitors filter the gallery with one click.', 'spartan-gallery' ) ),
+		array( 'dashicons-update', __( 'Load more', 'spartan-gallery' ), __( 'Big galleries show the first images instantly and load the rest with a button or while scrolling.', 'spartan-gallery' ) ),
+		array( 'dashicons-images-alt2', __( 'Albums', 'spartan-gallery' ), __( 'Show several galleries as cover cards; each one opens in the lightbox.', 'spartan-gallery' ) ),
+		array( 'dashicons-smartphone', __( 'Responsive & fast', 'spartan-gallery' ), __( 'Columns adapt to phones and tablets, images use responsive sizes, and scripts only load where a gallery is shown.', 'spartan-gallery' ) ),
+		array( 'dashicons-welcome-view-site', __( 'Live preview', 'spartan-gallery' ), __( 'See every change instantly in the editor, at desktop, tablet and phone widths — before you save.', 'spartan-gallery' ) ),
+	);
+	?>
+	<div class="wrap sgw">
+		<h1 class="screen-reader-text"><?php esc_html_e( 'Getting Started with Spartan Gallery', 'spartan-gallery' ); ?></h1>
+
+		<section class="sgw-hero">
+			<div class="sgw-hero-text">
+				<img class="sgw-logo" src="<?php echo esc_url( $img_url . 'spartan-logo.png' ); ?>" alt="<?php esc_attr_e( 'Spartan Gallery', 'spartan-gallery' ); ?>" width="1527" height="354" />
+				<p class="sgw-version">
+					<?php
+					/* translators: %s: plugin version */
+					echo esc_html( sprintf( __( 'Version %s', 'spartan-gallery' ), PLUGIN_NAME_VERSION ) );
+					?>
+				</p>
+				<p class="sgw-lead"><?php esc_html_e( 'Beautiful, fast photo galleries in minutes. Pick one of ten layouts, add your images and paste a shortcode — no coding needed.', 'spartan-gallery' ); ?></p>
+				<p class="sgw-actions">
+					<a class="button button-primary button-hero" href="<?php echo esc_url( $new_url ); ?>"><?php esc_html_e( 'Create a gallery', 'spartan-gallery' ); ?></a>
+					<a class="button button-hero" href="<?php echo esc_url( $list_url ); ?>"><?php esc_html_e( 'View all galleries', 'spartan-gallery' ); ?></a>
+				</p>
+			</div>
+			<div class="sgw-hero-art" aria-hidden="true">
+				<?php foreach ( array( 'masonry', 'slider', 'mosaic', 'justified' ) as $layout ) : ?>
+					<img src="<?php echo esc_url( $img_url . 'layout-' . $layout . '.svg' ); ?>" alt="" />
+				<?php endforeach; ?>
+			</div>
+		</section>
+
+		<section class="sgw-section">
+			<h2><?php esc_html_e( 'Three steps to your first gallery', 'spartan-gallery' ); ?></h2>
+			<ol class="sgw-steps">
+				<li>
+					<span class="sgw-step-num">1</span>
+					<h3><?php esc_html_e( 'Add images', 'spartan-gallery' ); ?></h3>
+					<p>
+						<?php
+						printf(
+							/* translators: %s: "Create a gallery" link */
+							esc_html__( '%s, give it a name and open the Images tab. Drag thumbnails to change their order.', 'spartan-gallery' ),
+							'<a href="' . esc_url( $new_url ) . '">' . esc_html__( 'Create a gallery', 'spartan-gallery' ) . '</a>'
+						);
+						?>
+					</p>
+				</li>
+				<li>
+					<span class="sgw-step-num">2</span>
+					<h3><?php esc_html_e( 'Choose a look', 'spartan-gallery' ); ?></h3>
+					<p><?php esc_html_e( 'Pick a layout or a one-click preset (Portfolio, Instagram, Products, Photography, Slideshow). The live preview updates as you go.', 'spartan-gallery' ); ?></p>
+				</li>
+				<li>
+					<span class="sgw-step-num">3</span>
+					<h3><?php esc_html_e( 'Publish it', 'spartan-gallery' ); ?></h3>
+					<p><?php esc_html_e( 'Click "Copy" next to the shortcode and paste it into any page, or add the "Spartan Gallery Block" in the block editor.', 'spartan-gallery' ); ?></p>
+				</li>
+			</ol>
+		</section>
+
+		<?php if ( $galleries ) : ?>
+			<section class="sgw-section">
+				<h2><?php esc_html_e( 'Your galleries', 'spartan-gallery' ); ?></h2>
+				<table class="widefat striped sgw-galleries">
+					<thead>
+						<tr>
+							<th scope="col"><?php esc_html_e( 'Gallery', 'spartan-gallery' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Layout', 'spartan-gallery' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Images', 'spartan-gallery' ); ?></th>
+							<th scope="col"><?php esc_html_e( 'Shortcode', 'spartan-gallery' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$layout_names = Spartan_Gallery_Options::layouts();
+						foreach ( $galleries as $gallery ) :
+							$settings = Spartan_Gallery_Settings::get( $gallery->ID );
+							$layout   = $settings['image_layout_select'];
+							$count    = count( Spartan_Gallery_Settings::parse_image_ids( get_post_meta( $gallery->ID, 'spartan_gallery_uploaded_images', true ) ) );
+							$title    = get_the_title( $gallery );
+							?>
+							<tr>
+								<td>
+									<a class="row-title" href="<?php echo esc_url( get_edit_post_link( $gallery->ID ) ); ?>"><?php echo esc_html( '' !== $title ? $title : __( '(no title)', 'spartan-gallery' ) ); ?></a>
+									<?php if ( 'publish' !== $gallery->post_status ) : ?>
+										<span class="sgw-status"><?php echo esc_html( get_post_status_object( $gallery->post_status )->label ); ?></span>
+									<?php endif; ?>
+								</td>
+								<td><?php echo esc_html( isset( $layout_names[ $layout ] ) ? $layout_names[ $layout ][0] : $layout ); ?></td>
+								<td><?php echo esc_html( number_format_i18n( $count ) ); ?></td>
+								<td><code>[spartan_gallery id="<?php echo absint( $gallery->ID ); ?>"]</code></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</section>
+		<?php endif; ?>
+
+		<section class="sgw-section">
+			<h2><?php esc_html_e( 'Ten layouts', 'spartan-gallery' ); ?></h2>
+			<div class="sgw-layouts">
+				<?php foreach ( Spartan_Gallery_Options::layouts() as $value => $data ) : ?>
+					<figure class="sgw-layout">
+						<img src="<?php echo esc_url( $img_url . 'layout-' . $value . '.svg' ); ?>" alt="" />
+						<figcaption>
+							<strong><?php echo esc_html( $data[0] ); ?></strong>
+							<span><?php echo esc_html( $data[1] ); ?></span>
+						</figcaption>
+					</figure>
+				<?php endforeach; ?>
+			</div>
+		</section>
+
+		<section class="sgw-section">
+			<h2><?php esc_html_e( 'Built in', 'spartan-gallery' ); ?></h2>
+			<div class="sgw-features">
+				<?php foreach ( $features as $feature ) : ?>
+					<div class="sgw-feature">
+						<span class="dashicons <?php echo esc_attr( $feature[0] ); ?>" aria-hidden="true"></span>
+						<h3><?php echo esc_html( $feature[1] ); ?></h3>
+						<p><?php echo esc_html( $feature[2] ); ?></p>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		</section>
+
+		<section class="sgw-section sgw-columns">
+			<div class="sgw-card">
+				<h2><?php esc_html_e( 'Shortcodes', 'spartan-gallery' ); ?></h2>
+				<dl class="sgw-shortcodes">
+					<dt><code>[spartan_gallery id="123"]</code></dt>
+					<dd><?php esc_html_e( 'One gallery. The ID is shown on the gallery list and in the gallery editor.', 'spartan-gallery' ); ?></dd>
+					<dt><code>[spartan_album]</code></dt>
+					<dd><?php esc_html_e( 'All published galleries as cover cards.', 'spartan-gallery' ); ?></dd>
+					<dt><code>[spartan_album ids="12,15" columns="3" titles="no"]</code></dt>
+					<dd><?php esc_html_e( 'Only the chosen galleries, in that order.', 'spartan-gallery' ); ?></dd>
+				</dl>
+			</div>
+			<div class="sgw-card">
+				<h2><?php esc_html_e( 'Tips', 'spartan-gallery' ); ?></h2>
+				<ul class="sgw-tips">
+					<li>
+						<?php
+						printf(
+							/* translators: %s: "Gallery Tags" link */
+							esc_html__( 'Organize images with %s, then turn on "Filter buttons" in the gallery\'s Filter & Loading tab.', 'spartan-gallery' ),
+							'<a href="' . esc_url( $tags_url ) . '">' . esc_html__( 'Gallery Tags', 'spartan-gallery' ) . '</a>'
+						);
+						?>
+					</li>
+					<li><?php esc_html_e( 'Write a Caption for an image in the Media Library to show it in the lightbox.', 'spartan-gallery' ); ?></li>
+					<li><?php esc_html_e( 'For Before / After, add images in pairs: the 1st image is "before", the 2nd "after", and so on.', 'spartan-gallery' ); ?></li>
+					<li><?php esc_html_e( 'Galleries with many images load faster with "Load more" turned on.', 'spartan-gallery' ); ?></li>
+				</ul>
+			</div>
+		</section>
+
+		<p class="sgw-footer">
+			<?php
+			printf(
+				/* translators: %s: website link */
+				esc_html__( 'Questions or ideas? Visit %s.', 'spartan-gallery' ),
+				'<a href="https://freelancermartin.ee/" target="_blank" rel="noopener noreferrer">freelancermartin.ee</a>'
+			);
+			?>
+		</p>
+	</div>
+	<?php
+}

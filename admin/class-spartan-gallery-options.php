@@ -20,7 +20,7 @@ class Spartan_Gallery_Options {
 	const PREVIEW_ACTION = 'spartan_gallery_preview';
 
 	/** Layouts grouped for the admin (value => [label, preview svg, description]). */
-	private static function layouts() {
+	public static function layouts() {
 		return array(
 			'grid'      => array( __( 'Grid', 'spartan-gallery' ), __( 'Even columns, cropped to one shape.', 'spartan-gallery' ) ),
 			'masonry'   => array( __( 'Masonry', 'spartan-gallery' ), __( 'Uncropped, packed into columns.', 'spartan-gallery' ) ),
